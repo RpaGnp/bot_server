@@ -43,7 +43,7 @@ jobs:
             else
               cd /home/Bot_Server/
               echo "El repositorio no existe. Clonando..."
-              git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/RpaGnp/bot_server.git
+              git clone https://${{ secrets.TOKEN_GITHUB }}@github.com/RpaGnp/bot_server.git
             fi
           EOF
 
