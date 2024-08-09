@@ -1,0 +1,252 @@
+import os
+import autoit
+from pathlib import Path
+from datetime import datetime
+import clipboard
+import time
+import base64
+import tempfile
+from ConsultorMongo import Handledbmongo
+from ConsultorMysql import ConectorDbMysql
+
+CLASSAS400="[class:SunAwtFrame]"
+UsuarioRR = "C45795864"
+ClaveRR ="Raton126**"
+
+ciudad= "Bogota"
+UsuarioRR = "C45521296"
+ClaveRR ="Unico24***"
+
+listaArreglos=["Arreglos","MANTENIMIENTO FTTH"]
+dicUbicacion={"Inicio de Sesión":1}
+dicrutas = {"LLS":{1:["4","{ENTER}","1","{ENTER}"],
+				   2:["1","{ENTER}"]},
+
+			"OTS":{1:["4","{ENTER}","4","{ENTER}"],
+				   2:["4","{ENTER}"]
+			}
+}
+arrayErroresLLs=["El numero de la Llamada de Servicio no esta en el archivo de Llamadas de Ser",
+"Despacho o Ejecuccion de Llamadas de Servicio ha sido pedido pero no hay lla","no existe en el archivo"]
+
+
+#491619
+
+class ControladorAs400:
+	def __init__(self,ArrayCredenciales,ciudad):
+		self.Usuario=ArrayCredenciales[0]
+		self.Clave=ArrayCredenciales[1]
+		self.ciudad = ciudad
+
+	def get_control(self):
+		if autoit.win_exists(CLASSAS400):
+			activador = (autoit.win_active(CLASSAS400))        	    
+			if activador == 0:            
+				autoit.win_activate(CLASSAS400)		        
+				self.LoginIBM()
+				if "Inicio de Sesión" in self.copiarPantalla():
+					self.Loginas400()
+				else:
+					pass
+
+		else:
+			self.launcher()
+		
+	def whereiam(self,labor):
+		self.get_control()		
+		textPantalla = self.copiarPantalla()		
+		if "Menu Principal Sistema de Administracion Cable" in textPantalla:
+			return dicrutas[labor][1]
+		elif "Menu de Ordenes de Trabajo y Llamadas de Servicio" in textPantalla:
+			return dicrutas[labor][2]
+		elif "SELECCION DE CRITERIOS PARA DESPACHO LLAMADAS SERV" in textPantalla:
+			return []
+		elif "COMPLETACION ORDEN DE TRABAJO" in textPantalla:
+			return []
+
+	def Loginas400(self):
+		self.get_control()
+		TextoInicio = self.copiarPantalla()
+		if "Inicio de Sesión" in TextoInicio:
+			self.EnviarComandosToPantalla([self.Usuario,"{TAB}",self.Clave,"{ENTER}","{ENTER}"],"Información de inicio de sesión")
+		time.sleep(2)
+		#if "Información de inicio de sesión " in TextoInicio:
+		#	self.EnviarComandosToPantalla(["{ENTER}"],"Menu Principal Sistema de Administracion Cable")
+		return 1
+
+	def Xlogin(self):
+		self.EnviarComandosToPantalla(["+{ESC}","90","{ENTER}"],"Inicio de Sesión")
+
+
+	def LoginIBM(self):
+		if autoit.win_exists("Iniciar sesión en IBM i"):
+			hdv=autoit.win_get_handle("Iniciar sesión en IBM i")
+			autoit.win_activate_by_handle(hdv)
+			autoit.send(self.Usuario)
+			time.sleep(0.5)
+			autoit.send("{TAB}")
+			autoit.send(self.Clave)
+			autoit.send("{ENTER}")
+			time.sleep(2)
+			if self.verificarCambioCalveIBM():
+				return 0
+			else: 
+				return 1
+
+		else:
+			return 1
+
+	def verificarCambioCalveIBM(self):
+		TituloVentana = "Mensaje de consulta"
+		if autoit.win_exists(TituloVentana):
+			autoit.win_kill(TituloVentana)
+			return 1
+		else:
+			return 0
+
+
+	def EnviarComandosToPantalla(self,arraycomandos,titulo):
+		'''se espera en u array las teclas pulsadas y tambien los datos a ingresar y valida la pantalla final'''        
+		for i in arraycomandos:
+			if i != None:
+				autoit.send(i)
+				time.sleep(0.25)
+		time.sleep(1)
+		text = clipboard.paste()            	    
+		if titulo in text:
+			return True
+		else:
+			return False
+
+	def copiarPantalla(self):
+		self.get_control()
+		for i in ["^a","^c"]:
+			autoit.send(i)
+		return clipboard.paste()
+
+
+	def launcher(self):
+		AS400BIN=str(b'W0hvc3QgT24tRGVtYW5kIFNlc3Npb24gRmlsZV1bNC4wMF0NCltUb29sYmFyXQ0KdGhlbWVMaXN0PTM1ICwwICw2ICw3ICwwICwyNjEgLDI2MCAsMjkwICwyOTIgLDI5NyAsMCAsNjYgLDIyICwwICwyMSAsMCAsMjkgLDI3ICwwICwyNiAsMjggLDAgLDI1MyAsMCAsMzkgLA0KcGFyYW1MaXN0PSAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsDQpwb3NpdGlvbkxpc3Q9MCAsMSAsMiAsMyAsNCAsNSAsNiAsNyAsOCAsOSAsMTAgLDExICwxMiAsMTMgLDE0ICwxNSAsMTYgLDE3ICwxOCAsMTkgLDIwICwyMSAsMjIgLDIzICwyNCAsDQpkZXNjcmlwdGlvbkxpc3Q9X0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLA0KbWFjTG9jTGlzdD0tMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsLTEgLC0xICwtMSAsDQpuYW1lTGlzdD0gLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLA0KdGV4dExpc3Q9X0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLF9IT0RfREVGQVVMVF9URVhUJkRFU0NSSVBUSU9OICxfSE9EX0RFRkFVTFRfVEVYVCZERVNDUklQVElPTiAsX0hPRF9ERUZBVUxUX1RFWFQmREVTQ1JJUFRJT04gLA0KaW1hZ2VMaXN0PSAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsICwgLCAsDQpbSG9zdFByaW50VGVybWluYWxdDQpbSWNvbl0NCm1lbnVCYXJWaXNpYmxlPXRydWUNCnBvcHBhZFBhZD0xDQpmdHBCdXR0b25CYXJWaXNpYmxlPXRydWUNCmtleXBhZFZpc2libGU9ZmFsc2UNCnBvcHBhZEhlaWdodDQ9MA0KcG9wcGFkSGVpZ2h0Mz0wDQpFbWJlZGRlZD1mYWxzZQ0KdHJhbnNmZXJCYXJWaXNpYmxlPWZhbHNlDQpwb3BwYWRIZWlnaHQyPTIxMQ0KcG9wcGFkSGVpZ2h0MT0yMTENCnNjcmF0Y2hTYXZlPXRydWUNCnN0YXR1c0JhclZpc2libGU9dHJ1ZQ0KRmlsZVRyYW5zZmVyVHlwZT1Ib3N0RmlsZVRyYW5zZmVyDQpzZWxlY3RlZEltYWdlPTUyNTBfcy5naWYNCnBvcHBhZEJ5UmlnaHRNb3VzZUJ1dHRvbj10cnVlDQpzdGFydHVwQXBwbGV0PQ0KbnVtYmVyTGluZXNPSUE9NA0Kc3RhcnRITExBUElFbmFibGVyPXRydWUNCmVuYWJsZVRlbXBGb2N1cz1mYWxzZQ0KcG9wcGFkTGVmdD01NTYNClJlcXVlc3RlZElEPSoNCm5hbWU9MTcyLjE4LjEwLjEwDQphdXRvc3RhcnROYW1lPQ0KZnRwU3RhdHVzQmFyVmlzaWJsZT10cnVlDQplbmFibGU1MjUwUHJpbnRlckFzc29jaWF0aW9uPWZhbHNlDQo1MjUwUHJpbnRlclNlc3Npb249MTcyLjE4LjEwLjEwDQpjbG9zZTUyNTBBc3NvY1ByaW50ZXJXaXRoTGFzdFNlc3Npb249ZmFsc2UNCm1hY3JvTWFuYWdlclZpc2libGU9ZmFsc2UNCmZyYW1lWXBvcz0tOA0KcXVpY2tDb25uZWN0VmlzaWJsZT1mYWxzZQ0KcG9wcGFkU2Nyb2xsQmFyPXRydWUNCnN0YXJ0dXBNYWNybz0NCnN0YXJ0dXBQYXJhbT0NCnN0aWNreVBvcHBhZD1mYWxzZQ0KcG9wcGFkRm9jdXNCYWNrVG9UZXJtaW5hbD10cnVlDQpzY3JhdGNoUGFkVmlzaWJsZT1mYWxzZQ0KZnJhbWVXaWR0aD0xMzgyDQpzY3JlZW5IaXN0b3J5VHlwZVNpbXBsZT1mYWxzZQ0Kc2NyZWVuSGlzdG9yeT1mYWxzZQ0KYXV0b3N0YXJ0PW5vbmUNCmJ1dHRvblRleHRWaXNpYmxlPWZhbHNlDQppc0ljb25pZmllZD1mYWxzZQ0KNTI1MFByaW50ZXJBc3NvY2lhdGlvbj1mYWxzZQ0KU2F2ZU9uRXhpdD1BbHdheXMNCmV4aXRXYXJuaW5nT249ZmFsc2UNCnRleHRPSUFWaXNpYmxlPWZhbHNlDQphdXRvc3RhcnRQYXJhbT0NCnNjcmF0Y2hQYWRNaW5pPWZhbHNlDQo1MjUwQXNzb2NQcmludGVyRGV2aWNlTmFtZT0NCmNvbmZpcm1FeGl0T249ZmFsc2UNCmJ1dHRvbkJhclZpc2libGU9dHJ1ZQ0KaW50ZXJmYWNlPWNvbS5pYm0uZU5ldHdvcmsuSE9ELmljb25zLkljb241MjUwDQpmcmFtZUhlaWdodD03NDQNCnBvcHBhZFRvcD0yNTkNCmd1aUVtdWxhdGlvbj1mYWxzZQ0Kc2VhcmNoVGV4dFZpc2libGU9ZmFsc2UNCjUyNTBBc3NvY1ByaW50ZXJTZXNzaW9uQ29ubmVjdGlvblRpbWVvdXQ9DQphdXRvTGF1bmNoPWZhbHNlDQpidXR0b25BZG1pbkJhclZpc2libGU9dHJ1ZQ0KdW5zZWxlY3RlZEltYWdlPTUyNTAuZ2lmDQpwb3BwYWRXaWR0aDQ9MA0KcG9wcGFkV2lkdGgzPTANCnBvcHBhZFdpZHRoMj0yNTQNCmZ0cEJ1dHRvblRleHRWaXNpYmxlPWZhbHNlDQpwb3BwYWRXaWR0aDE9MjU0DQpmcmFtZVhwb3M9LTgNCltLZXlwYWRdDQpzZXNzaW9uVHlwZT0yDQpjb2RlUGFnZT0xMTQ1DQpbQ29sb3JSZW1hcEZpbGVdDQpbUE9QUEFEXQ0KW1ppcFByaW50XQ0KY29kZVBhZ2U9MTE0NQ0KW0JsaW5rUmVtYXBdDQpbQXBwbGV0TWFuYWdlcl0NCmNvbS5pYm0uZU5ldHdvcmsuaGxsYnJpZGdlLkhMTEFQSUVuYWJsZXI9DQpbVG9vbGJhckZpbGVdDQpGaWxlbmFtZT0NCltUcmFuc2xhdGlvbl0NCltDb2xvclJlbWFwXQ0KW01hY3JvTGlicmFyeV0NCltWb2xhdGlsZV0NCltUcmFuc2xhdGlvbkZpbGVdDQpbUE9QUEFERmlsZV0NClslZGJhJW9wdGlvbnNdDQpbS2V5UmVtYXBGaWxlXQ0KRmlsZW5hbWU9QzpcVXNlcnNcVVNFUlxEb2N1bWVudHNcSUJNXGlBY2Nlc3NDbGllbnRcRW11bGF0b3JcSUJNaS5rbXANCltUZXJtaW5hbF0NCnNob3dFbnRlclN0cmluZz1mYWxzZQ0Kc2hvd0Jhbm5lcj10cnVlDQpTU0xDZXJ0aWZpY2F0ZU5hbWU9DQpMVU5hbWU9DQpob3N0R3JhcGhpY3M9ZmFsc2UNCm5lZ290aWF0ZUNSZXNvbHV0aW9uPXRydWUNClZUUmV2ZXJzZVNjcmVlbj1mYWxzZQ0KbGFzdEhvc3RXaXRob3V0VGltZW91dD10cnVlDQpNdWx0UHJ0U2NyblBlclBhZ2VOdW1iZXI9MQ0KU0xQQVM0MDBOYW1lPQ0KSGlzdG9yeT10cnVlDQpTU0xDZXJ0aWZpY2F0ZVByb21wdEhvd09mdGVuPVNFU1NJT05fU1NMX0NFUlRJRklDQVRFX1BST01QVF9GSVJTVF9DT05ORUNUDQphY3NTeXN0ZW1OYW1lPQ0KU0VTU0lPTl9QUk9YWV9CUk9XU0VSX0RFRkFVTFQ9U0VTU0lPTl9QUk9YWV9CUk9XU0VSX0RFRkFVTFQNCmNvbHVtblNlcGFyYXRvcj1kb3QNCndvcmtzdGF0aW9uSUQ9DQpXYXRlcm1hcmtPcGFjaXR5PTAuMTUNCndhdGVybWFya1RleHRDb2xvcj1GRkZGRkYNCnRyaW1MaW5lV3JhcFN0eWxlPWZhbHNlDQp0ZXh0VHlwZT1MT0dJQ0FMDQpwYXN0ZVRhYk9wdGlvbnM9Mg0KU0VTU0lPTl9QUk9YWV9BVVRIRU5fQ0xFQVJfVEVYVD1TRVNTSU9OX1BST1hZX0FVVEhFTl9DTEVBUl9URVhUDQpzY3JlZW5TaXplPTINClVzZUhvZENEUkExMzk5PWZhbHNlDQpTTFBTY29wZT0NCndpbmRvd1NldHVwRmxhZ3M9OTM0DQpkb250U2hvd1VucHJvdGVjdGVkVVJMcz10cnVlDQpydWxlPWZhbHNlDQpWVEN1cnNvcj1mYWxzZQ0KZm9udFN0eWxlPTANCmZvbnRTaXplQm91bmRlZD10cnVlDQplbmFibGVUcmltRmllbGRTcGFjZXM9dHJ1ZQ0Kb21pdFNPU0k9ZmFsc2UNCmNvcHlBbHRTaWduTG9jYXRpb249ZmFsc2UNCmF1dG9SZXNpemU9ZmFsc2UNCnRleHRUeXBlRGlzcD1MT0dJQ0FMX0RJU1ANCmFjc1Bhc3N3b3JkUHJvbXB0VXNlcm5hbWU9DQouLD0uLA0KY29weU9ubHlJZlRyaW1tZWQ9ZmFsc2UNCkNJQ1NTZXJ2ZXJOYW1lPQ0KU1NMVGVsbmV0TmVnb3RpYXRlZD1mYWxzZQ0KZm9udFNpemU9MTANCnNob3dVUkxzTW9kZT11bmRlcmxpbmVVUkxzDQpTU0xDZXJ0aWZpY2F0ZVByb3ZpZGVkPWZhbHNlDQpmaXhlZEZvbnRTaXplPWZhbHNlDQpQcm94eVNTTEJyb3dzZXJLZXlyaW5nQWRkZWQ9ZmFsc2UNClByaW50U2NyZWVuQ29sbGVjdGlvbk9uRXhpdD1mYWxzZQ0KbW91c2VXaGVlbERvd249W3BhZ2Vkbl0NCkVudHJ5QXNzaXN0X3RhYnN0b3A9OA0KQ3VzdG9tVGFibGU9DQpmb250TmFtZT1JQk0zMjcwDQpzZXNzaW9uSUQ9QQ0KU1NMQ2VydGlmaWNhdGVIYXNoPQ0KcG9ydD05OTINClZUQmFja3NwYWNlPWZhbHNlDQplbmFibGVTdGFydHVwUmVzcG9uc2VSZWNvcmQ9dHJ1ZQ0KdXNlQWNjZW50ZWRDaGFyYWN0ZXJzPWZhbHNlDQpoYXZlVGV4dEFzV2F0ZXJtYXJrPXRydWUNCkVudHJ5QXNzaXN0X2JlbGxDb2w9NzUNCk5WVExvY2FsRWNobz1mYWxzZQ0KVGhhaURpc3BsYXlNb2RlPTINCkFsbG9jYXRlU3BhY2VGb3JMYW1BbGVmPUxBTUFMRUZPRkYNCmVuYWJsZUNvcHlVbnByb3RlY3RlZEZpZWxkcz10cnVlDQpzaG93TWFjcm89ZGlzYWJsZU1hY3JvDQpTTFBNYXhXYWl0VGltZT0yMDANClNTSFB1YmxpY0tleUFsaWFzPW15a2V5DQprZXlTdG9yZUZpbGVQYXRoPQ0Kc291bmRBbGFybT10cnVlDQp1bmljb2RlRW5mb3JjZUxlbmd0aD10cnVlDQpTU0xDUllQVE9MQUJFTD0NClZUYXNjaWlDb252ZXJ0PWZhbHNlDQp0aW1lb3V0PTANCm5ldE5hbWU9DQpTU0xCcm93c2VyS2V5cmluZ0FkZGVkPWZhbHNlDQpTU0xDZXJ0aWZpY2F0ZVNvdXJjZT1TRVNTSU9OX1NTTF9DRVJUSUZJQ0FURV9JTl9VUkwNClNMUEVuYWJsZWQ9ZmFsc2UNCnBhc3RlU3RvcEF0UHJvdGVjdGVkTGluZT10cnVlDQpQcm94eVNTTD1mYWxzZQ0KVlRMb2NhbEVjaG89ZmFsc2UNCmlzQWNzQ29uc29sZT1mYWxzZQ0KdGltZW91dE5vRGF0YUF0SW5pdGlhbGl6YXRpb249ZmFsc2UNCkVOUFRVST10cnVlDQpDSUNTSW5pdGlhbFRyYW5zRW5hYmxlZD10cnVlDQp1c2VyUGFzc3dvcmQ9DQpwcm94eUF1dGhlbk1ldGhvZD1TRVNTSU9OX1BST1hZX0FVVEhFTl9OT05FDQpTRVNTSU9OX1BST1hZX1NPQ0tTX1Y1PVNFU1NJT05fUFJPWFlfU09DS1NfVjUNCnNob3dUZXh0QXR0cmlidXRlc0VuYWJsZWQ9dHJ1ZQ0KU0VTU0lPTl9QUk9YWV9TT0NLU19WND1TRVNTSU9OX1BST1hZX1NPQ0tTX1Y0DQpzeW1tZXRyaWNTd2FwRW5hYmxlZD10cnVlDQpwcm94eVR5cGU9U0VTU0lPTl9QUk9YWV9CUk9XU0VSX0RFRkFVTFQNClNTSFB1YmxpY0tleUFsaWFzUGFzc3dvcmQ9DQpXYXRlcm1hcmtGb250PVRpbWVzIE5ldyBSb21hbg0Kc21hcnRPcmRlcmluZz1TTUFSVF9PUkRFUklOR19PRkYNCkVudHJ5QXNzaXN0X3N0YXJ0Q29sPTENCk11bHRQcnRTY3JuUGVyUGFnZT1mYWxzZQ0KVlRBbnN3ZXJCYWNrTXNnPQ0KbW91c2VXaGVlbFVwPVtwYWdldXBdDQpob3N0PTE3Mi4xOC4xMC4xMA0KbnVtZXJpY1N3YXBFbmFibGVkPXRydWUNCkxVTmFtZUJhY2t1cDI9DQpMVU5hbWVCYWNrdXAxPQ0KY29ubmVjdGlvblRpbWVvdXQ9MA0KcHJveHlTZXJ2ZXJQb3J0PTEwODANCnJ1bGVMaW5lUG9zaXRpb249MCAwDQpzc2xVc2VKU1NFPXRydWUNCnNzbEpTU0VUcnVzdFN0b3JlUGFzc3dvcmQ9DQpyb3VuZFRyaXA9T04NCmtleWJvYXJkU2VxdWVuY2U9dHJ1ZQ0KdHJpbVJlY3RSZW1haW5BZnRlckVkaXQ9ZmFsc2UNCkN1cnNvck1vdmVtZW50U3RhdGU9dHJ1ZQ0KVlRUZXJtaW5hbFR5cGU9MQ0KaG9zdEJhY2t1cDI9DQppc0htY0NvbnNvbGU9ZmFsc2UNCldhdGVybWFya0ltYWdlUGF0aD0NCmhvc3RCYWNrdXAxPQ0KUHJpbnRTY3JlZW5JbkNvbG9yPWZhbHNlDQpUTkVuaGFuY2VkPXRydWUNCnRleHRPcmllbnRhdGlvbj1MRUZUVE9SSUdIVA0KSFRNTEREUz1mYWxzZQ0KdXNlcklEPQ0KYXV0b0Nvbm5lY3Q9dHJ1ZQ0KU2VjdXJpdHlQcm90b2NvbEFkbWluPWZhbHNlDQpwb2ludGVyVHlwZT1mYWxzZQ0Kc21hcnRDYXJkRGlzY29ubmVjdD10cnVlDQpzZXNzaW9uVHlwZT0yDQp1bmljb2RlRGF0YVN0cmVhbUVuYWJsZWQ9ZmFsc2UNCmVuYWJsZUNvcHlQcm90ZWN0ZWRGaWVsZHM9dHJ1ZQ0KU1NMQ1JZUFRPUFdEPQ0KVURDX1NFVFRJTkc9VURDX09GRg0KYXV0b1JlY29ubmVjdD10cnVlDQpIaXN0b3J5U2l6ZT02NA0KbW91c2VFbmFibGVkPXRydWUNCnByb3h5VXNlclBhc3N3b3JkPQ0KVURDX1RBQkxFX1NFTEVDVElPTj0NClNFU1NJT05fUFJPWFlfU09DS1NfVjVfVEhFTl9WND1TRVNTSU9OX1BST1hZX1NPQ0tTX1Y1X1RIRU5fVjQNCmN1cnNvckRpcmVjdGlvbj1DVVJTT1JfTEVGVFRPUklHSFQNCkRCQ1NJbnB1dFZpc2libGU9ZmFsc2UNCmdyYXBoaWNzQ2VsbFNpemU9MA0KV2F0ZXJtYXJrPWZhbHNlDQpydWxlTGluZVN0eWxlPWNyb3NzaGFpcg0Kc3NvRW5hYmxlZD1mYWxzZQ0KRW50cnlBc3Npc3RfRE9DbW9kZT1mYWxzZQ0KY2VudGVyZWQ9dHJ1ZQ0KYWNzUGFzc3dvcmRQcm9tcHQ9MV91c2VBY3NTZXR0aW5nDQpwcm94eVNlcnZlck5hbWU9DQpTTFBUaGlzU2NvcGVPbmx5PWZhbHNlDQpzaG93RlBubj1kaXNhYmxlRlBOTg0KU1NMQ2VydGlmaWNhdGVQcm9tcHRCZWZvcmVDb25uZWN0PWZhbHNlDQp0cmltUmVjdFNpemluZ0hhbmRsZXM9dHJ1ZQ0KRW50cnlBc3Npc3RfdGFic3RvcHM9DQpzaG93bm49ZGlzYWJsZU5ODQpTU0xDZXJ0aWZpY2F0ZVVSTD0NCmtlZXBBbGl2ZT1mYWxzZQ0KQ0lDU0luaXRpYWxUcmFucz1DRUNJDQpTU0xTZXJ2ZXJBdXRoZW50aWNhdGlvbj1mYWxzZQ0KaGF2ZUltYWdlQXNXYXRlcm1hcms9ZmFsc2UNClBydFNjcm5Ob3RTaG93RGlhbG9nPWZhbHNlDQppc01heGltaXplZD10cnVlDQpwcmludEZpbGVOYW1lPQ0KcHJpbnREZXN0aW5hdGlvbj10cnVlDQpWVDEwMFBsdXM9ZmFsc2UNCnBhc3RlVGFiU3BhY2VzPTENCmVuYWJsZVBhc3RlRnJvbUV4Y2VsPWZhbHNlDQpydWxlTGluZUZvbGxvd3M9dHJ1ZQ0KSW5zZXJ0T2ZmT25BSURLRVk9ZmFsc2UNCnNlc3Npb25OYW1lPTE3Mi4xOC4xMC4xMA0KbnVtZXJpY0ZpZWxkTG9jaz1mYWxzZQ0Kc2VwYXJhdGVGaWxlcz1mYWxzZQ0KUHJveHlTU0xTZXJ2ZXJBdXRoZW50aWNhdGlvbj1mYWxzZQ0KRW50cnlBc3Npc3RfZW5kQ29sPTgwDQpzb2Nrc1Y0VXNlcklEPQ0KT0lBVmlzaWJsZT10cnVlDQp0aXRsZVNlcGFyYXRvcj0tDQp0ZXh0QW50aUFsaWFzaW5nPWZhbHNlDQpQcnRTY3JuSGVhZGVyUGxhY2U9UHJ0U2NyblBsYWNlQ2VudGVyDQp3YXRlcm1hcmtQb3NpdGlvbj10aWxlDQpudW1lcmFsU2hhcGVEaXNwPUNPTlRFWFRVQUxfRElTUA0KM0Q9ZmFsc2UNCndhdGVybWFya1BWPTANCldhdGVybWFya1RleHQ9DQpoaWRkZW5GaWVsZERpc3BsYXk9ZmFsc2UNCkVudHJ5QXNzaXN0X0RPQ3dvcmRXcmFwPXRydWUNCkxVTVNlcnZlcj0NCnNzbEpTU0VUcnVzdFN0b3JlPQ0KaXNBY3NQcm90b2NvbD10cnVlDQpwcm94eVVzZXJJRD0NClBEVEZpbGU9DQpmb250U2NhbGluZz10cnVlDQpXYXRlcm1hcmtJbWFnZUxvY2F0aW9uPQ0Kd2F0ZXJtYXJrUEg9MA0KU1NMQ1JZUFRPTU9EVUxFPQ0KcGFzdGVGaWVsZFdyYXA9dHJ1ZQ0KQ0lDU0dXQ29kZVBhZ2U9MDAwDQplbmFibGVDb3B5RmllbGRzQXNUYWJsZT1mYWxzZQ0KdXNlU1NIUHVibGljS2V5QXV0aGVudGljYXRpb249ZmFsc2UNCmF1dG9Gb250U2l6ZT10cnVlDQpzZXJ2aWNlTWdySG9zdD0NCnBvcnRCYWNrdXAyPTIzDQpTU0xBZG1pbj1mYWxzZQ0KU0VTU0lPTl9QUk9YWV9IVFRQPVNFU1NJT05fUFJPWFlfSFRUUA0KcG9ydEJhY2t1cDE9MjMNCm1vdXNlV2hlZWxFbmFibGVkPXRydWUNClNlY3VyaXR5UHJvdG9jb2w9U0VTU0lPTl9QUk9UT0NPTF9UTFMNCnBhbmVsT25seVRDUElQSW5hY3Rpdml0eVRpbWVvdXQ9MA0KcGVyc2lzdENvbm5lY3RlZFN0YXR1c01lc3NhZ2U9ZmFsc2UNClZUSUQ9VlQ0MjANCkxVTVBvcnQ9ODANCnBhc3RlV29yZEJyZWFrPXRydWUNClByaW50U2NyZWVuQmFja2dyb3VuZENvbG9yT3B0aW9uPVByaW50U2NyZWVuQmFja2dyb3VuZENvbG9yT3B0aW9uTm9uZQ0KUHJ0U2NybkZvb3RlclRleHQ9DQprZXlTdG9yZVBhc3N3b3JkPQ0Kc3NvQnlwYXNzU2lnbm9uUGFzc3dvcmQ9DQpzb3VuZE11dGU9ZmFsc2UNCmN1cnNvclZpc2libGU9dHJ1ZQ0KbWFya2VkQXJlYVByaW50aW5nRW5hYmxlZD10cnVlDQphdXRvUGFjaz1mYWxzZQ0KYWNjZXNzaWJpbGl0eUVuYWJsZWQ9ZmFsc2UNCm51bWVyYWxTaGFwZT1OT01JTkFMDQpzc29Vc2VLZXJiZXJvc1Bhc3N0aWNrZXQ9ZmFsc2UNCkVuYWJsZUluc2VydFBhc3RlPXRydWUNClNTTD10cnVlDQpwYXN0ZVRvVHJpbW1lZEFyZWE9dHJ1ZQ0KU1NMQ2VydGlmaWNhdGVQYXNzd29yZD0NCnNob3dQRm5uPWRpc2FibGVQRk5ODQpMVU1MaWNlbnNpbmc9SE9EDQpydWxlTGluZT10cnVlDQpWVE5ld0xpbmU9dHJ1ZQ0KU0VTU0lPTl9TS0lQX0FWQUlMQUJMRV9DSEVDSz1mYWxzZQ0KU0VTU0lPTl9QUk9YWV9BVVRIRU5fQkFTSUM9U0VTU0lPTl9QUk9YWV9BVVRIRU5fQkFTSUMNCnBhc3RlTGluZVdyYXA9dHJ1ZQ0KYmluZDdGQXJjaGl0ZWN0dXJlVmlvbGF0aW9uPWZhbHNlDQpQcnRTY3JuRm9vdGVyUGxhY2U9UHJ0U2NyblBsYWNlQ2VudGVyDQpQcnRTY3JuSGVhZGVyVGV4dD0NCnNob3dGbm49ZGlzYWJsZUZOTg0KdHJpbUJveEV4cGFuZERyYWc9dHJ1ZQ0KdXNlREJDU0luVW5pY29kZUZpZWxkPWZhbHNlDQpzc2xKU1NFVHJ1c3RTdG9yZVR5cGU9amtzDQpQcnRTY3JuSmF2YU1vZGU9dHJ1ZQ0KVlRLZXlwYWQ9ZmFsc2UNCmNvZGVQYWdlPTExNDUNCnNzb0NNU2VydmVyPQ0KcHJpbnRlck5hbWU9TFBUMQ0Kc291bmRDbGlja2VyPWVycm9yDQpJTUVBdXRvU3RhcnQ9dHJ1ZQ0Kc3NvQnlwYXNzU2lnbm9uVXNlcmlkPQ0KdHJpbUJveFNvbGlkPWZhbHNlDQpFbnRyeUFzc2lzdF9iZWxsPWZhbHNlDQpGaXBzTW9kZT1mYWxzZQ0KYmxvY2tDdXJzb3I9ZmFsc2UNCnNob3dFbnRlckF0Q3Vyc29yPWZhbHNlDQpjb2RlUGFnZUtleT1LRVlfU1BBSU5fRVVSTw0KU0VTU0lPTl9QUk9YWV9BVVRIRU5fTk9ORT1TRVNTSU9OX1BST1hZX0FVVEhFTl9OT05FDQpzc29UeXBlPXNzb1R5cGVOb25lDQpDb3B5U09TSUFzU3BhY2U9ZmFsc2UNClZUQXV0b3dyYXA9ZmFsc2UNCkF1dG9SZXZlcnNlT25SVExTY3JlZW49dHJ1ZQ0KZm9udENvZGVwYWdlPXVuaWNvZGUNClJUTFVuaWNvZGVPdmVycmlkZT1SVExVTklDT0RFT0ZGDQpsaWdodFBlbk1vZGU9ZmFsc2UNCnBhc3RlVGFiQ29sdW1ucz00DQpCSURJTW9kZT1CSURJTU9ERU9ODQpzc29Vc2VySWRlbnRpdHlUeXBlPXNzb05ldHdvcmtJRA0KW0ZpbGVUcmFuc2Zlcl0NCltVTE9DU19NQUNdDQo=')
+
+		DatoEncriptado=AS400BIN[2:-1]
+		DatoEncriptado=DatoEncriptado.encode('ascii')
+		DatoDessencriptado=base64.b64decode(DatoEncriptado)
+		carpetaTem=tempfile.mkdtemp()
+		RutaSalida=f"{carpetaTem}\\AS5250RPA.hod"
+		
+		with open(RutaSalida,"wb") as f:
+			f.write(DatoDessencriptado)
+
+		os.system(f"start /d {carpetaTem} {RutaSalida}")
+		autoit.tooltip("Ejecutando AS400...",10,10)
+		time.sleep(5)
+		autoit.tooltip("",0,0)
+		time.sleep(3)
+		if autoit.win_wait(CLASSAS400,15):
+			self.LoginIBM()
+			if self.verificarCambioCalveIBM() == 0:
+				autoit.win_active(CLASSAS400)
+			else:			
+				print("Cerrar programa")
+				return
+
+	def precancelaot(self):
+		self.whereiam()		
+		self.EnviarComandosToPantalla(["4","{ENTER}","4","{ENTER}"],"ORDEN DE TRABAJO")
+
+	def precancelalls(self):
+		self.whereiam()
+		self.EnviarComandosToPantalla(["4","{ENTER}","1","{ENTER}"],"SELECCION DE CRITERIOS PARA DESPACHO LLAMADAS SERV")
+
+	def IngresoOrden(self,Labor,Orden):
+		Orden=str(Orden)
+		ArrayOrden=Orden.split("_")		
+		if len(ArrayOrden) > 1:
+			if Labor=="LLS":
+				ArrayTeclas=["+{F5}",ArrayOrden[0],"{NUMPADADD}" if len(ArrayOrden[0]) <7 else "+{F5}" ]
+			else:
+				if "COMPLETACION ORDEN DE TRABAJO" not in self.copiarPantalla():
+					self.EnviarComandosToPantalla(["{f4}"],"")
+				else:
+					pass
+
+
+				ArrayTeclas =["{ENTER}",ArrayOrden[0],"{UP}","{ENTER}"]
+		else:
+			if Labor=="LLS":
+				ArrayTeclas=["+{F5}",Orden,"{NUMPADADD}" if len(ArrayOrden[0]) <7 else "+{F5}" ]
+			else:
+				if "CANCELACION ORDEN DE TRABAJO" not in self.copiarPantalla():
+					self.EnviarComandosToPantalla(["{f4}"],"")
+				else:
+					pass				
+				ArrayTeclas =["{ENTER}",Orden,"{UP}","{ENTER}",]
+			
+		
+		self.EnviarComandosToPantalla(ArrayTeclas,"")
+		return 	self.copiarPantalla()
+
+	def cancelarLLs(self):
+		pass
+	def CancelarOTS(self):
+		self.EnviarComandosToPantalla("{f4}","")				
+
+
+	def main(self):
+		while 1:
+			data = ConectorDbMysql().GetData(0,"spr_get_razxcan",["Bogota"])													
+			if data !=None:
+				print(data)
+				Labor ="LLS" if data[7] in listaArreglos else "OTS"				
+				# ejecucion para lls
+				Ruta = self.whereiam(Labor)				
+				self.EnviarComandosToPantalla(Ruta,"")				
+				
+				IngresoOt = self.IngresoOrden(Labor,data[2])
+				
+				time.sleep(2)
+				LLsAbierta = True
+				for i in arrayErroresLLs:
+					if i in IngresoOt:				
+						LLsAbierta = False
+
+				if LLsAbierta and Labor == "LLS":
+					self.cancelarLLs()
+				if LLsAbierta and Labor == "OTS":
+					self.CancelarOTS()
+				else:
+					pass
+
+				#self.Xlogin()				
+				ConectorDbMysql().UpData("spr_upd_estgescan",[data[1],0,1,0,i,1])							
+			else:
+				time.sleep(55)
+			break
+
+
+		#self.Loginas400()
+		#self.Xlogin()
+		
+		# Modelo mas conveniente, cerrar seccion descpues de realizar una cancelacion
+		# login con usuario de rr dependiendo la regional
+		# crear la consulta que trae los datos 
+
+
+
+
+#ControladorAs400([UsuarioRR,ClaveRR],ciudad).main()
+'''import json
+import ast
+import re
+
+x = {"Razon":"VENTA DEVUELTA AL ASESOR","OtLls":"395770641_O_CO_762","Id Usuario Cnd":"1024490805","Asesor Cnd":"ANGIE LISSETT PEÑALOZA LOPEZ","Numero Telefono1":"313-273-2830","Gestion Numero1":"NO PERMITE DEJAR BUZON","Persona_Contesta1":"N/A","Numero Telefono2":"601-813-8786","Gestion Numero2":"TONO AMBULANCIA","Persona_Contesta2":"N/A","SUPERVISOR":"N/A","OBSERVACIONES":"Movil en predio indica que la sus no solicito los rep, que le dijeron que iba un aumento de canales con la vt, la orden no lleva codigos de modificacion, razon 4","null":""}
+patron_gestion = re.compile(r'Gestion Numero\d+ :(.+)')
+for i,j in x.items():
+	if "Gestion Numero" in i and j =="CONTACTO":
+		print(j)
+'''
+
+
+
+
+

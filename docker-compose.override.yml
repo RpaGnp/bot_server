@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  bot_marcadorcali5:
+    build:
+      context: .
+    container_name: bot_marcadorcali5
+    volumes:
+      - ./app:/app
+      - ../DBGestionBot:/app/DBGestionBot
+    environment:
+      BOT_NAME: Bot_MarcadorCali5
