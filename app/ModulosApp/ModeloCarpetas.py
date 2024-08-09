@@ -2,22 +2,22 @@ import os
 from datetime import datetime
 
 def CreadorCarpetas(carpetasegura):
-	#carpetaSegura
-	if os.path.exists(carpetasegura) ==False:
-		os.mkdir(carpetasegura)
-	#año	
-	Pathyear=carpetasegura+"\\"+datetime.now().strftime("%Y")	
-	if os.path.exists(Pathyear) ==False:
-		os.mkdir(Pathyear)
-	#mes
-	PathMes=Pathyear+"\\"+datetime.now().strftime("%m")
+    if not os.path.exists(carpetasegura):
+        os.mkdir(carpetasegura)
 
-	os.chdir(Pathyear)
-	if os.path.exists(PathMes) ==False:
-		os.mkdir(PathMes)
-	#dia
-	pathDia=PathMes+"\\"+datetime.now().strftime("%d")
-	if os.path.exists(pathDia) ==False:
-		os.mkdir(pathDia)
+    # Crear ruta para el año
+    Pathyear = os.path.join(carpetasegura, datetime.now().strftime("%Y"))
+    if not os.path.exists(Pathyear):
+        os.mkdir(Pathyear)
 
-	return pathDia
+    # Crear ruta para el mes
+    PathMes = os.path.join(Pathyear, datetime.now().strftime("%m"))
+    if not os.path.exists(PathMes):
+        os.mkdir(PathMes)
+
+    # Crear ruta para el día
+    pathDia = os.path.join(PathMes, datetime.now().strftime("%d"))
+    if not os.path.exists(pathDia):
+        os.mkdir(pathDia)
+
+    return pathDia
