@@ -1,10 +1,9 @@
-# version: "3.8"
+version: '3.8'
 
-# services:
-#   selenium:
-#     container_name: Chrome_Bot_Server
-#     image: selenium/standalone-chrome
-#     ports:
-#       - 4446:4444
-#       - 0.0.0.0:9222:9222
-#     restart: always
+services:
+  web:
+    image: nginx:latest  # Usa la imagen de Nginx
+    ports:
+      - "8089:80"  # Mapea el puerto 8080 del host al puerto 80 del contenedor
+    volumes:
+      - ./html:/usr/share/nginx/html  # Monta la carpeta 'html' en el contenedor

@@ -1,17 +1,21 @@
 #!/bin/bash
 
 # Array de nombres de los bots
+
 ArrayNames=(
   'Bot_Gestor1'
-  'Bot_Gestor2'
-  'Bot_Gestor3'
-  'Bot_Gestor4'
-  'Bot_Gestor5'
-  'Bot_Marcador1'
-  'Bot_Marcador2'
-  'Bot_Marcador3'
-  'Bot_Marcador4'
 )
+# ArrayNames=(
+#   'Bot_Gestor1'
+#   'Bot_Gestor2'
+#   'Bot_Gestor3'
+#   'Bot_Gestor4'
+#   'Bot_Gestor5'
+#   'Bot_Marcador1'
+#   'Bot_Marcador2'
+#   'Bot_Marcador3'
+#   'Bot_Marcador4'
+# )
 
 # Si existe un archivo docker-compose.override.yml, detener y eliminar los contenedores especificados en él
 if [ -f docker-compose.override.yml ]; then
