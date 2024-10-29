@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   web:
+    container_name: views_web_bot_server
     image: nginx:latest  # Usa la imagen de Nginx
     ports:
       - "8089:80"  # Mapea el puerto 8080 del host al puerto 80 del contenedor
