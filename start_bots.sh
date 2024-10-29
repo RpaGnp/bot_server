@@ -13,16 +13,20 @@ ArrayNames=(
   'Bot_Marcador4'
 )
 
-# Detener y eliminar contenedores que no están en el archivo docker-compose.override.yml
-running_containers=$(docker ps -q)
-for container_id in $running_containers; do
-  container_name=$(docker inspect --format '{{.Name}}' $container_id | sed 's/\///')
-  if [[ ! " ${ArrayNames[@]} " =~ " ${container_name^} " ]]; then
-    echo "Stopping and removing container $container_name"
-    docker stop $container_id
-    docker rm $container_id
-  fi
-done
+# Si existe un archivo docker-compose.override.yml, detener y eliminar los contenedores especificados en él
+if [ -f docker-compose.override.yml ]; then
+  # Obtener los nombres de contenedores especificados en el archivo
+  override_containers=($(grep -oP '(?<=container_name: )\S+' docker-compose.override.yml))
+
+  # Detener y eliminar solo los contenedores especificados en el archivo
+  for container_name in "${override_containers[@]}"; do
+    if docker ps -q -f name="^${container_name}$" > /dev/null; then
+      # echo "Stopping and removing container $container_name"
+      docker stop "$container_name"
+      docker rm "$container_name"
+    fi
+  done
+fi
 
 # Crear un archivo docker-compose.override.yml con los nombres del array
 echo "version: '3.8'" > docker-compose.override.yml
