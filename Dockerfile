@@ -6,9 +6,7 @@ ENV PATH="/scripts:${PATH}"
 RUN cp /usr/share/zoneinfo/America/Bogota /etc/localtime
 
 COPY ./requirements.txt /requirements.txt
-
 RUN apk add --update --no-cache libxslt openblas libstdc++ dos2unix mariadb-connector-c-dev
-
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
     gcc g++ linux-headers libc-dev libxml2-dev libxslt-dev libffi-dev python3-dev \
     libxml2 libxslt-dev libjpeg-turbo-dev zlib-dev \
@@ -27,3 +25,4 @@ COPY ./scripts /scripts
 RUN chmod +x /scripts/* && dos2unix /scripts/* 
 
 CMD [ "script.sh" ]
+# CMD [ "entrypoint.sh" ]

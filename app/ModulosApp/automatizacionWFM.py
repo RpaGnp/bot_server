@@ -120,8 +120,14 @@ class GestorWf():
             print(path)
             chrome_options = ChromeOptions()
             chrome_options.add_argument("--incognito")
+            
+            # Obtener host y puerto desde las variables de entorno
+            chrome_host = os.getenv('CHROME_HOST', 'localhost')
+            chrome_port = os.getenv('CHROME_PORT', '4444')
+
+            print(f'Conectando a Chrome en {chrome_host}:{chrome_port}')
             self.driver = webdriver.Remote(
-                command_executor='http://selenium:4444/wd/hub',
+                command_executor=f'http://{chrome_host}:4444/wd/hub',
                 options=chrome_options
             )
             self.driver.get('https://amx-res-co.etadirect.com/')
@@ -246,9 +252,6 @@ class GestorWf():
                 driver.quit()        
                 return
 
-
-
-                    
         else:
             driver.get("https://moduloagenda.cable.net.co")
             

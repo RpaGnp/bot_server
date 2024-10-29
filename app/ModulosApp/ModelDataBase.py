@@ -19,30 +19,34 @@ from datetime import datetime
 import platform
 import os
 from dotenv import load_dotenv
+import sys
+from validar_bot import nombre_bot
 
 # Cargar las variables de entorno del archivo .env
 load_dotenv()
 
 
-# import pymysqlpool
-#from .callApi import ConsultorApi
+# __NAMEPC__='SERVER-1678' # nombre pc cali 
+# __NAMEPC__='DESKTOP-N2BMB8J' # nombre pc Bucaramanga 
+# __NAMEPC__='100-DES1391R' # nombre pc Bogota 
 
-Key=b'4uT0m4t1Z4c10NeS20222022'
-# __NAMEPC__=platform.node()
-__NAMEPC__='SERVER-1678' # nombre pc cali 
-
-# pymysqlpool.logger.setLevel('DEBUG')
 
 class ConectorDbMysql(object):
 	"""clase que maneja las tansacciones a mysql"""
 	def __init__(self):
 		self.conn = False		
+		
+		EjecutablePrograma, RutaEjecutablePrograma  = nombre_bot()
+		# EjecutablePrograma=os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
+		cal_db = ["Bot_GestorCali1.exe", "Bot_GestorCali2.exe", "Bot_GestorCali3.exe", "Bot_GestorCali4.exe", "Bot_GestorCali5.exe", "Bot_MarcadorCali.exe", "Bot_MarcadorCali1.exe", "Bot_MarcadorCali2.exe", "Bot_MarcadorCali3.exe", "Bot_MarcadorCali4.exe", "Bot_MarcadorCali5.exe", "DefaultBot.exe"]
+		bog_db = ["Bot_Gestor1.exe", "Bot_Gestor2.exe", "Bot_Gestor3.exe", "Bot_Gestor4.exe", "Bot_Gestor5.exe", "Bot_GestorBuc1.exe", "Bot_GestorBuc2.exe", "Bot_GestorBuc3.exe", "Bot_GestorBuc4.exe", "Bot_GestorBuc5.exe", "Bot_GestorBuc6.exe", "Bot_Marcador1.exe", "Bot_Marcador2.exe", "Bot_Marcador3.exe", "Bot_Marcador4.exe", "DefaultBot.exe"]
 
-		# Obtener el nombre del PC
-		name_pc = os.getenv('NAMEPC')
-		# print(name_pc, __NAMEPC__)
+		__Cali_DB__= False
+		if EjecutablePrograma in cal_db:
+			__Cali_DB__= True
+
 		# Configurar la base de datos basada en el nombre del PC
-		if name_pc == __NAMEPC__:
+		if __Cali_DB__:
 		# Base de datos cali 
 			db_config = {
 				'host': os.getenv('DB_HOST_SERVER'),
@@ -63,6 +67,12 @@ class ConectorDbMysql(object):
 		x=0
 		while x<5:
 			try:
+				# Imprimir las variables
+				print("Host:", db_config['host'])
+				print("User:", db_config['user'])
+				print("Password:", db_config['password'])  # Asegúrate de que sea seguro imprimir la contraseña
+				print("Database:", db_config['db'])
+				print("Port:", db_config['port'])
 				self.conn = pymysql.connect(
 							host=db_config['host'],
 							user=db_config['user'],

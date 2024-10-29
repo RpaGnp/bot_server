@@ -1,6 +1,11 @@
 import pymysql
 import platform
+import os
+from dotenv import load_dotenv
+from platform import platform
 
+# Cargar las variables de entorno del archivo .env
+load_dotenv()
 
 class ConectorDbMysql:
 	"""docstring for ConectorDbMysql"""
@@ -13,7 +18,8 @@ class ConectorDbMysql:
 			if self.__NAMEPC__== "SERVER-1678":				
 				self.conn = pymysql.connect(host='SERVER-1678', user='root', password='AdmCndCal2023*', db='dbcrmgnp',connect_timeout=60)
 			else:
-				self.conn = pymysql.connect(host='190.60.100.100', user='BotCND', password='1234', db='dbcrmgnp')
+				# self.conn = pymysql.connect(host='190.60.100.100', user='BotCND', password='1234', db='dbcrmgnp')
+				self.conn = pymysql.connect(host=os.getenv('DB_HOST_SERVER'), user='BotCND', password='1234', db='dbcrmgnp')
 		
 		except Exception as e:
 			print(e)

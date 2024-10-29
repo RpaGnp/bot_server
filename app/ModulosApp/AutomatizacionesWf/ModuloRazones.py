@@ -129,7 +129,7 @@ class SelectorNotasAuto():
 						self.driver.save_screenshot('screenshot.png')
 
 						x=0
-						while True: 
+						while x<3: 
 							try:
 								# Espera hasta que el elemento `toolbar-items-list` sea visible
 								toolbar_items_list = WebDriverWait(self.driver, 60).until(
@@ -138,26 +138,6 @@ class SelectorNotasAuto():
 								# Encuentra todos los elementos `toolbar-item` dentro de `toolbar-items-list`
 								ArrayElements = toolbar_items_list.find_elements(By.CLASS_NAME, "toolbar-item")
 								
-								# razona la orden
-								#element = WebDriverWait(self.driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//span[@class="app-button-title" and contains(text(),"Razón")]')))
-
-								'''for i in range(5):
-																											try:
-																												self.driver.find_element(By.XPATH,'//button[@title="Razón"]').click()
-																												break
-																											except Exception as e:
-																												pass'''
-								
-								# espera a que desaparesca
-								#while self.driver.find_element(By.XPATH,'//DIV[@ID="plugin-overlay-window"]').get_attribute("style") !="display: none; position: fixed; clear: both; overflow: hidden; z-index: 9999; top: 0px; left: 0px; width: 100%; height: 100%; text-align: center; cursor: progress; background-color: rgb(170, 170, 170); opacity: 0.5;":
-								#	time.sleep(1)
-								
-								#razonador
-								#self.driver.find_element(By.XPATH,'//button[@title="Acciones"]').click()						
-								'''["Consola de Despacho","Acciones"]
-																										element=driver.find_element(By.XPATH,'//button[@title="Acciones"]')
-																										driver.execute_script("arguments[0].setAttribute('style', 'display: none;')", element)'''
-								# ArrayElements=self.driver.find_elements(By.XPATH,'//div[@class="toolbar-items-list"]//div[@class="toolbar-item"]//span')
 								self.driver.save_screenshot('screenshot.png')
 																				
 								Razon=False
@@ -276,32 +256,32 @@ class SelectorNotasAuto():
 						del Nocontacto	
 						self.driver.save_screenshot('screenshot.png')
 
-						try:
-							ArrayRazonesCancelables = Handledbmongo().GetTrabajosRazon(ciudad,ArrayDataOt['Trabajo'],ArrayDataOt['CARPETA'])												
-							self.driver.save_screenshot('screenshot.png')
+						# try:
+						# 	ArrayRazonesCancelables = Handledbmongo().GetTrabajosRazon(ciudad,ArrayDataOt['Trabajo'],ArrayDataOt['CARPETA'])												
+						# 	self.driver.save_screenshot('screenshot.png')
 							
-							if len(ArrayRazonesCancelables) !=0 :														
-								if ciudad.lower() !="bucaramanga":
-									contacto = False
-									for index,valor in DicionarioDatos.items():
-										if "Gestion Numero" in index and valor =="CONTACTO":
-											contacto=True
-											break
-										else:
-											continue
-								else:
-									contacto=True
+						# 	if len(ArrayRazonesCancelables) !=0 :														
+						# 		if ciudad.lower() !="bucaramanga":
+						# 			contacto = False
+						# 			for index,valor in DicionarioDatos.items():
+						# 				if "Gestion Numero" in index and valor =="CONTACTO":
+						# 					contacto=True
+						# 					break
+						# 				else:
+						# 					continue
+						# 		else:
+						# 			contacto=True
 								
-								if  self.DicRazones[DicionarioDatos["Razon"]] in ArrayRazonesCancelables:
-									if contacto:
-										#escalar razon para cancelacion								
-										ConectorDbMysql().FuncUpdSpr("spr_ins_razcan",[data[0],ArrayDataOt['Trabajo'],ArrayDataOt['CARPETA'],
-											DicionarioDatos["Razon"],self.DicRazones[DicionarioDatos["Razon"]]])
+						# 		if  self.DicRazones[DicionarioDatos["Razon"]] in ArrayRazonesCancelables:
+						# 			if contacto:
+						# 				#escalar razon para cancelacion								
+						# 				ConectorDbMysql().FuncUpdSpr("spr_ins_razcan",[data[0],ArrayDataOt['Trabajo'],ArrayDataOt['CARPETA'],
+						# 					DicionarioDatos["Razon"],self.DicRazones[DicionarioDatos["Razon"]]])
 
 
-						except Exception as e1:
-							Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e1).__name__, e1
-							print(Nomb_error)	
+						# except Exception as e1:
+						# 	Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e1).__name__, e1
+						# 	print(Nomb_error)	
 
 					except Exception as e:
 						Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
@@ -339,7 +319,4 @@ class SelectorNotasAuto():
 		time.sleep(1)														
 		self.driver.quit()
 		return
-
-
-
-
+	

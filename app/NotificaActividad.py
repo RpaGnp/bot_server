@@ -100,46 +100,46 @@ class GestorSqlite:
 import redis
 
 
-class NotificaActividad:
-    def __init__(self,nombreBot):
-        self.nombreBot =nombreBot
-        self.dbr = redis.StrictRedis(host='localhost', port=6379, db=0)
+# class NotificaActividad:
+#     def __init__(self,nombreBot):
+#         self.nombreBot =nombreBot
+#         self.dbr = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-    def _timmer(self):
-        FechaHora = datetime.now()
-        self.Fecha = FechaHora.strftime('%d/%m/%Y')
-        self.Hora = FechaHora.strftime('%H:%M:%S')
+#     def _timmer(self):
+#         FechaHora = datetime.now()
+#         self.Fecha = FechaHora.strftime('%d/%m/%Y')
+#         self.Hora = FechaHora.strftime('%H:%M:%S')
 
-        return self.Fecha,self.Hora
+#         return self.Fecha,self.Hora
 
-    def Savedata(self):
-        Arrayahora=self._timmer()
-        if not self.dbr.exists(self.nombreBot):
-            dicingreso={
-                "FechaInicio":Arrayahora[0],
-                "HoraInicio":Arrayahora[1],
-                "EstadoInicio":1,
-                "fechaActualizacion":Arrayahora[0],
-                "HoraActualizacion":Arrayahora[1],
-                "EstadoAct":1
-            }
-            self.dbr.hmset(self.nombreBot, dicingreso)
-        else:
-            self.upddata()
+#     def Savedata(self):
+#         Arrayahora=self._timmer()
+#         if not self.dbr.exists(self.nombreBot):
+#             dicingreso={
+#                 "FechaInicio":Arrayahora[0],
+#                 "HoraInicio":Arrayahora[1],
+#                 "EstadoInicio":1,
+#                 "fechaActualizacion":Arrayahora[0],
+#                 "HoraActualizacion":Arrayahora[1],
+#                 "EstadoAct":1
+#             }
+#             self.dbr.hmset(self.nombreBot, dicingreso)
+#         else:
+#             self.upddata()
 
-    def upddata(self):
-        Arrayahora=self._timmer()
-        self.dbr.hset(self.nombreBot, "FechaActualizacion", Arrayahora[0])
-        self.dbr.hset(self.nombreBot, "HoraActualizacion", Arrayahora[1])
+#     def upddata(self):
+#         Arrayahora=self._timmer()
+#         self.dbr.hset(self.nombreBot, "FechaActualizacion", Arrayahora[0])
+#         self.dbr.hset(self.nombreBot, "HoraActualizacion", Arrayahora[1])
 
-    def GetData(self):
-        # Recuperar datos
-        diccionario_bot = self.dbr.hgetall(self.nombreBot)
-        # Convertir los valores de bytes a cadenas (en Python 3)
-        diccionario_bot = {campo.decode('utf-8'): valor.decode('utf-8') for campo, valor in diccionario_bot.items()}
-        print(diccionario_bot)
+#     def GetData(self):
+#         # Recuperar datos
+#         diccionario_bot = self.dbr.hgetall(self.nombreBot)
+#         # Convertir los valores de bytes a cadenas (en Python 3)
+#         diccionario_bot = {campo.decode('utf-8'): valor.decode('utf-8') for campo, valor in diccionario_bot.items()}
+#         print(diccionario_bot)
 
-#NotificaActividad("Botserver.exe").GetData()
+# #NotificaActividad("Botserver.exe").GetData()
 
 
 

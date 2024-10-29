@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>noVNC Monitor</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+    }
+    .container {
+      padding: 0;
+      height: 45%;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      height: 100%;
+      padding: 1rem;
+    }
+    .card {
+      flex: 0 1 calc(25% - 1rem);
+      cursor: pointer;
+      height: 100%;
+      /* margin-bottom: -40%; */
+    }
+    .iframe-preview {
+      width: 900%;
+      height: 700%;
+      border: none;
+      transform: scale(0.115);
+      transform-origin: top left;
+    }
+    .modal-fullscreen {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+    }
+    #novncIframe {
+      width: 100%;
+      height: 80vh;
+      border: none;
+      transform: scale(0.5);
+      transform-origin: top left;
+      position: relative;
+      left: 0;
+      top: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Visual de los Navegadores de los Bots</h1>
+    <div id="cards" class="card-container"></div>
+  </div>
+
+  <!-- Modal Template -->
+  <div class="modal fade" id="novncModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Container VNC Viewer</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modalContent">
+          <iframe id="novncIframe" src=""></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cardsContainer = document.getElementById("cards");
+      const ports = Array.from({ length: 30 }, (_, i) => 7900 + i);
+
+      ports.forEach(port => {
+        const card = document.createElement("div");
+        card.className = "card text-center";
+        card.innerHTML = `
+          <div class="card-body">
+            <h5 class="card-title">Container on Port ${port}</h5>
+            <iframe class="iframe-preview" src="http://localhost:${port}/vnc.html?view_only=true" scrolling="no"></iframe>
+          </div>
+        `;
+        card.addEventListener('click', () => openModal(port));
+        cardsContainer.appendChild(card);
+      });
+    });
+
+    function openModal(port) {
+      document.getElementById("modalTitle").innerText = `Container on Port ${port}`;
+      const iframe = document.getElementById("novncIframe");
+      iframe.src = `http://localhost:${port}/vnc.html?view_only=true`;
+      $("#novncModal").modal("show");
+      iframe.style.height = "80vh";
+      iframe.style.width = "150%";
+    }
+
+    $('#novncModal').on('hidden.bs.modal', function() {
+      $('#novncIframe').attr('src', '');
+    });
+  </script>
+</body>
+</html>

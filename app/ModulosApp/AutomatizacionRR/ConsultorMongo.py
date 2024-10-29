@@ -6,6 +6,7 @@ from datetime import datetime
 
 class Handledbmongo:
 	def __init__(self,host='172.20.100.51', port=27017, username=None, password=None):		
+	# def __init__(self,host='172.19.101.83', port=27017, username=None, password=None):		
 
 		self.nombreDb = 'BotCND'
 		self.client = MongoClient(host,port)
