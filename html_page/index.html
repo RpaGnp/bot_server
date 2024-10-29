@@ -91,7 +91,7 @@
         card.innerHTML = `
           <div class="card-body">
             <h5 class="card-title">Container on Port ${port}</h5>
-            <iframe class="iframe-preview" src="http://localhost:${port}/vnc.html?view_only=true" scrolling="no"></iframe>
+            <iframe class="iframe-preview" src="http://172.20.100.53:${port}/vnc.html?view_only=true" scrolling="no"></iframe>
           </div>
         `;
         card.addEventListener('click', () => openModal(port));
@@ -102,7 +102,7 @@
     function openModal(port) {
       document.getElementById("modalTitle").innerText = `Container on Port ${port}`;
       const iframe = document.getElementById("novncIframe");
-      iframe.src = `http://localhost:${port}/vnc.html?view_only=true`;
+      iframe.src = `http://http://172.20.100.53:${port}/vnc.html?view_only=true`;
       $("#novncModal").modal("show");
       iframe.style.height = "80vh";
       iframe.style.width = "150%";

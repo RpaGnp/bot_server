@@ -123,9 +123,7 @@ class GestorWf():
             
             # Obtener host y puerto desde las variables de entorno
             chrome_host = os.getenv('CHROME_HOST', 'localhost')
-            chrome_port = os.getenv('CHROME_PORT', '4444')
-
-            print(f'Conectando a Chrome en {chrome_host}:{chrome_port}')
+            print(f'Conectando a Chrome en {chrome_host}:4444')
             self.driver = webdriver.Remote(
                 command_executor=f'http://{chrome_host}:4444/wd/hub',
                 options=chrome_options
