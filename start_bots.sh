@@ -7,8 +7,10 @@ ArrayNames=(
   'Bot_Gestor3'
   'Bot_Gestor4'
   'Bot_Gestor5'
+  'Bot_Marcador1'
   'Bot_Marcador2'
   'Bot_Marcador3'
+  'Bot_Marcador4'
 )
 
 # Detener y eliminar contenedores que no están en el archivo docker-compose.override.yml
