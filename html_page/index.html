@@ -124,6 +124,14 @@
                 noBotsMessage.innerHTML = `<h5>No hay bots disponibles.</h5>`;
                 cardsContainer.appendChild(noBotsMessage);
             } else {
+                console.log(data);
+                
+                const sortedData = data.sort((a, b) => {
+                const portA = parseInt(a.port.split(': ')[1]);
+                const portB = parseInt(b.port.split(': ')[1]);
+                return portA - portB;
+              });
+                console.log(sortedData);
                 data.forEach(bot => {
                 // Extract port number from the "port" field
                 const port = bot.port.match(/\d+/)[0];

@@ -1,19 +1,19 @@
 version: '3.8'
 
 services:
-  bot_gestorbuc1:
+  bot_gestorcali2:
     build:
       context: .
-    container_name: bot_gestorbuc1
+    container_name: bot_gestorcali2
     volumes:
       - ./app:/app
     environment:
-      - BOT_NAME=Bot_GestorBuc1
+      - BOT_NAME=Bot_GestorCali2
       - CHROME_PORT=4445
-      - CHROME_HOST=bot_gestorbuc1_chrome
-  bot_gestorbuc1_chrome:
+      - CHROME_HOST=bot_gestorcali2_chrome
+  bot_gestorcali2_chrome:
     image: selenium/standalone-chrome
-    container_name: bot_gestorbuc1_chrome
+    container_name: bot_gestorcali2_chrome
     ports:
       - "4445:4444"
       - "7900:7900"

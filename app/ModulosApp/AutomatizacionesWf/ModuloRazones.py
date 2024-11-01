@@ -48,7 +48,7 @@ class SelectorNotasAuto():
 		if 'Windows' in platform():
 			self.PathImagenes = CreadorCarpetas("C://DBGestionBot//BotcndRazones/")
 		else:
-			self.PathImagenes = CreadorCarpetas("/app/DBGestionBot/BotcndRazones/")
+			self.PathImagenes = CreadorCarpetas("/DBGestionBot/BotcndRazones/")
 	
 	def GestorDic(self,dic):
 		return json.loads(dic)

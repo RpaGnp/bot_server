@@ -20,8 +20,8 @@ class GestorSqlite:
             base_dir = "C://DBGestionBot"
             db_file = r"C:\\DBGestionBot\\DbActividadesBots.db"
         else:
-            base_dir = "/app/DBGestionBot"
-            db_file = "/app/DBGestionBot/DbActividadesBots.db"
+            base_dir = "/DBGestionBot"
+            db_file = "/DBGestionBot/DbActividadesBots.db"
 
         # Crear el directorio si no existe
         if not os.path.isdir(base_dir):

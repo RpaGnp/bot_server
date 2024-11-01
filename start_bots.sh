@@ -1,40 +1,40 @@
 #!/bin/bash
 
 # Array de nombres de los bots
-  ArrayNames=(
-		'Bot_GestorCali1'
-    'Bot_GestorCali2'
-    'Bot_GestorCali3'
-    'Bot_GestorCali4'
-    'Bot_GestorCali5'
-    'Bot_MarcadorCali'
-    'Bot_MarcadorCali1'
-    'Bot_MarcadorCali2'
-    'Bot_MarcadorCali3'
-    'Bot_MarcadorCali4'
-    'Bot_MarcadorCali5'
-    'DefaultBot'
-		'Bot_Gestor1'
-    'Bot_Gestor2'
-    'Bot_Gestor3'
-    'Bot_Gestor4'
-    'Bot_Gestor5'
-    'Bot_GestorBuc1'
-    'Bot_GestorBuc2'
-    'Bot_GestorBuc3'
-    'Bot_GestorBuc4'
-    'Bot_GestorBuc5'
-    'Bot_GestorBuc6'
-    'Bot_Marcador1'
-    'Bot_Marcador2'
-    'Bot_Marcador3'
-    'Bot_Marcador4'
-    'DefaultBot'
-    )
-
   # ArrayNames=(
+	# 	'Bot_GestorCali1'
+  #   'Bot_GestorCali2'
+  #   'Bot_GestorCali3'
+  #   'Bot_GestorCali4'
+  #   'Bot_GestorCali5'
+  #   'Bot_MarcadorCali'
+  #   'Bot_MarcadorCali1'
+  #   'Bot_MarcadorCali2'
+  #   'Bot_MarcadorCali3'
+  #   'Bot_MarcadorCali4'
+  #   'Bot_MarcadorCali5'
+  #   'DefaultBot'
+	# 	'Bot_Gestor1'
+  #   'Bot_Gestor2'
+  #   'Bot_Gestor3'
+  #   'Bot_Gestor4'
+  #   'Bot_Gestor5'
   #   'Bot_GestorBuc1'
-  # )
+  #   'Bot_GestorBuc2'
+  #   'Bot_GestorBuc3'
+  #   'Bot_GestorBuc4'
+  #   'Bot_GestorBuc5'
+  #   'Bot_GestorBuc6'
+  #   'Bot_Marcador1'
+  #   'Bot_Marcador2'
+  #   'Bot_Marcador3'
+  #   'Bot_Marcador4'
+  #   'DefaultBot'
+  #   )
+
+  ArrayNames=(
+    'Bot_GestorCali2'
+  )
 
 # Si existe un archivo docker-compose.override.yml, detener y eliminar los contenedores especificados en él
 if [ -f docker-compose.override.yml ]; then
@@ -70,6 +70,7 @@ for i in "${!ArrayNames[@]}"; do
   echo "    container_name: $bot_name_lower" >> docker-compose.override.yml
   echo "    volumes:" >> docker-compose.override.yml
   echo "      - ./app:/app" >> docker-compose.override.yml
+  echo "      - /home/Bot_Server/DBGestionBot:/DBGestionBot" >> docker-compose.override.yml
   echo "    environment:" >> docker-compose.override.yml
   echo "      - BOT_NAME=${bot_name}" >> docker-compose.override.yml
   echo "      - CHROME_PORT=${chrome_port}" >> docker-compose.override.yml  # Pasar el puerto del navegador

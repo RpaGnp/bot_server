@@ -10,6 +10,7 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import WebDriverException as WDE
 from selenium.webdriver import ActionChains
+from platform import platform
 
 from ..Carpetas import	CreadorCarpetas
 from ..ModelDataBase import ConectorDbMysql
@@ -22,7 +23,12 @@ class BotMonitorChat:
 		self.idAct=IdGestion
 		self.ciudad=ciudad
 		self.driver=driver		
-		self.PathImagenes=CreadorCarpetas("C://DBGestionBot//ImgErrorChat/")		
+		# self.PathImagenes=CreadorCarpetas("C://DBGestionBot//ImgErrorChat/")		
+		if 'Windows' in platform():
+			self.PathImagenes = CreadorCarpetas("C://DBGestionBot//ImgErrorChat/")
+		else:
+			self.PathImagenes = CreadorCarpetas("/DBGestionBot/ImgErrorChat/")
+
 		self.dicCiudades = {"Cali":"Interapps Oriente","Bogota":"Interapps Centro_GNP","Bucaramanga":"Interapps Occidente"}
 
 	def is_within_time_range(self,start_hour, end_hour):
