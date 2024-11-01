@@ -21,7 +21,6 @@ def selector_Seguimiento(self,idBot,Idactividad):
 		#while 1:
 		try:			
 			array_datos=ConectorDbMysql().FuncGetSpr(2,"spr_get_ordptemarc",[Idactividad])					
-
 			compuerta=False
 			Primera_ot=True
 			lista_ejecucion=[]
@@ -33,6 +32,7 @@ def selector_Seguimiento(self,idBot,Idactividad):
 				Orden=data[1]
 				print(data)
 				try:
+					# print(' spr_get_idaseasi : ',[data[2]])
 					cedulaAsesor = ConectorDbMysql().FunGetProcedure(["spr_get_idaseasi",[data[2]]])[0]
 					print(cedulaAsesor)
 				except Exception as e:

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>noVNC Monitor</title>
+  <title>Visualizar Bots</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
     body, html {
@@ -12,10 +12,15 @@
       height: 100%;
       overflow-x: hidden;
     }
+   
     .container {
-      padding: 0;
-      height: 45%;
+        padding: 0;
+        margin: 0 auto; /* Centra el contenedor horizontalmente */
+        width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+        max-width: 100%; /* Evita cualquier límite de ancho */
+        height: 45%; /* Mantiene la altura específica que necesitas */
     }
+   
     .card-container {
       display: flex;
       flex-wrap: wrap;
@@ -24,35 +29,58 @@
       height: 100%;
       padding: 1rem;
     }
+    
     .card {
-      flex: 0 1 calc(25% - 1rem);
+      padding: 0;
+      flex: 0 1 calc(20% - 1rem);
       cursor: pointer;
-      height: 100%;
-      /* margin-bottom: -40%; */
+      height: 85%;
     }
+
+    .card-body{
+      padding: 0;
+    }
+
     .iframe-preview {
-      width: 900%;
-      height: 700%;
+      width: 550%;
+      height: 460%;
       border: none;
-      transform: scale(0.115);
+      transform: scale(0.18);
       transform-origin: top left;
     }
+ 
     .modal-fullscreen {
       width: 100%;
       height: 100%;
       max-width: none;
     }
-    #novncIframe {
-      width: 100%;
-      height: 80vh;
-      border: none;
-      transform: scale(0.5);
-      transform-origin: top left;
-      position: relative;
-      left: 0;
-      top: 0;
-      overflow: hidden;
+
+    .modal-body {
+        display: flex;
+        justify-content: center; /* Centra horizontalmente */
+        align-items: center; /* Centra verticalmente */
+        height: 100%; /* Asegura que ocupe toda la altura del modal */
     }
+
+    #novncIframe {
+        
+        border: none;
+        transform: scale(0.7);
+        transform-origin: top;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: transparent; /* Capa transparente encima del iframe */
+        cursor: pointer;
+        z-index: 1; /* Se asegura de que la capa esté encima del iframe */
+    }
+
+
   </style>
 </head>
 <body>
@@ -83,29 +111,49 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cardsContainer = document.getElementById("cards");
-      const ports = Array.from({ length: 30 }, (_, i) => 7900 + i);
+      const apiUrl = 'http://172.20.100.53:3541/get_dockers';
 
-      ports.forEach(port => {
-        const card = document.createElement("div");
-        card.className = "card text-center";
-        card.innerHTML = `
-          <div class="card-body">
-            <h5 class="card-title">Container on Port ${port}</h5>
-            <iframe class="iframe-preview" src="http://172.20.100.53:${port}/vnc.html?view_only=true" scrolling="no"></iframe>
-          </div>
-        `;
-        card.addEventListener('click', () => openModal(port));
-        cardsContainer.appendChild(card);
-      });
+      // Fetch data from API
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            // Verificar si el array de datos está vacío
+            if (data.length === 0) {
+                const noBotsMessage = document.createElement("div");
+                noBotsMessage.className = "text-center";
+                noBotsMessage.innerHTML = `<h5>No hay bots disponibles.</h5>`;
+                cardsContainer.appendChild(noBotsMessage);
+            } else {
+                data.forEach(bot => {
+                // Extract port number from the "port" field
+                const port = bot.port.match(/\d+/)[0];
+                const name = bot.name;
+
+                // Create a new card for each bot
+                const card = document.createElement("div");
+                card.className = "card text-center";
+                card.innerHTML = `
+                    <div class="card-body">
+                    <h5 class="card-title">${name}</h5>
+                    <iframe class="iframe-preview" src="http://172.20.100.53:${port}/vnc.html?view_only=true&autoconnect=true" scrolling="no"></iframe>
+                    <div class="overlay" onclick="openModal('${port}', '${name}')"></div>  
+                    </div>
+                `;
+                card.addEventListener('click', () => openModal(port, name));
+                cardsContainer.appendChild(card);
+                });
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
     });
 
-    function openModal(port) {
-      document.getElementById("modalTitle").innerText = `Container on Port ${port}`;
+    function openModal(port, name) {
+      document.getElementById("modalTitle").innerText = `Container: ${name} on Port ${port}`;
       const iframe = document.getElementById("novncIframe");
-      iframe.src = `http://http://172.20.100.53:${port}/vnc.html?view_only=true`;
+      iframe.src = `http://172.20.100.53:${port}/vnc.html?view_only=true&autoconnect=true`;
       $("#novncModal").modal("show");
       iframe.style.height = "80vh";
-      iframe.style.width = "150%";
+      iframe.style.width = "100%";
     }
 
     $('#novncModal').on('hidden.bs.modal', function() {

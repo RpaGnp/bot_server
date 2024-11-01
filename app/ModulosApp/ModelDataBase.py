@@ -35,7 +35,7 @@ class ConectorDbMysql(object):
 	"""clase que maneja las tansacciones a mysql"""
 	def __init__(self):
 		self.conn = False		
-		
+		# print('inicio base de datos')
 		EjecutablePrograma, RutaEjecutablePrograma  = nombre_bot()
 		# EjecutablePrograma=os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
 		cal_db = ["Bot_GestorCali1.exe", "Bot_GestorCali2.exe", "Bot_GestorCali3.exe", "Bot_GestorCali4.exe", "Bot_GestorCali5.exe", "Bot_MarcadorCali.exe", "Bot_MarcadorCali1.exe", "Bot_MarcadorCali2.exe", "Bot_MarcadorCali3.exe", "Bot_MarcadorCali4.exe", "Bot_MarcadorCali5.exe", "DefaultBot.exe"]
@@ -48,6 +48,7 @@ class ConectorDbMysql(object):
 		# Configurar la base de datos basada en el nombre del PC
 		if __Cali_DB__:
 		# Base de datos cali 
+			# print('Base de datos cali') 
 			db_config = {
 				'host': os.getenv('DB_HOST_SERVER'),
 				'user': os.getenv('DB_USER_SERVER'),
@@ -57,6 +58,7 @@ class ConectorDbMysql(object):
 			}
 		else:
 		# Base de datos Bogota
+			# print('Base de datos Bogota')
 			db_config = {
 				'host': os.getenv('DB_HOST_LOCAL'),
 				'user': os.getenv('DB_USER_LOCAL'),
@@ -68,11 +70,11 @@ class ConectorDbMysql(object):
 		while x<5:
 			try:
 				# Imprimir las variables
-				print("Host:", db_config['host'])
-				print("User:", db_config['user'])
-				print("Password:", db_config['password'])  # Asegúrate de que sea seguro imprimir la contraseña
-				print("Database:", db_config['db'])
-				print("Port:", db_config['port'])
+				# print("Host:", db_config['host'])
+				# print("User:", db_config['user'])
+				# print("Password:", db_config['password'])  # Asegúrate de que sea seguro imprimir la contraseña
+				# print("Database:", db_config['db'])
+				# print("Port:", db_config['port'])
 				self.conn = pymysql.connect(
 							host=db_config['host'],
 							user=db_config['user'],

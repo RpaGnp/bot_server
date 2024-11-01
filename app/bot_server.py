@@ -5,7 +5,6 @@ import os
 import time
 import random
 import socket
-
 from getpass import getuser
 from ModulosApp.ModelDataBase import ConectorDbMysql
 from ModulosApp.ModeloLauncher import GestorLabor
