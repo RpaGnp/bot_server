@@ -1,4 +1,4 @@
-__version__=3.41
+__version__=3.42
 ######
 import sys
 import os

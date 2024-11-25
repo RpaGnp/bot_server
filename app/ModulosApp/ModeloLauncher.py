@@ -26,6 +26,9 @@ class GestorLabor:
 			if Dato[0] == "Eliminar":
 				ConectorDbMysql().FuncInsInfoOne(("SPR_UPD_LIBBOT", [idBot, Idactividad, 'Detenido por usuario']))				
 				return
+			if Dato[0] == "Error login" :
+				ConectorDbMysql().FuncInsInfoOne(("SPR_UPD_LIBBOT", [idBot, Idactividad, 'Detenido por Error login']))				
+				return
 		else:pass
 
 		try:

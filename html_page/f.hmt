@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% include 'headerpag.html' %}
+    <style>
+    *{
+        font-size: small;
+    }
+    .scroll-table {
+          width: auto;
+          height: 90%;
+          overflow: auto;
+        }
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+        th, td {
+          padding: 8px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+
+        .selected-row {
+            color: rgb(136, 66, 66) !important;
+            background-color: gray !important;
+        }
+</style>
+<body>
+    {% include 'topnav.html' %}
+
+    
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        {% include 'sidenav.html' %}
+    </div>
+    <div id="layoutSidenav_content" style="background-color:#212521">
+        {% include 'alerts.html' %}
+        <div  style="height: 90%;" class="scroll-table">
+            <table class="table table-dark table-bordered table-striped table-hover" id="tblbots">
+                <thead>
+                    <tr>
+                        <th>IdBot</th>
+                        <th>Nombre</th>
+                        <th>Labor actual</th>
+                        <th>Ciudad</th>
+                        <th>linea</th>
+                        <th>usuario</th>
+                        <th>Novedad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="TblBodyInfBot">
+                    {% for i in range(ArrayBots|length) %}
+                        <tr class="table-row">
+                            {% for dato in ArrayBots[i] %}
+                                <td>{{dato}}</td>
+                            {% endfor %}
+                                <td class="p-0" style="width: 14%;">
+                                    <button  class="btn btn-info"
+                                        data-bs-toggle="modal"  id="btnasignacion"  data-bs-target="#ModalAsignacion">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <a class="btn btn-danger" id="btndellabbot">X</a>
+                                    <style>
+                                        [data-tooltip] {
+                                            position: relative;
+                                        }
+                                        
+                                        [data-tooltip]:hover::after {
+                                            content: attr(data-tooltip);
+                                            position: absolute;
+                                            top: 50%;
+                                            right: 100%;
+                                            transform: translateY(-50%);
+                                            padding: 5px 10px;
+                                            background: rgba(0, 0, 0, 0.8);
+                                            color: white;
+                                            border-radius: 4px;
+                                            font-size: 14px;
+                                            white-space: nowrap;
+                                            margin-right: 10px;
+                                        }
+                                    </style>
+
+                                    <a class="btn btn-secondary position-relative" 
+                                        id="btnshowbot" 
+                                        data-tooltip="Ver el bot en accion">
+                                            <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    <a class="btn btn-secondary position-relative" 
+                                        id="btnreloadbot" 
+                                        data-tooltip="¿Deseas reiniciar el bot?">
+                                        <i class="fas fa-retweet"></i>
+                                    </a>
+
+                                </td>
+                            <tr id="rowBot{{i}}" style="display: none">
+                                <!-- <td id="tdinfobot{{i}}"></td>-->
+                            </tr>
+                        </tr>
+
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="container-stadistcs" style="background-color: #212521;color:white">
+            <table class="table">
+                <thead>
+                    <tr style="background-color: #212521;color:white">
+                        <th>Gestionadas</th>
+                        <th>Pendientes</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tblestbot" style="background-color: #212521;color:white">
+                    <th>0</th>
+                    <th>0</th>
+                    <th>0</th>
+                </tbody>
+            </table>
+
+        </div>
+        {% include 'modals.html' %}
+    </div>
+</div>
+</div>
+    <script src="{{ url_for('static',filename='asserts/js/clases/Orquestador.js') }}"></script>
+    <script src="{{ url_for('static',filename='asserts/js/scripts.js') }}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function filltableEtadistic(code){
+            var tbltr = document.getElementById("tblestbot");
+            tbltr.innerHTML = ""
+            tbltr.innerHTML = code
+            return 1
+
+        }
+
+        function toggleRow(rowId) {
+            var element = document.getElementById(rowId);
+            if (element.style.display === 'none') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+        async function makeOptSelBot(arrayOptions){
+            // limpiar los elementos creados
+            var select = document.getElementById('optBot');
+            select.innerHTML = "";
+            // poner en opciones los bot libres de trabajo            
+            for(var i of arrayOptions){
+                let option1 = document.createElement("option");
+                option1.setAttribute("value", i[0]);
+                let option1Texto = document.createTextNode(i[1]);
+                option1.appendChild(option1Texto);
+                select.appendChild(option1);
+                }
+        }
+
+
+        var csrf_token = "{{ csrf_token() }}";
+        $("#tblbots").on('click','#btnasignacion',async function(){            
+            options=HeaderFetch(csrf_token,{dato:"falso"})
+            const data= await callPromise("{{ csrf_token() }}","/ConsultorData",{Option:"GetBotDisp"})
+            let valores = Object.values(data);
+            
+            await makeOptSelBot(valores[0])
+        })
+
+        $('.table-row').click(async function() {
+                $('.table-row').removeClass('selected-row');
+                $(this).addClass('selected-row');
+                var currentRow=$(this).closest("tr");
+                var colIdBot=currentRow.find("td:eq(0)").text();
+                var collabor=currentRow.find("td:eq(2)").text();
+                var nameBot=currentRow.find("td:eq(1)").text();
+
+                console.log(nameBot);
+                nameBot = nameBot.toLowerCase().replace(/\.exe$/, '') + "_chrome";
+                console.log(nameBot);
+
+                if(collabor=="Libre"){
+                    return
+                }
+                var code =`<tr>consultando, por favor espere... </tr>`
+                await filltableEtadistic(code)
+                const data= await callPromise("{{ csrf_token() }}","/ConsultorData",{Option:"GetEstadBot",Nombot:colIdBot,
+                LaborBot:collabor})
+                let valores = Object.values(data);
+                valores=valores[0];
+                let Total=valores[0]
+                let gestionok=valores[1]
+                let Pendientes=Total-gestionok
+                var tbltr = document.getElementById("tblestbot");
+                var code =`<tr>consulta ok </tr><tr><td>${gestionok}</td><td>${Pendientes}</td><td>${Total}</td></tr>`
+                await filltableEtadistic(code)
+            })
+
+        $("#tblbots").on('click','#btndetallebot',async function(){
+            var currentRow=$(this).closest("tr");
+            
+            var colNomBot=currentRow.find("td:eq(0)").text();
+            var collabor=currentRow.find("td:eq(2)").text();
+            if(collabor=="Libre"){
+                return
+            }
+            var colhide=$(this).closest("tr").next('tr').attr('id')
+            toggleRow(colhide)
+            var rowinfo=document.getElementById(colhide)
+            const data= await callPromise("{{ csrf_token() }}","/ConsultorData",{Option:"GetEstadBot",Nombot:colNomBot,LaborBot:collabor})
+            let valores = Object.values(data);
+            valores=valores[0];            
+            let Total=valores[0]
+            let gestionok=valores[1]
+            let Pendientes=Total-gestionok            
+            var code=`
+                <td>
+                    <table class="table" style="color:white">
+                        <thead>
+                            <th  class="block" style="width:50%">Detalle</th>
+                            <th  class="block" style="width:50%">% Gestion</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ordenes Gestionadas</td>
+                                <td>`+gestionok+`</td>
+                            </tr>
+                                <td>Ordenes Pendientes</td>
+                                <td>`+Pendientes+`</td>
+                            </tr>
+                            <tr>
+                                <td>Total Ordenes</td>
+                                <td>`+Total+`</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            `
+            rowinfo.innerHTML=code
+
+        })
+
+        $("#tblbots").on('click', '#btnreloadbot', async function() {
+            var currentRow = $(this).closest("tr");
+            var colNomBot = currentRow.find("td:eq(1)").text();
+            
+            // Mostrar la alerta de confirmación
+            const result = await Swal.fire({
+                title: '¿Reiniciar Bot?',
+                text: `¿Estás seguro que deseas reiniciar el bot ${colNomBot}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, reiniciar',
+                cancelButtonText: 'Cancelar'
+            });
+            colNomBotChrome = colNomBot.toLowerCase().replace(/\.exe$/, '') + "_chrome";
+
+            // Si el usuario confirmó
+            if (result.isConfirmed) {
+                try {
+                    // Aquí va tu llamada a la API para reiniciar el bot
+                    const response = await fetch(`/restart_containers?name=${encodeURIComponent(colNomBotChrome)}`);
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Mostrar mensaje de éxito
+                        await Swal.fire(
+                            '¡Reiniciado!',
+                            `El bot ${colNomBot} se está reiniciando.`,
+                            'success'
+                        );
+                    } else {
+                        // Mostrar mensaje de error
+                        throw new Error(data.error || 'Error al reiniciar el bot');
+                    }
+                } catch (error) {
+                    // Mostrar mensaje de error
+                    await Swal.fire(
+                        'Error',
+                        `No se pudo reiniciar el bot: ${error.message}`,
+                        'error'
+                    );
+                }
+            }
+        });
+
+        $("#tblbots").on('click', '#btnshowbot', async function() {
+            var currentRow = $(this).closest("tr");
+            var nameBot = currentRow.find("td:eq(1)").text();
+            var estado=currentRow.find("td:eq(2)").text();
+
+            nameBot = nameBot.toLowerCase().replace(/\.exe$/, '') + "_chrome";
+
+            fetch('/get_container')
+            .then(response => response.json())
+            .then(data => {
+                // Search for matching bot in the API data
+                const matchedBot = data.find(bot => bot.name === nameBot);
+
+                // If there is a match
+                if (matchedBot) {
+                    let port = matchedBot.port.match(/\d+/)[0];
+                    
+                    if(estado !== "Libre"){
+                        window.open('http://172.20.100.53:' + port + '/vnc.html?view_only=true&autoconnect=true', '_blank');
+                    } else {
+                        console.log('esta libre');
+                        Swal.fire(
+                            'Información',
+                            `El bot ${matchedBot.name} está libre, no hay tarea asignada`,
+                            'info'
+                        );
+                    }                             
+                } else {
+                    Swal.fire(
+                        'Información',
+                        `No se encontró información del bot`,
+                        'warning'
+                    );
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                Swal.fire(
+                    'Error',
+                    'Error al obtener información del bot',
+                    'error'
+                );
+            });
+
+        })
+
+        var array = ["Completar", "Gestor Notas","Gestor Notas backlog"];
+        document.getElementById('optLabor').onchange = function(){
+            if(array.includes(document.getElementById('optLabor').value)){
+                document.getElementById('upload-file').required = false;
+            }else{
+                document.getElementById('upload-file').required = true;
+            }
+        }
+    
+    </script>
+
+</body>
+</html>

@@ -13,7 +13,6 @@
     'Bot_MarcadorCali3'
     'Bot_MarcadorCali4'
     'Bot_MarcadorCali5'
-    'DefaultBot'
 		'Bot_Gestor1'
     'Bot_Gestor2'
     'Bot_Gestor3'

@@ -129,7 +129,7 @@ class GestorWf():
                 options=chrome_options
             )
             self.driver.get('https://amx-res-co.etadirect.com/')
-            self.driver.save_screenshot('./screenshot.png')
+            # self.driver.save_screenshot('./screenshot.png')
 
     def Login(self,Aplicativo,Usuario,Clave):
         driver=self.driver      
@@ -147,7 +147,7 @@ class GestorWf():
             # Limpiar y enviar el nombre de usuario
             username_field.clear()
             username_field.send_keys(self.usuario)
-            self.driver.save_screenshot('./screenshot.png')
+            # self.driver.save_screenshot('./screenshot.png')
             
             # Espera explícita para el campo de contraseña
             password_field = wait.until(EC.presence_of_element_located((By.ID, 'password')))
@@ -161,9 +161,9 @@ class GestorWf():
             #while driver.find_element(By.XPATH,'//div[@id="wait"]').get_attribute("style")=="":
             #    time.sleep(1)
             '''except Exception as e:
-                                        Nomb_error = 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
-                                        print("! error conexion: ", e, Nomb_error)'''
-            self.driver.save_screenshot('./screenshot.png')
+            Nomb_error = 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
+            print("! error conexion: ", e, Nomb_error)'''
+            # self.driver.save_screenshot('./screenshot.png')
 
             if self.driver.title=="Oracle Field Service":                
                 bucle=1
@@ -209,7 +209,7 @@ class GestorWf():
                         self.driver.quit()
                     else:
                         pass
-                self.driver.save_screenshot('./screenshot.png')
+                # self.driver.save_screenshot('./screenshot.png')
   
             else:
                 sql=("SPR_INS_ESTBOT",[self.idbot,"En labor"])
@@ -227,7 +227,7 @@ class GestorWf():
                     pass
 
                 #print("entrada sin incovenientes")
-            self.driver.save_screenshot('./screenshot.png')
+            # self.driver.save_screenshot('./screenshot.png')
 
         elif Aplicativo=="GLAPP":
             driver.get("https://mglapp.claro.com.co/catastro-warIns/view/MGL/template/login.xhtml")
@@ -319,7 +319,7 @@ class GestorWf():
                 sql=("SPR_INS_ESTBOT",[self.idbot,"En labor"])
                 ConectorDbMysql().FuncInsInfoOne(sql)
 
-        self.driver.save_screenshot('./screenshot.png')
+        # self.driver.save_screenshot('./screenshot.png')
 
         validador=0
         while validador<=90:
@@ -335,7 +335,7 @@ class GestorWf():
             else:
                 break
 
-        self.driver.save_screenshot('./screenshot.png')
+        # self.driver.save_screenshot('./screenshot.png')
 
         Dato=ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES",[self.idbot]))        
         if Dato[0]!=None:            
@@ -348,7 +348,7 @@ class GestorWf():
             pass
         print("="*10,"Login ok")
     
-        self.driver.save_screenshot('./screenshot.png')
+        # self.driver.save_screenshot('./screenshot.png')
 
 
     def ExpanderCiudad(self,Ciudad,ubicacion):
@@ -470,8 +470,10 @@ class GestorWf():
     def LauncherGestion(self,ciudad):                
         if self.Trabajo=='Marcar Seguimiento':
             selector_Seguimiento(self,self.idbot,self.idAct)
+        
         elif self.Trabajo=='Marcar Demora':
             selector_Demora(self,self.idbot,self.idAct)
+        
         elif self.Trabajo=='Marcar Confirmacion':
             selector_Confirmacion(self,self.idbot,self.idAct)
 
@@ -519,7 +521,7 @@ class GestorWf():
             SelectorCancelarAgenda(self,self.idbot,self.idAct,self.Trabajo)
 
         elif self.Trabajo in ["Cancelar Agenda Pin"]:
-            self.driver.save_screenshot('screenshot.png')
+            # self.driver.save_screenshot('screenshot.png')
             handlepincancelar(self.driver).SelectorCancelarAgenda(self.idbot,self.idAct,self.Trabajo)
         
         elif self.Trabajo in ["Agendar Ots","Agendar->pin->cancelar"]:

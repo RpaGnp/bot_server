@@ -46,7 +46,7 @@ class BotMonitorChat:
 					if self.EsperarChat() == False:
 						return 
 				except Exception as e:
-					self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
+					# self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
 					print("Error ejecucion ",e)
 					self.driver.refresh()
 					time.sleep(5)
@@ -79,7 +79,7 @@ class BotMonitorChat:
 		try:
 			driver.find_element(By.XPATH,'//div[@id="community-left-content-body"]//span[contains(text(),"%s")]'%self.dicCiudades[self.ciudad]).click()	
 		except Exception as e:
-			self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
+			# self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
 			sql=("SPR_INS_ESTBOT",[self.idbot,"Error selecionando Bolsa!"])
 			ConectorDbMysql().FuncInsInfoOne(sql)            
 
@@ -186,7 +186,7 @@ class BotMonitorChat:
 			time.sleep(1)
 
 			if chatTomado==False:
-				self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
+				# self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
 				return 0
 			else:
 				driver.execute_script('document.getElementById("community-search-bar").removeAttribute("style")')
@@ -202,7 +202,7 @@ class BotMonitorChat:
 				time.sleep(1)
 		
 		except Exception as e:
-			self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
+			# self.driver.save_screenshot(f"{self.PathImagenes}-ChatErrorimg{timer()[2]}.png")
 			Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
 			print("Error transfiriendo ",Nomb_error)
 			return 0

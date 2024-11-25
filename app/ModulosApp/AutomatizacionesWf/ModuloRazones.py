@@ -58,7 +58,7 @@ class SelectorNotasAuto():
 		contadorReinicio=0
 		LimiteContador=10
 		limite_hora = tmr(22, 0, 0)
-		self.driver.save_screenshot('screenshot.png')
+		# self.driver.save_screenshot('screenshot.png')
 
 		while datetime.now().time() < limite_hora:
 			# reporta actividad del bot
@@ -89,7 +89,7 @@ class SelectorNotasAuto():
 			if len(data) >= 1 and data[0] != 'False':
 				print("*", data)
 				
-				self.driver.save_screenshot('screenshot.png')
+				# self.driver.save_screenshot('screenshot.png')
 
 				ahora = timer()
 				DicionarioDatos=self.GestorDic(data[3])
@@ -101,14 +101,14 @@ class SelectorNotasAuto():
 				formatted_strings = [f'{x}: {str(y).strip()}' for x, y in DicionarioDatos.items()]
 				resulting_string = ", ".join(formatted_strings)
 
-				self.driver.save_screenshot('screenshot.png')
+				# self.driver.save_screenshot('screenshot.png')
 
 				BotWfm.EsperaSearch()
 
-				self.driver.save_screenshot('screenshot.png')
+				# self.driver.save_screenshot('screenshot.png')
 
 				EstadoConsulta = BotWfm.FillBusqueda(data[1])
-				self.driver.save_screenshot('screenshot.png')
+				# self.driver.save_screenshot('screenshot.png')
 
 				
 				if EstadoConsulta[0]:
@@ -121,12 +121,12 @@ class SelectorNotasAuto():
 						#BotWfm.NotasAS400(resulting_string)
 
 
-						self.driver.save_screenshot('screenshot.png')
+						# self.driver.save_screenshot('screenshot.png')
 
 
 						# marca confirmacion
 						BotWfm.MarcarSeguimiento(DicionarioDatos)
-						self.driver.save_screenshot('screenshot.png')
+						# self.driver.save_screenshot('screenshot.png')
 
 						x=0
 						while x<3: 
@@ -138,7 +138,7 @@ class SelectorNotasAuto():
 								# Encuentra todos los elementos `toolbar-item` dentro de `toolbar-items-list`
 								ArrayElements = toolbar_items_list.find_elements(By.CLASS_NAME, "toolbar-item")
 								
-								self.driver.save_screenshot('screenshot.png')
+								# self.driver.save_screenshot('screenshot.png')
 																				
 								Razon=False
 								for elemento in ArrayElements:
@@ -155,7 +155,7 @@ class SelectorNotasAuto():
 										EC.visibility_of_element_located((By.XPATH,'//div[@aria-label="Acciones"][1]//div//button'))
 									)
 									time.sleep(0.5)
-									self.driver.save_screenshot('screenshot.png')
+									# self.driver.save_screenshot('screenshot.png')
 
 									# verificar que  'Razon exista en la lista'
 									razonlist=False
@@ -163,18 +163,18 @@ class SelectorNotasAuto():
 										if i.text.lower()=="razón":
 											razonlist=True
 											break
-									self.driver.save_screenshot('screenshot.png')
+									# self.driver.save_screenshot('screenshot.png')
 									
 									if razonlist:
 										self.driver.find_element(By.XPATH,'//div[@aria-label="Acciones"]//button//span[contains(text(),"Razón")]').click()
-										self.driver.save_screenshot('screenshot.png')
+										# self.driver.save_screenshot('screenshot.png')
 									else:
 										ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0], EstadoConsulta[1], EstadoConsulta[2], EstadoConsulta[3],json.dumps(ArrayDataOt),f"Ot No gestionada error Boton razon "])
 										time.sleep(2)								
-										self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg3.png")
+										# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg3.png")
 										ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],"Error botton razon",f"{self.PathImagenes}/{data[0]}-RAZerrorimg3.png"])								
 										self.driver.find_element(By.XPATH,'//button[@title="Consola de Despacho"]').click()
-										self.driver.save_screenshot('screenshot.png')
+										# self.driver.save_screenshot('screenshot.png')
 										continue
 								break
 							except Exception as e:
@@ -184,7 +184,7 @@ class SelectorNotasAuto():
 						'''for i in driver.find_elements(By.XPATH,'//div[@aria-label="Razon de no completar, Requerido"]/div'):
 							print("'",i.get_attribute("data-key"),"'",i.get_attribute("title"))
 						'''
-						self.driver.save_screenshot('screenshot.png')
+						# self.driver.save_screenshot('screenshot.png')
 
 						WebDriverWait(self.driver, 10).until(
 							EC.visibility_of_element_located((By.XPATH,'//input[@data-label="A_NotDoneCode"]//following-sibling::button'))
@@ -215,7 +215,7 @@ class SelectorNotasAuto():
 								time.sleep(1)
 								self.driver.find_element(By.XPATH, f"//div[@aria-label='{ DicionarioDatos['MATERIAL'] }']").click()
 								time.sleep(1)
-						self.driver.save_screenshot('screenshot.png')
+						# self.driver.save_screenshot('screenshot.png')
 
 						#notas
 						FormatedNotas = resulting_string[0:300]+" "+ahora[0]+" "+ahora[1]
@@ -233,9 +233,9 @@ class SelectorNotasAuto():
 						ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0],EstadoConsulta[1],EstadoConsulta[2],EstadoConsulta[3],json.dumps(ArrayDataOt),"Ot gestionada!"])							
 						# foto de cada ot gestionada por cupla de los hps de cali
 						time.sleep(1)
-						self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-ResGestion.png")
+						# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-ResGestion.png")
 						ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],"Gestion ok",f"{self.PathImagenes}/{data[0]}-ResGestion.png"])
-						self.driver.save_screenshot('screenshot.png')
+						# self.driver.save_screenshot('screenshot.png')
 
 
 						#self.driver.refresh()
@@ -254,11 +254,11 @@ class SelectorNotasAuto():
 						if Nocontacto:
 							ConectorDbMysql().FuncUpdSpr("spr_ins_otnocont",[data[0],ArrayDataOt['Trabajo'],ArrayDataOt['CARPETA']])
 						del Nocontacto	
-						self.driver.save_screenshot('screenshot.png')
+						# self.driver.save_screenshot('screenshot.png')
 
 						# try:
 						# 	ArrayRazonesCancelables = Handledbmongo().GetTrabajosRazon(ciudad,ArrayDataOt['Trabajo'],ArrayDataOt['CARPETA'])												
-						# 	self.driver.save_screenshot('screenshot.png')
+							# self.driver.save_screenshot('screenshot.png')
 							
 						# 	if len(ArrayRazonesCancelables) !=0 :														
 						# 		if ciudad.lower() !="bucaramanga":
@@ -290,13 +290,13 @@ class SelectorNotasAuto():
 
 						time.sleep(2)
 						
-						self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
+						# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
 						ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],Nomb_error[0],f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png"])
 
 
 				else:
 					print(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
-					self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
+					# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
 					ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0],EstadoConsulta[1],EstadoConsulta[2],EstadoConsulta[3],json.dumps(ArrayDataOt),"Ot no gestionada!"])	
 					time.sleep(1)
 					ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],"--",f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png"])
@@ -309,7 +309,7 @@ class SelectorNotasAuto():
 					contadorReinicio=0	
 				else:
 					time.sleep(20)	
-					self.driver.save_screenshot('screenshot.png')
+					# self.driver.save_screenshot('screenshot.png')
 					# time.sleep(secrets.choice((10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)))
 
 

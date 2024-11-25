@@ -130,6 +130,7 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 				#BotInteraccion.ClickElementos('//*[@name="validarServicios"]',1)
 				#print("!",Arraydata)
 				#print("adentro ",'Cancelado/debiendo' in Arraydata)
+
 				if "CREAR" in Arraydata  or "MODIFICAR" in Arraydata or "BORRAR" in Arraydata:# or "OK" in Arraydata:
 					if 'Cancelado/debiendo' in Arraydata:
 						#print("adentro ",'Cancelado/debiendo' in Arraydata)
@@ -147,20 +148,10 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 						pass
 
 					driver.find_element(by=By.XPATH, value='//*[@name="validarServicios" and @value="Reparar todos los Servicios @+tel"]').click()
-					
-					iterador=1
-					while iterador<3:
-						try:
-							alert_obj = driver.switch_to.alert
-							#alert_obj = driver.switch_to.alert
-							alert_obj.accept()
-							break
-						except:
-							iterador+=1
-							time.sleep(1)
-					#continue
+					esperar_alerta(driver)
 
-				
+					driver.find_element(by=By.XPATH, value='//*[@name="validarServicios" and @value="Actualizar todos los Servicios @+tel"]').click()
+					esperar_alerta(driver)
 
 				else:
 					Arraydata=BotExtractor.ExtraerServicios()
@@ -183,19 +174,10 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 					#driver.switch_to.window(self.vprincipal)
 					continue
 				
-
-				#salida validacion
-				#if len(ArrayGestion)==self.ContadorPesatañas:	
-					#while len(driver.window_handles) >1:
-						#print(ArrayGestion)
-						#for i in range(len(ArrayGestion)):
-						#print(i)
-						#try:                    
-						#driver.switch_to.window(driver.window_handles[1])
 				try:
-					element = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="ContainerDebug"]')))
+					WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="ContainerDebug"]')))
 				except:
-					element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ContainerDebug"]')))
+					WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ContainerDebug"]')))
 				
 				resultado=driver.execute_script("return document.querySelector('#ContainerDebug').innerText")
 				print("Resultado: ",resultado)
@@ -221,11 +203,6 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 				cursor.close()
 				conn.close()
 				time.sleep(1)
-				#driver.close()
-				
-					
-				#else:
-				#	pass
 
 				if TipoTrabajo == "Repara y Actualiza":
 					Actualizacion(self,driver,ArrayGestion)
@@ -233,8 +210,6 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 				else:
 					continue
 					
-				
-				##driver.switch_to.window(self.vprincipal)
 				ArrayGestion=[]
 			
 			elif TipoTrabajo in ["Extraer Agenda"]:
@@ -261,7 +236,6 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 				except Exception as e:
 					print("no carga pagina",e)
 
-
 			else:
 				#if len(ArrayGestion)==self.ContadorPesatañas:					
 				Actualizacion(self,driver,ArrayGestion)
@@ -280,3 +254,15 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 		driver.quit()
 		Nomb_error = 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
 		print("! error conexion: ", e, Nomb_error)		
+
+def esperar_alerta(driver):
+	
+	iterador=1
+	while iterador<3:
+		try:
+			alert_obj = driver.switch_to.alert
+			alert_obj.accept()
+			break
+		except:
+			iterador+=1
+			time.sleep(1)

@@ -158,7 +158,7 @@
     function openModal(port, name) {
       document.getElementById("modalTitle").innerText = `Container: ${name} on Port ${port}`;
       const iframe = document.getElementById("novncIframe");
-      iframe.src = `http://172.20.100.53:${port}/vnc.html?view_only=true&autoconnect=true`;
+      iframe.src = `http://172.20.100.53:${port}/vnc.html?autoconnect=true`;
       $("#novncModal").modal("show");
       iframe.style.height = "80vh";
       iframe.style.width = "100%";
