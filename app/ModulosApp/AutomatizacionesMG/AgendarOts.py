@@ -99,7 +99,6 @@ class HandleAgendamiento(handlepincancelar):
 			fecha_original_obj = datetime.strptime(dia, "%d-%m-%y")			
 		
 		fecha_nueva_str = fecha_original_obj.strftime("%Y-%m-%d")
-		EstadoAgedar = False
 		
 		if datetime.now().time().hour <= 12:
 			inicol =2			
@@ -120,19 +119,15 @@ class HandleAgendamiento(handlepincancelar):
 						continue
 				else:
 					continue
-
 		
-		for Dic in arrayXpathDia:
-			if Dic['Franja'] < 12 and Dic['Cupos'] > 0 and franjaAgenda.lower() =="am":
-				EstadoAgedar=True
-				Dic['Elemento'].click()
-			elif Dic['Franja'] > 12 and Dic['Cupos'] > 0 and franjaAgenda.lower() =="pm":
-				EstadoAgedar=True
-				Dic['Elemento'].click()
-			else:
-				continue
-					
-		return EstadoAgedar
+  		# franjas segun los cupos disponibles en una fechas
+		for dic in arrayXpathDia:
+			if (dic['Franja'] < 12 and dic['Cupos'] > 0 and franjaAgenda.lower() == "am") or \
+			(dic['Franja'] > 12 and dic['Cupos'] > 0 and franjaAgenda.lower() == "pm"):
+				dic['Elemento'].click()
+				return True
+		return False
+		
 		
 	def Recorredorcapacidad(self):
 		print("ver capacidad")
@@ -248,6 +243,7 @@ class HandleAgendamiento(handlepincancelar):
 
 	def SelectorAgendaOts(self,idbot,idAct,Trabajo):
 		# funcion principal
+  
 		driver=self.driver		
 		#limite_hora = tmr(12, 0, 0)
 		try:
@@ -281,8 +277,6 @@ class HandleAgendamiento(handlepincancelar):
 						time.sleep(1)					
 						driver.quit()
 						return
-				else:
-					pass
 				driver.get('https://moduloagenda.cable.net.co/MGW/MGW/Agendamiento/index.php')
 				#ingreso consultar orden
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()
@@ -334,7 +328,6 @@ class HandleAgendamiento(handlepincancelar):
 					sql = ("spr_upd_estgesdx", [data[0], f'Orden no agendable Cerrada en RR'])
 					ConectorDbMysql().FuncInsInfoOne(sql)									
 					continue
-
 				
 				if EstadoOt in ["NO AGENDADO"]:
 					self.fillform()

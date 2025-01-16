@@ -350,7 +350,6 @@ class GestorWf():
     
         # self.driver.save_screenshot('./screenshot.png')
 
-
     def ExpanderCiudad(self,Ciudad,ubicacion):
         #print(ArrayTecSaludo)
             #try:

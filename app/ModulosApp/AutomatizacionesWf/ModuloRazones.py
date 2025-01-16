@@ -10,7 +10,7 @@ from selenium.common.exceptions import WebDriverException as WDE
 from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-
+import re
 
 from reloj_casio import timer
 
@@ -218,11 +218,27 @@ class SelectorNotasAuto():
 						# self.driver.save_screenshot('screenshot.png')
 
 						#notas
-						FormatedNotas = resulting_string[0:300]+" "+ahora[0]+" "+ahora[1]
+						print('valores:   '+resulting_string)
+						print('ahora:  ',ahora)
+						print('ahora[0]:  ',ahora[0])
+						print('ahora[1]:  ',ahora[1])
+						print(ahora[0]+" "+ahora[1])
+      
+						try:
+							resulting_string = resulting_string.replace('\n', ' ').replace('\r', ' ')
+							FormatedNotas = re.search(r'\bOBSERVACION(?:ES)?\b\s*:\s*(.*)', resulting_string, re.IGNORECASE)
+							if FormatedNotas:
+								FormatedNotas = FormatedNotas.group(1).strip()
+						except Exception as e:
+							FormatedNotas = resulting_string[0:300]+" "+ahora[0]+" "+ahora[1]
+						FormatedNotas = FormatedNotas[0:416]
+
+						print(FormatedNotas)          
 						element = self.driver.find_element(By.XPATH,'//div/textarea[@data-label="closure_notes"]')
 						element.clear()
 						time.sleep(1)
 						actions = ActionChains(self.driver)
+						print(FormatedNotas)
 						actions.move_to_element(element).click().send_keys(str(FormatedNotas).strip().replace("\n","").replace("\t","")).perform()
 						del FormatedNotas
 						# self.driver.find_element(By.XPATH,'//div/textarea[@data-label="closure_notes"]').send_keys(resulting_string)												

@@ -31,11 +31,13 @@ def selector_Seguimiento(self,idBot,Idactividad):
 				IdRow=data[0]
 				Orden=data[1]
 				print(data)
+				print(data[2])
 				try:
 					# print(' spr_get_idaseasi : ',[data[2]])
 					cedulaAsesor = ConectorDbMysql().FunGetProcedure(["spr_get_idaseasi",[data[2]]])[0]
 					print(cedulaAsesor)
 				except Exception as e:
+					print('No se encontro el tecnico, valida si se cargaron la base de tecinicos activos desde el orquestador para que se pueda asignar el asesor')
 					print(e)
 					FunGuardar(self,[data[0],"Tecnico sin asignacion de asesor"])
 					continue
@@ -132,10 +134,10 @@ def selector_Seguimiento(self,idBot,Idactividad):
 							gs+=1
 					#amarillo gris claro naranja verde claro
 					if x=="background-color: rgb(255, 255, 38); border: 1px solid rgb(204, 204, 30);"\
-					 or x=="background-color: rgb(156, 162, 173); border: 1px solid rgb(124, 129, 138);"\
-					  or x=="background-color: rgb(255, 172, 99); border: 1px solid rgb(204, 137, 79);"\
-							or x=='background-color: rgb(167, 209, 0); border: 1px solid rgb(133, 167, 0);'\
-							 or x=='background-color: rgb(30, 133, 37); border: 1px solid rgb(24, 106, 29);':
+						or x=="background-color: rgb(156, 162, 173); border: 1px solid rgb(124, 129, 138);"\
+						or x=="background-color: rgb(255, 172, 99); border: 1px solid rgb(204, 137, 79);"\
+						or x=='background-color: rgb(167, 209, 0); border: 1px solid rgb(133, 167, 0);'\
+						or x=='background-color: rgb(30, 133, 37); border: 1px solid rgb(24, 106, 29);':
 
 						#print(fecha_Ot,"=",_fecha_hoy[0])
 						if fecha_Ot==self._fecha_hoy[0] or fecha_Ot==self._fecha_hoy[1] or fecha_Ot==self._fecha_hoy[2] or fecha_Ot=="":
@@ -235,11 +237,11 @@ def selector_Seguimiento(self,idBot,Idactividad):
 				def Gestion():
 					for i in range(3):
 						try:
-						    element=driver.find_element(by=By.XPATH, value='//*[@data-label="BACK_DESP_Detalle Gestion"]')
-						    actions = ActionChains(driver)
-						    actions.move_to_element(element)
-						    actions.perform()                        
-						    break
+							element=driver.find_element(by=By.XPATH, value='//*[@data-label="BACK_DESP_Detalle Gestion"]')
+							actions = ActionChains(driver)
+							actions.move_to_element(element)
+							actions.perform()                        
+							break
 						except:pass
 					
 					gs=0
@@ -307,9 +309,6 @@ def selector_Seguimiento(self,idBot,Idactividad):
 						pass
 
 				WebDriverWait(driver, 90).until(EC.invisibility_of_element_located((By.XPATH,'//*[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-				
-				
-				
 					
 				time.sleep(1)
 				x=0

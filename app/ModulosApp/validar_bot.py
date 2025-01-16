@@ -29,7 +29,7 @@ def nombre_bot():
         except:
             pass
 
-    # EjecutablePrograma = os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
+    EjecutablePrograma = os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
     # print('este es el bot: ', EjecutablePrograma)
 
     return EjecutablePrograma, RutaEjecutablePrograma

@@ -23,7 +23,7 @@ class handlepincancelar:
             console.log("validaPinReagenda inyectado")
             var codPin = $('#codPin').val();
             var resWS = $('#resWS').val();
-            var celular = "3214677209";
+            var celular = "321277781";
             var html = '';
 
             if(objs.accionFront == 'MGW_ACCION_REAGENDAR')
@@ -213,17 +213,17 @@ class handlepincancelar:
                     continue
 
         return Cancelar,DicButton
+    
     def CancelarDirecto(self):
         # aplica para REQ cuando no se solicite pin
-        WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]')))
+        WebDriverWait(self.driver, 15).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]')))
         time.sleep(1)
-        driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]//textarea').send_keys("Cancelacion")
+        self.driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]//textarea').send_keys("Cancelacion")
         time.sleep(1)
-        driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]//input[@type="submit"]').click()
-
-        WebDriverWait(driver, 45).until(EC.visibility_of_element_located((By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]')))
-        driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]//button/span[contains(text(),"Confirmar")]').click()
-        WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
+        self.driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]//input[@type="submit"]').click()
+        WebDriverWait(self.driver, 45).until(EC.visibility_of_element_located((By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]')))
+        self.driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]//button/span[contains(text(),"Confirmar")]').click()
+        WebDriverWait(self.driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
 
     def CancelarPin(self):
         # esperar a la ventana de envio de pin y generar el pin
@@ -234,6 +234,8 @@ class handlepincancelar:
             self.CancelarDirecto()
             return 0
 
+        # self.CancelarDirecto()
+
         time.sleep(1)
         self.driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]//textarea').send_keys('Envío pin cancelacion')
         time.sleep(1)
@@ -243,7 +245,10 @@ class handlepincancelar:
         # WebDriverWait(self.driver, 15).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
         try:
             # WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_pinReagenda"]')))   
-            WebDriverWait(self.driver, 15).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="dialog_msg_popup_cancelar_orden"]')))
+            WebDriverWait(self.driver, 3).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="dialog_msg_popup_cancelar_orden"]')))
+
+            # time.sleep(3)
+            # self.driver.find_element(By.ID, "dialog_msg_popup_cancelar_orden")
             self.driver.find_element(By.XPATH,'/html/body/div[8]/div[3]/div/button[1]').click()
             return 0
         except:
@@ -258,14 +263,10 @@ class handlepincancelar:
         time.sleep(1)
         self.driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]//input[@type="submit"]').click()
 
-
     def waitWindowValPin(self):
         WebDriverWait(self.driver, 45).until(EC.visibility_of_element_located((By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]')))
         self.driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]//button/span[contains(text(),"Confirmar")]').click()
         WebDriverWait(self.driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
-
-
-
 
     def WindowConfCancelacion(self):        
 
@@ -282,8 +283,6 @@ class handlepincancelar:
         time.sleep(0.5)
         self.driver.find_element(By.XPATH,'//span[contains(text(),"Confirmar")]').click()
         WebDriverWait(self.driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))        
-        
-
 
     def MainCancelacion(self,data):
         # hilo principal de consultas // no usado
@@ -307,7 +306,6 @@ class handlepincancelar:
             time.sleep(1)
             # esperar modal para ingresar el pin 
 
-
             self.driver.execute_script(self.codefucntion)
 
             #self.Bot.ConsultaOts(self.urlPin,data[1],data[5])
@@ -322,7 +320,6 @@ class handlepincancelar:
             Resultado=f"No se puede Gestionar, Boton cancelar no aparece {Cancelar[1]} {EstadoOt}"
 
         return Resultado
-
 
     def SelectorCancelarAgenda(self,idbot,idAct,Trabajo):
         # funcion principal 

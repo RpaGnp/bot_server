@@ -74,7 +74,6 @@ class Bot_server:
 			except Exception as e:
 				Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
 				print(Nomb_error)
-					
 			
 	def GetActualizacion(self):		
 		nombre_bot='bot_server'
