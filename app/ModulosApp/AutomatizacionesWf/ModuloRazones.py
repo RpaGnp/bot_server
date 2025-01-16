@@ -231,7 +231,7 @@ class SelectorNotasAuto():
 								FormatedNotas = FormatedNotas.group(1).strip()
 						except Exception as e:
 							FormatedNotas = resulting_string[0:398]+" "+ahora[0]+" "+ahora[1]
-						FormatedNotas = FormatedNotas[0:398]
+						FormatedNotas = FormatedNotas[:398]
 
 						print(FormatedNotas)          
 						element = self.driver.find_element(By.XPATH,'//div/textarea[@data-label="closure_notes"]')
