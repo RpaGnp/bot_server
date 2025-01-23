@@ -28,6 +28,7 @@ ArrayNames=(
     'Bot_Marcador2'
     'Bot_Marcador3'
     'Bot_Marcador4'
+    'DefaultBot'
 )
 
 # Si existe un archivo docker-compose.override.yml, detener y eliminar los contenedores especificados en él
@@ -38,11 +39,13 @@ if [ -f docker-compose.override.yml ]; then
     # Detener y eliminar solo los contenedores especificados en el archivo
     for container_name in "${override_containers[@]}"; do
         if docker ps -q -f name="^${container_name}$" > /dev/null; then
-            # Intentar detener el contenedor, ignorar errores si no existe
-            docker stop "$container_name" 2>/dev/null || true
-            docker rm "$container_name" 2>/dev/null || true
+            # Intentar detener  eliminar el contenedor, ignorar errores si no existe
+            # docker stop "$container_name" 2>/dev/null || true
+            docker rm -v "$container_name" 2>/dev/null || true
         fi
     done
+    # Eliminar volúmenes no persistentes
+    docker-compose down --volumes
 fi
 
 # Crear un archivo docker-compose.override.yml con los nombres del array

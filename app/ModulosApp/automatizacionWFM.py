@@ -251,7 +251,8 @@ class GestorWf():
                 return
 
         else:
-            driver.get("https://moduloagenda.cable.net.co")
+            # driver.get("https://moduloagenda.cable.net.co")
+            driver.get("https://moduloagenda.cable.net.co/Login.php")
             
             driver.implicitly_wait(180)
             myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
