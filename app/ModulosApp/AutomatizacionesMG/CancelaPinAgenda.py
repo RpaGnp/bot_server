@@ -15,6 +15,7 @@ from reloj_casio import *
 class handlepincancelar:
     def __init__(self,driver):
         self.driver = driver
+        self.driver.implicitly_wait(0)
         self.urlPin ="https://moduloagenda.cable.net.co"
         self.urlcancela="https://agendamiento.cable.net.co"
         self.Bot=BotMg(driver)
@@ -215,6 +216,7 @@ class handlepincancelar:
         return Cancelar,DicButton
     
     def CancelarDirecto(self):
+        
         # aplica para REQ cuando no se solicite pin
         WebDriverWait(self.driver, 15).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_cancelar"]')))
         time.sleep(1)

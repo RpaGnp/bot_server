@@ -335,7 +335,7 @@ class HandleAgendamiento(handlepincancelar):
 				if EstadoOt in ["AGENDADO","REPROGRAMADA","NO REALIZADO"]:
 					self.fillformReagendar()
 				
-				#=======================================radar botones=================================================
+				#======================================= radar botones =================================================
 				DicButton={}
 				VarAGenda=False			
 				time.sleep(2)
@@ -375,7 +375,7 @@ class HandleAgendamiento(handlepincancelar):
 							continue
 
 					#if EstadoOt=="NO AGENDADO":
-				#============================================mensajes recientes==========================
+				#============================================ mensajes recientes ==========================
 				ErrorOrden = ""
 				if EsAgendable:
 					if self.mensajesModulo()[0]==False:					
@@ -390,7 +390,7 @@ class HandleAgendamiento(handlepincancelar):
 																					time.sleep(0.5)
 																					driver.find_element(By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_reagenda"]//input[@type="submit"]').click()'''
 					
-				#=================================verificar cupos==================================================
+				#================================= verificar cupos ==================================================
 				#EsAgendable=1
 				if EsAgendable:
 					## ocultar el mapa
@@ -430,11 +430,20 @@ class HandleAgendamiento(handlepincancelar):
 						continue
 					else:pass					
 					
-					# =================dependiendo de la base, si se recibe fecha y franja se debe escoger capacidad especificada
+					# ================= dependiendo de la base, si se recibe fecha y franja se debe escoger capacidad especificada
 					if data[3].lower().strip() == "no aplica" and data[3].lower().strip() == "no aplica":						
 						agendado= self.Recorredorcapacidad()													
 					else:
 						agendado= self.RecorredorcapacidadFecha(data[3],data[4])					
+
+					try:
+						driver.implicitly_wait(0)
+						WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//span[@id="ui-dialog-title-dialog_Error"]')))
+						driver.find_element(By.XPATH,'//button//span[contains(text(),"Continuar")]').click()	
+						time.sleep(2)
+					except:
+						pass
+					driver.implicitly_wait(30)
 
 					if agendado==False:
 						sql = ("spr_upd_estgesdx", [data[0], f'Orden no agendable No hay capacidad disponible'])
@@ -442,7 +451,7 @@ class HandleAgendamiento(handlepincancelar):
 						continue
 
 					#wait
-					#========================verificar que la capacidad se ha tomado correctamente====================
+					#======================== verificar que la capacidad se ha tomado correctamente ====================
 					#clases = driver.find_elements_by_css_selector("[class^='ui-dialog ']")										
 					
 					if self.mensajesModulo()[0]==False:
@@ -450,14 +459,13 @@ class HandleAgendamiento(handlepincancelar):
 						ConectorDbMysql().FuncInsInfoOne(sql)	
 						continue
 
-					element = WebDriverWait(driver, 25).until(EC.visibility_of_element_located((By.XPATH, '//span[@id="ui-dialog-title-dialog_confirmacion_agenda"]')))
-					
+					WebDriverWait(driver, 25).until(EC.visibility_of_element_located((By.XPATH, '//span[@id="ui-dialog-title-dialog_confirmacion_agenda"]')))
 
 					time.sleep(0.5)
 					driver.find_element(By.XPATH,'//button//span[contains(text(),"Confirmar")]').click()					
-					element = WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
+					WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
 					
-					#========================verificar que la capacidad se ha tomado correctamente====================
+					#======================== verificar que la capacidad se ha tomado correctamente ====================
 					clases = driver.find_elements_by_css_selector("[class^='ui-dialog ']")					
 					msgerrorcapacidad=False
 					for clase in clases:
