@@ -3,37 +3,33 @@
 # Array de nombres de los bots
 ArrayNames=(
     'Bot_GestorCali1'
+    'Bot_GestorCali2'
+    'Bot_GestorCali3'
+    'Bot_GestorCali4'
+    'Bot_GestorCali5'
+    'Bot_MarcadorCali'
+    'Bot_MarcadorCali1'
+    'Bot_MarcadorCali2'
+    'Bot_MarcadorCali3'
+    'Bot_MarcadorCali4'
+    'Bot_MarcadorCali5'
+    'Bot_Gestor1'
+    'Bot_Gestor2'
+    'Bot_Gestor3'
+    'Bot_Gestor4'
+    'Bot_Gestor5'
+    'Bot_GestorBuc1'
+    'Bot_GestorBuc2'
+    'Bot_GestorBuc3'
+    'Bot_GestorBuc4'
+    'Bot_GestorBuc5'
+    'Bot_GestorBuc6'
+    'Bot_Marcador1'
+    'Bot_Marcador2'
+    'Bot_Marcador3'
+    'Bot_Marcador4'
+    'Bot_Server'
 )
-
-# ArrayNames=(
-#     'Bot_GestorCali1'
-#     'Bot_GestorCali2'
-#     'Bot_GestorCali3'
-#     'Bot_GestorCali4'
-#     'Bot_GestorCali5'
-#     'Bot_MarcadorCali'
-#     'Bot_MarcadorCali1'
-#     'Bot_MarcadorCali2'
-#     'Bot_MarcadorCali3'
-#     'Bot_MarcadorCali4'
-#     'Bot_MarcadorCali5'
-#     'Bot_Gestor1'
-#     'Bot_Gestor2'
-#     'Bot_Gestor3'
-#     'Bot_Gestor4'
-#     'Bot_Gestor5'
-#     'Bot_GestorBuc1'
-#     'Bot_GestorBuc2'
-#     'Bot_GestorBuc3'
-#     'Bot_GestorBuc4'
-#     'Bot_GestorBuc5'
-#     'Bot_GestorBuc6'
-#     'Bot_Marcador1'
-#     'Bot_Marcador2'
-#     'Bot_Marcador3'
-#     'Bot_Marcador4'
-#     'Bot_Server'
-# )
 
 # Si existe un archivo docker-compose.override.yml, detener y eliminar los contenedores especificados en él
 if [ -f docker-compose.override.yml ]; then
@@ -91,5 +87,4 @@ for i in "${!ArrayNames[@]}"; do
 done
 
 # Levantar los servicios de docker-compose con la escala especificada
-docker-compose up
-# docker-compose up -d
+docker-compose up -d
