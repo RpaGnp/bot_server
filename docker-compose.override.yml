@@ -1,19 +1,20 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  bot_gestorcali2:
+  bot_gestorcali1:
     build:
       context: .
-    container_name: bot_gestorcali2
+    container_name: bot_gestorcali1
     volumes:
       - ./app:/app
+      - /home/Bot_Server/DBGestionBot:/DBGestionBot
     environment:
-      - BOT_NAME=Bot_GestorCali2
+      - BOT_NAME=Bot_GestorCali1
       - CHROME_PORT=4445
-      - CHROME_HOST=bot_gestorcali2_chrome
-  bot_gestorcali2_chrome:
+      - CHROME_HOST=bot_gestorcali1_chrome
+  bot_gestorcali1_chrome:
     image: selenium/standalone-chrome
-    container_name: bot_gestorcali2_chrome
+    container_name: bot_gestorcali1_chrome
     ports:
       - "4445:4444"
       - "7900:7900"
