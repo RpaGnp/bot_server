@@ -171,7 +171,7 @@ class SelectorNotasAuto():
 									else:
 										ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0], EstadoConsulta[1], EstadoConsulta[2], EstadoConsulta[3],json.dumps(ArrayDataOt),f"Ot No gestionada error Boton razon "])
 										time.sleep(2)								
-										# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg3.png")
+										self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg3.png")
 										ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],"Error botton razon",f"{self.PathImagenes}/{data[0]}-RAZerrorimg3.png"])								
 										self.driver.find_element(By.XPATH,'//button[@title="Consola de Despacho"]').click()
 										# self.driver.save_screenshot('screenshot.png')
@@ -249,7 +249,7 @@ class SelectorNotasAuto():
 						ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0],EstadoConsulta[1],EstadoConsulta[2],EstadoConsulta[3],json.dumps(ArrayDataOt),"Ot gestionada!"])							
 						# foto de cada ot gestionada por cupla de los hps de cali
 						time.sleep(1)
-						# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-ResGestion.png")
+						self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-ResGestion.png")
 						ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],"Gestion ok",f"{self.PathImagenes}/{data[0]}-ResGestion.png"])
 						# self.driver.save_screenshot('screenshot.png')
 
@@ -306,13 +306,13 @@ class SelectorNotasAuto():
 
 						time.sleep(2)
 						
-						# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
+						self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
 						ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],Nomb_error[0],f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png"])
 
 
 				else:
 					print(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
-					# self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
+					self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
 					ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0],EstadoConsulta[1],EstadoConsulta[2],EstadoConsulta[3],json.dumps(ArrayDataOt),"Ot no gestionada!"])	
 					time.sleep(1)
 					ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],"--",f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png"])
