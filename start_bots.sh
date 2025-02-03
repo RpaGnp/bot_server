@@ -67,7 +67,7 @@ for i in "${!ArrayNames[@]}"; do
     echo "    container_name: $bot_name_lower" >> docker-compose.override.yml
     echo "    volumes:" >> docker-compose.override.yml
     echo "      - ./app:/app" >> docker-compose.override.yml
-    echo "      - /home/Bot_Server/DBGestionBot:/DBGestionBot" >> docker-compose.override.yml
+    echo "      - /home/Bot_Server/DBGestionBot/BotcndRazones:/DBGestionBot" >> docker-compose.override.yml
     echo "    environment:" >> docker-compose.override.yml
     echo "      - BOT_NAME=${bot_name}" >> docker-compose.override.yml
     echo "      - CHROME_PORT=${chrome_port}" >> docker-compose.override.yml
