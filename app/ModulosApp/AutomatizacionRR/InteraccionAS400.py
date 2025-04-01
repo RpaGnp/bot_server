@@ -29,7 +29,6 @@ dicrutas = {"LLS":{1:["4","{ENTER}","1","{ENTER}"],
 arrayErroresLLs=["El numero de la Llamada de Servicio no esta en el archivo de Llamadas de Ser",
 "Despacho o Ejecuccion de Llamadas de Servicio ha sido pedido pero no hay lla","no existe en el archivo"]
 
-
 #491619
 
 class ControladorAs400:

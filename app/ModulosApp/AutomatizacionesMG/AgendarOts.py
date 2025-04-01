@@ -283,7 +283,7 @@ class HandleAgendamiento(handlepincancelar):
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').clear()
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').send_keys(data[1])
 				time.sleep(1)			
-				if  "LLS" in data[5].upper():
+				if  "LLS" in data.upper():
 					driver.find_element(By.XPATH,'//input[@type="radio" and @value="L"]').click()
 				else:
 					driver.find_element(By.XPATH,'//input[@type="radio" and @value="O"]').click()
