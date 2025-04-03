@@ -16,7 +16,7 @@ class handlepincancelar:
     def __init__(self,driver):
         self.driver = driver
         self.driver.implicitly_wait(0)
-        self.urlPin ="https://moduloagenda.cable.net.co"
+        self.urlPin ="https://agendamiento.cable.net.co"
         self.urlcancela="https://agendamiento.cable.net.co"
         self.Bot=BotMg(driver)
         self.codefucntion ='''
@@ -339,7 +339,7 @@ class handlepincancelar:
                 print("!",data)
                 ConectorDbMysql().RepActividad(idbot)  
 
-                # self.urlPin ="https://moduloagenda.cable.net.co"
+                # self.urlPin ="https://agendamiento.cable.net.co"
                 # self.urlcancela="https://agendamiento.cable.net.co"
                 self.Bot.ConsultaOts(self.urlPin,data[1],data[5])
                 #driver.switch_to.window(self.venPin)                
@@ -367,6 +367,7 @@ class handlepincancelar:
                 EstadoOt=self.driver.find_element(By.XPATH,'//div[@id="estadoag"]').text
                 Cancelar = self.GetBoton()            
                 print(Cancelar)
+                time.sleep(3)
 
                 Resultado = ""
                 if Cancelar[0]:

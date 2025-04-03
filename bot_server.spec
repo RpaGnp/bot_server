@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['bot_server.py'],
+a = Analysis(['C:\\Projects_RPA\\Bot_server\\docker_bot\\app\\bot_server.py'],
              pathex=[],
              binaries=[],
              datas=[],
@@ -37,4 +37,4 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None , icon='img\\logo-removebg-preview.ico')
+          entitlements_file=None , icon='C:\\Projects_RPA\\Bot_server\\docker_bot\\app\\img\\logo-removebg-preview.ico')

@@ -15,7 +15,7 @@ from reloj_casio import *
 def SelectorCancelarAgenda(self,idbot,idAct,Trabajo):
 	driver=self.driver
 	Bot=BotMg(driver)
-	urlPin ="https://moduloagenda.cable.net.co"
+	urlPin ="https://agendamiento.cable.net.co"
 	try:
 		sql="""
 				SELECT dx_nid,dx_corden,dx_caliado,dx_cciudad,dx_dfechaage,dx_cobservacion
@@ -46,7 +46,7 @@ def SelectorCancelarAgenda(self,idbot,idAct,Trabajo):
 				continue
 
 			# verificar orden agenda pr wfm
-			if driver.current_url!='https://moduloagenda.cable.net.co/MGW/MGW/Agendamiento/agendamiento.php':
+			if driver.current_url!='https://agendamiento.cable.net.co/MGW/MGW/Agendamiento/agendamiento.php':
 				sql = ("spr_upd_estgesdx", [data[0], 'Orden no agendada, Redirige a modulo agendamiento antiguo!'])			
 				ConectorDbMysql().FuncInsInfoOne(sql)
 				continue

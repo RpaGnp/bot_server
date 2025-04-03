@@ -27,7 +27,7 @@ class HandleAgendamiento(handlepincancelar):
 
 	def login(self,driver,Usuario,Clave):	
 		try:
-		    driver.get("https://moduloagenda.cable.net.co")
+		    driver.get("https://agendamiento.cable.net.co")
 		except Exception as e:
 		    driver.quit()
 		    return 2
@@ -277,7 +277,7 @@ class HandleAgendamiento(handlepincancelar):
 						time.sleep(1)					
 						driver.quit()
 						return
-				driver.get('https://moduloagenda.cable.net.co/MGW/MGW/Agendamiento/index.php')
+				driver.get('https://agendamiento.cable.net.co/MGW/MGW/Agendamiento/index.php')
 				#ingreso consultar orden
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').clear()
@@ -299,7 +299,7 @@ class HandleAgendamiento(handlepincancelar):
 					continue
 
 				# verificar orden agenda pr wfm
-				if driver.current_url!='https://moduloagenda.cable.net.co/MGW/MGW/Agendamiento/agendamiento.php':
+				if driver.current_url!='https://agendamiento.cable.net.co/MGW/MGW/Agendamiento/agendamiento.php':
 					sql = ("spr_upd_estgesdx", [data[0], 'Orden no agendada, Redirige a modulo agendamiento antiguo!'])			
 					ConectorDbMysql().FuncInsInfoOne(sql)
 					continue

@@ -87,10 +87,44 @@ class GestorWf():
 
             print(self.Navegador)
             if self.Navegador == "Edge":
-                edge_options = EdgeOptions()
-                edge_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-                self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()), options=edge_options)
+                try:
+                    # Configurar opciones de Edge correctamente
+                    edge_options = EdgeOptions()
+                    edge_options.use_chromium = True  # Necesario en algunas versiones
+                    edge_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+                    edge_options.add_experimental_option("detach", True)  # Evita que se cierre inmediatamente
 
+                    # Agregar argumentos para evitar errores de autenticación
+                    edge_options.add_argument("--guest")
+                    edge_options.add_argument("--disable-blink-features=AutomationControlled")
+                    edge_options.add_argument("--disable-features=EdgeSignin,msEdgeAccountConsistency")
+                    edge_options.add_argument("--disable-features=msImplicitSignIn")
+                    edge_options.add_argument("--disable-single-sign-on")
+
+                    # Evitar errores de user-data-dir ya en uso
+                    temp_profile = rf"C:\temp\EdgeProfile_{int(time.time())}"  # Perfil único por cada sesión
+                    os.makedirs(temp_profile, exist_ok=True)
+                    edge_options.add_argument(f"--user-data-dir={temp_profile}")
+
+                    # Iniciar WebDriver correctamente
+                    self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()), options=edge_options)
+                    
+                    print("Edge iniciado correctamente.")
+                except Exception as e:
+                    print(f"Error al inicializar Edge: {e}")
+                    # Último intento sin opciones ni managers
+                    edge_options = EdgeOptions()
+                    edge_options.use_chromium = True
+                    edge_options.add_argument("--disable-blink-features=AutomationControlled")
+                    edge_options.add_argument("--guest")  # Modo invitado para evitar autenticación
+                    
+                    edgedriver_path = r"C:\dchrome\msedgedriver.exe"
+                    if os.path.exists(edgedriver_path):
+                        self.driver = webdriver.Edge(service=EdgeService(edgedriver_path), options=edge_options)
+                    else:
+                        # Si todo falla, intentamos inicializar Edge sin especificar el driver
+                        self.driver = webdriver.Edge()
+            
             elif self.Navegador == "Opera":
                 opera_options = OperaOptions()
                 opera_options.binary_location = r'%s\AppData\Local\Programs\Opera\opera.exe' % os.path.expanduser('~')
@@ -107,8 +141,19 @@ class GestorWf():
                 chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
                 chrome_options.add_argument('--start-maximized')
                 chrome_options.add_argument("--incognito")
-                self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
-                time.sleep(1) 
+                chromedriver_path = r"C:\dchrome\chromedriver.exe"
+                # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+
+                # Verifica si el archivo existe antes de usarlo
+                if not os.path.exists(chromedriver_path):
+                    print(f"ADVERTENCIA: No se encontró chromedriver en {chromedriver_path}")
+                    # Podrías tener una ruta alternativa o usar ChromeDriverManager como fallback
+                    self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+                else:
+                    print(f"Usando chromedriver desde: {chromedriver_path}")
+                    self.driver = webdriver.Chrome(service=ChromeService(chromedriver_path), options=chrome_options)
+                
+                time.sleep(1)
 
             else:
                 raise ValueError(f"Navegador {self.Navegador} no soportado")
@@ -251,8 +296,9 @@ class GestorWf():
                 return
 
         else:
-            # driver.get("https://moduloagenda.cable.net.co")
-            driver.get("https://moduloagenda.cable.net.co/Login.php")
+            # driver.get("https://agendamiento.cable.net.co")
+            # driver.get("https://agendamiento.cable.net.co/Login.php")
+            driver.get("https://agendamiento.cable.net.co/Login.php")
             
             driver.implicitly_wait(180)
             myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
@@ -274,20 +320,20 @@ class GestorWf():
             except:
                 return False            
 
-            if driver.current_url=='https://moduloagenda.cable.net.co/Modificar_password.php':                
+            if driver.current_url=='https://agendamiento.cable.net.co/Modificar_password.php':                
                 sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
                 ConectorDbMysql().FuncInsInfoOne(sql)
                 driver.quit()
                 del driver                
 
-            if driver.current_url != "https://moduloagenda.cable.net.co/indexadmin.php":
-                if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
-                    driver.get("https://moduloagenda.cable.net.co/index.php")
+            if driver.current_url != "https://agendamiento.cable.net.co/indexadmin.php":
+                if driver.current_url=='https://agendamiento.cable.net.co/Login.php':
+                    driver.get("https://agendamiento.cable.net.co/index.php")
                 x=0
                 while x<=2:          
                     try:
-                        if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
-                            driver.get("https://moduloagenda.cable.net.co/index.php")
+                        if driver.current_url=='https://agendamiento.cable.net.co/Login.php':
+                            driver.get("https://agendamiento.cable.net.co/index.php")
                         driver.implicitly_wait(18)
                         driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
@@ -300,7 +346,7 @@ class GestorWf():
                         time.sleep(2)
                         intro = driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').click()
                         time.sleep(1)
-                        if driver.current_url == 'https://moduloagenda.cable.net.co/indexadmin.php':
+                        if driver.current_url == 'https://agendamiento.cable.net.co/indexadmin.php':
                             break
                         else:
                             x+=1

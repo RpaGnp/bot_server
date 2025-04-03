@@ -21,7 +21,12 @@ def nombre_bot():
         else:
             EjecutablePrograma=str(os.path.basename(sys.argv[0]))
             RutaEjecutablePrograma=str(os.path.dirname(sys.argv[0]))
-
+            
+        # Verificar si existe BOT_NAME en variables de entorno
+        bot_name_env = os.getenv('BOT_NAME')
+        if bot_name_env:
+            EjecutablePrograma = bot_name_env + '.exe'
+            
     else:
         try:
             EjecutablePrograma=os.getenv('BOT_NAME', 'DefaultBot')+'.exe'  # se toma la variable de entorno .env o del docker-compose
@@ -29,7 +34,7 @@ def nombre_bot():
         except:
             pass
 
-    EjecutablePrograma = os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
+    # EjecutablePrograma = os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
     # print('este es el bot: ', EjecutablePrograma)
 
     return EjecutablePrograma, RutaEjecutablePrograma

@@ -13,7 +13,7 @@ from reloj_casio import *
 
 
 def login(driver,Usuario,Clave):	
-	driver.get("https://moduloagenda.cable.net.co")
+	driver.get("https://agendamiento.cable.net.co")
 	driver.implicitly_wait(180)
 	myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
@@ -67,7 +67,7 @@ def SelectorAgendaDx(self,idbot,idAct,Trabajo):
 				pass
 
 
-			driver.get('https://moduloagenda.cable.net.co/MGW/MGW/Agendamiento/index.php')
+			driver.get('https://agendamiento.cable.net.co/MGW/MGW/Agendamiento/index.php')
 			#ingreso consultar orden
 			driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()
 			driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').clear()

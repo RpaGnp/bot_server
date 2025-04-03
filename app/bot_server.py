@@ -10,10 +10,17 @@ from ModulosApp.ModelDataBase import ConectorDbMysql
 from ModulosApp.ModeloLauncher import GestorLabor
 from Actualizador_programa import *
 from validar_bot import nombre_bot
-import os
 
-# Ruta absoluta al archivo .env (ajusta según tu sistema)
-env_path = os.path.join(os.path.dirname(__file__), '.env')
+# Obtiene la ruta donde está el ejecutable o script
+if getattr(sys, 'frozen', False):
+    # Ejecutable
+    application_path = os.path.dirname(sys.executable)
+else:
+    # Script
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+env_path = os.path.join(application_path, '.env')
+# print("Ruta del archivo .env:", env_path)
 
 try:
     if not os.path.exists(env_path):
