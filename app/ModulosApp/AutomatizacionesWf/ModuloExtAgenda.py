@@ -25,7 +25,7 @@ def selector_extagenda(self,idbot,idAct):
 			print("!",row)
 			ConectorDbMysql().FuncUpdSpr("spr_upd_contgest",[idAct,index])#
 			
-			driver.get("http://moduloagenda.cable.net.co/MGW/MGW/Agendamiento/index.php")				
+			driver.get("http://agendamiento.cable.net.co/MGW/MGW/Agendamiento/index.php")				
 			time.sleep(1)
 			orden=row[2].split("_")[0]
 			driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()

@@ -34,7 +34,7 @@ from ..ModelDataBase import ConectorDbMysql
 #from reloj_casio import *
 
 def IngresoMain(driver):
-	driver.get('http://moduloagenda.cable.net.co/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/catastro-warIns/view/MGL/login&nuevaVentana=TRUE')	
+	driver.get('http://agendamiento.cable.net.co/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/catastro-warIns/view/MGL/login&nuevaVentana=TRUE')	
 	time.sleep(1)
 	driver.find_element(by=By.XPATH,value='//input[@type="submit"]').click()		
 	driver.switch_to.window(driver.window_handles[-1])
@@ -87,7 +87,7 @@ def SelectorEsthhpp(self,idBot,idAct,Trabajo):
 	Bot=BotinteraccionMG(driver)
 	
 	if Trabajo=="Gestion estratos":
-		driver.get("http://moduloagenda.cable.net.co/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/Visitas_Tecnicas/Login&nuevaVentana=TRUE")
+		driver.get("http://agendamiento.cable.net.co/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/Visitas_Tecnicas/Login&nuevaVentana=TRUE")
 		#validar usuario
 		driver.find_element(by=By.XPATH, value='//input[@value="..Autenticar_Usuario.."]').click()
 		driver.switch_to.window(driver.window_handles[-1])
