@@ -16,8 +16,8 @@ class handlepincancelar:
     def __init__(self,driver):
         self.driver = driver
         self.driver.implicitly_wait(0)
-        self.urlPin ="https://agendamiento.cable.net.co"
-        self.urlcancela="https://agendamiento.cable.net.co"
+        self.urlPin ="https://agendamiento.claro.com.co"
+        self.urlcancela="https://agendamiento.claro.com.co"
         self.Bot=BotMg(driver)
         self.codefucntion ='''
             window.validaPinReagenda = function(conPin,btn,objs){
@@ -339,8 +339,8 @@ class handlepincancelar:
                 print("!",data)
                 ConectorDbMysql().RepActividad(idbot)  
 
-                # self.urlPin ="https://agendamiento.cable.net.co"
-                # self.urlcancela="https://agendamiento.cable.net.co"
+                # self.urlPin ="https://agendamiento.claro.com.co"
+                # self.urlcancela="https://agendamiento.claro.com.co"
                 self.Bot.ConsultaOts(self.urlPin,data[1],data[5])
                 #driver.switch_to.window(self.venPin)                
                 Dato = ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES", [idbot]))

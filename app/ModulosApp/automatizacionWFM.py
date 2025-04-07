@@ -296,9 +296,11 @@ class GestorWf():
                 return
 
         else:
-            # driver.get("https://agendamiento.cable.net.co")
+            # driver.get("https://moduloagenda.cable.net.co")
+            # driver.get("https://moduloagenda.cable.net.co/Login.php")
             # driver.get("https://agendamiento.cable.net.co/Login.php")
-            driver.get("https://agendamiento.cable.net.co/Login.php")
+            
+            driver.get("https://agendamiento.claro.com.co/Login.php")
             
             driver.implicitly_wait(180)
             myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
@@ -320,20 +322,20 @@ class GestorWf():
             except:
                 return False            
 
-            if driver.current_url=='https://agendamiento.cable.net.co/Modificar_password.php':                
+            if driver.current_url=='https://moduloagenda.cable.net.co/Modificar_password.php':                
                 sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
                 ConectorDbMysql().FuncInsInfoOne(sql)
                 driver.quit()
                 del driver                
 
-            if driver.current_url != "https://agendamiento.cable.net.co/indexadmin.php":
-                if driver.current_url=='https://agendamiento.cable.net.co/Login.php':
-                    driver.get("https://agendamiento.cable.net.co/index.php")
+            if driver.current_url != "https://moduloagenda.cable.net.co/indexadmin.php":
+                if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
+                    driver.get("https://moduloagenda.cable.net.co/index.php")
                 x=0
                 while x<=2:          
                     try:
-                        if driver.current_url=='https://agendamiento.cable.net.co/Login.php':
-                            driver.get("https://agendamiento.cable.net.co/index.php")
+                        if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
+                            driver.get("https://moduloagenda.cable.net.co/index.php")
                         driver.implicitly_wait(18)
                         driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
@@ -346,7 +348,7 @@ class GestorWf():
                         time.sleep(2)
                         intro = driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').click()
                         time.sleep(1)
-                        if driver.current_url == 'https://agendamiento.cable.net.co/indexadmin.php':
+                        if driver.current_url == 'https://moduloagenda.cable.net.co/indexadmin.php':
                             break
                         else:
                             x+=1
