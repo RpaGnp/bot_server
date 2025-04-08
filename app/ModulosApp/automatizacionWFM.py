@@ -298,29 +298,34 @@ class GestorWf():
         else:
             # driver.get("https://moduloagenda.cable.net.co")
             # driver.get("https://moduloagenda.cable.net.co/Login.php")
-            # driver.get("https://agendamiento.cable.net.co/Login.php")
+            # driver.get("https://agendamiento.claro.com.co/Login.php")
             
-            driver.get("https://agendamiento.claro.com.co/Login.php")
+            # driver.get("https://agendamiento.claro.com.co/Login.php")
+            driver.get("https://agendamiento.claro.com.co/index.php")
             
-            driver.implicitly_wait(180)
-            myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
+            
+            # driver.implicitly_wait(180)
+            driver.implicitly_wait(10)
+            while driver.current_url != "https://agendamiento.claro.com.co/indexadmin.php":            
+                myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
-            driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').clear()
-            driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').send_keys(Usuario)
-            element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="password"]')))
-            time.sleep(1)
-            driver.find_element(by=By.XPATH, value='//*[@type="password"]').clear()            
-            driver.find_element(by=By.XPATH, value='//*[@type="password"]').send_keys(Clave)
-            time.sleep(3)
-            element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@name="Submit"]')))
-            if driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').is_displayed():
-                driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').click()
-            time.sleep(2)            
+                driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').clear()
+                driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').send_keys(Usuario)
+                element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="password"]')))
+                time.sleep(1)
+                driver.find_element(by=By.XPATH, value='//*[@type="password"]').clear()            
+                driver.find_element(by=By.XPATH, value='//*[@type="password"]').send_keys(Clave)
+                # time.sleep(3)
+                element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@name="Submit"]')))
+                if driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').is_displayed():
+                    driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').click()
+                # time.sleep(2)            
 
-            try:
-                element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//nav[@class="ClaroTemplate-nav clearfix desktop-nav"]')))
-            except:
-                return False            
+                try:
+                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//nav[@class="ClaroTemplate-nav clearfix desktop-nav"]')))
+                except:
+                    # return False  
+                    pass          
 
             if driver.current_url=='https://moduloagenda.cable.net.co/Modificar_password.php':                
                 sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
@@ -328,7 +333,7 @@ class GestorWf():
                 driver.quit()
                 del driver                
 
-            if driver.current_url != "https://moduloagenda.cable.net.co/indexadmin.php":
+            if driver.current_url != "https://agendamiento.claro.com.co/indexadmin.php":
                 if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
                     driver.get("https://moduloagenda.cable.net.co/index.php")
                 x=0
