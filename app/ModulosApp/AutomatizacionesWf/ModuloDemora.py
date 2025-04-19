@@ -88,8 +88,7 @@ def selector_Demora(self,idBot,Idactividad):
 			else:
 				pass
 
-
-			element = WebDriverWait(driver, 50).until(EC.element_to_be_clickable((By.XPATH,'//*[@aria-label="GlobalSearch"]')))				
+			busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
 			
 			try:                    
 			    driver.execute_script('document.querySelector("#panel").setAttribute("style","display:none")')

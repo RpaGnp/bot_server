@@ -186,7 +186,7 @@ class GestorWf():
             self.driver.get("https://amx-res-co.etadirect.com/")                
             
             # Espera explícita para el campo de usuario
-            wait = WebDriverWait(self.driver, 30)
+            wait = WebDriverWait(self.driver, 180)
             username_field = wait.until(EC.presence_of_element_located((By.ID, 'username')))
             
             # Limpiar y enviar el nombre de usuario

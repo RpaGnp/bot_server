@@ -72,19 +72,16 @@ def selector_Seguimiento(self,idBot,Idactividad):
 					time.sleep(10)
 					lista_ejecucion=[]
 
-				
-				element = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH,'//*[@aria-label="GlobalSearch"]')))				
-				lupa=driver.find_element(by=By.XPATH, value='//div[@id="search-bar-container"]')						
-				if lupa.is_displayed()==False:
-					driver.find_element(by=By.XPATH, value='//*[@aria-label="GlobalSearch"]').click()				
-				else:
-					pass					
-				
+				# Buscar el botón de búsqueda global por su clase y atributos
+				busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+				busqueda_global.click()
+
 				time.sleep(0.50)
+				campo_busqueda = driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]')
 				driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
-				driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
-				driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Orden)
-				driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
+				campo_busqueda.clear()
+				campo_busqueda.send_keys(Orden)
+				campo_busqueda.send_keys(Keys.ENTER)
 				
 				try:
 					element = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))

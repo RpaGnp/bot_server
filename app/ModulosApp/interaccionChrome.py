@@ -103,12 +103,9 @@ class BotGestionWF():
 		# 	self.driver.quit()
 		# 	return
 		
-		WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH,'//*[@aria-label="GlobalSearch"]')))				
-		lupa=self.driver.find_element(by=By.XPATH, value='//div[@id="search-bar-container"]')						
-		if lupa.is_displayed()==False:
-			self.driver.find_element(by=By.XPATH, value='//*[@aria-label="GlobalSearch"]').click()				
-		else:
-			pass
+		# Buscar el botón de búsqueda global por su clase y atributos
+		busqueda_global = self.driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+		busqueda_global.click()
 
 	def BuscarOtEnList(self):
 		self.driver
