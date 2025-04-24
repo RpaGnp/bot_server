@@ -90,17 +90,14 @@ def selector_Demora(self,idBot,Idactividad):
 
 			busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
 			
-			try:                    
-			    driver.execute_script('document.querySelector("#panel").setAttribute("style","display:none")')
+			try:
+				driver.execute_script('document.querySelector("#panel").setAttribute("style","display:none")')
 			except Exception as e:
 				ErrorHandle(e).ShowError()
 
 
-			lupa=driver.find_element(by=By.XPATH, value='//div[@id="search-bar-container"]')						
-			if lupa.is_displayed()==False:
-				driver.find_element(by=By.XPATH, value='//*[@aria-label="GlobalSearch"]').click()				
-			else:
-				pass
+			busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+			busqueda_global.click()
 
 			time.sleep(0.50)
 			driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')

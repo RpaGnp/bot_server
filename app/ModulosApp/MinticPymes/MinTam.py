@@ -86,13 +86,8 @@ def selector_MarTam(self,idBot,Idactividad):
             else:
                 pass
 
-            element = WebDriverWait(driver, 50).until(EC.element_to_be_clickable((By.XPATH, '//*[@aria-label="GlobalSearch"]')))
-            lupa = driver.find_element_by_xpath('//*[@type="search"]')
-            # print(lupa.is_displayed())
-            if lupa.is_displayed() == False:
-                driver.find_element_by_xpath('//*[@aria-label="GlobalSearch"]').click()
-            else:
-                pass
+            busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+            busqueda_global.click()
             time.sleep(0.50)
             driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
             driver.find_element_by_xpath('//*[@class="search-bar-input"]').clear()
