@@ -210,6 +210,21 @@ class GestorWf():
             print("! error conexion: ", e, Nomb_error)'''
             # self.driver.save_screenshot('./screenshot.png')
 
+            WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+            time.sleep(1)
+
+            # Esperar indefinidamente hasta que el elemento user-confirm sea visible y hacer clic
+            try:
+                element = WebDriverWait(self.driver, 5).until(
+                    EC.element_to_be_clickable((By.ID, 'user-confirm'))
+                )
+                element.click()
+                time.sleep(2)
+                WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                time.sleep(1)
+            except:
+                pass
+
             if self.driver.title=="Oracle Field Service":                
                 bucle=1
                 while bucle<=2:
@@ -245,7 +260,7 @@ class GestorWf():
                     #WebDriverWait(self.driver, 160).until(EC.visibility_of_element_located((By.XPATH,'//button[@aria-label="Ocultar árbol de recursos"]')))
                     print("Login 2 vez ok!")
                     #validar cambios de contraseñas            
-                    element2=WebDriverWait(driver, 200).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                    WebDriverWait(driver, 200).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                     time.sleep(1)            
                     print(driver.title)
                     if driver.title=="Cambiar contraseña - Oracle Field Service":
@@ -259,9 +274,8 @@ class GestorWf():
             else:
                 sql=("SPR_INS_ESTBOT",[self.idbot,"En labor"])
                 ConectorDbMysql().FuncInsInfoOne(sql)                    
-                #WebDriverWait(self.driver, 160).until(EC.visibility_of_element_located((By.XPATH,'//button[@aria-label="Ocultar árbol de recursos"]')))
                 #validar cambios de contraseñas            
-                element2=WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                 time.sleep(1)            
                 print(driver.title)
                 if driver.title=="Cambiar contraseña - Oracle Field Service":

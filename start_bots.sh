@@ -83,6 +83,7 @@ for i in "${!ArrayNames[@]}"; do
     echo "      - \"$((9222 + i)):9222\"" >> docker-compose.override.yml
     echo "    environment:" >> docker-compose.override.yml
     echo "      - SE_VNC_NO_PASSWORD=1" >> docker-compose.override.yml
+    echo "      - WAIT_TIMEOUT=0" >> docker-compose.override.yml
     echo "    restart: always" >> docker-compose.override.yml
 done
 
