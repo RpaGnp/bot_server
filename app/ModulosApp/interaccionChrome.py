@@ -103,9 +103,12 @@ class BotGestionWF():
 		# 	self.driver.quit()
 		# 	return
 		
-		# Buscar el botón de búsqueda global por su clase y atributos
-		busqueda_global = self.driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
-		busqueda_global.click()
+		try:
+			# Buscar el botón de búsqueda global por su clase y atributos
+			busqueda_global = self.driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+			busqueda_global.click()
+		except:
+			print("No se encontró el botón de búsqueda global")
 
 	def BuscarOtEnList(self):
 		self.driver

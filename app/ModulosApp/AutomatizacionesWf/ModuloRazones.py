@@ -309,7 +309,6 @@ class SelectorNotasAuto():
 						self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
 						ConectorDbMysql().FuncUpdSpr("spr_upd_libotnot",[data[0],Nomb_error[0],f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png"])
 
-
 				else:
 					print(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
 					self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
