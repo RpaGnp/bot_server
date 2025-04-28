@@ -95,9 +95,12 @@ def selector_Demora(self,idBot,Idactividad):
 			except Exception as e:
 				ErrorHandle(e).ShowError()
 
-
-			busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
-			busqueda_global.click()
+			try:
+				# Buscar el botón de búsqueda global por su clase y atributos
+				busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+				busqueda_global.click()
+			except:
+				pass
 
 			time.sleep(0.50)
 			driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')

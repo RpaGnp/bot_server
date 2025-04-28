@@ -171,9 +171,12 @@ def selector_Completacion(self,idBot,Idactividad):
 						return
 				else:pass
 				
-				# Buscar el botón de búsqueda global por su clase y atributos
-				busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
-				busqueda_global.click()
+				try:
+					# Buscar el botón de búsqueda global por su clase y atributos
+					busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+					busqueda_global.click()
+				except:
+					pass
 
 				time.sleep(0.5)
 							
@@ -266,8 +269,12 @@ def selector_Completacion(self,idBot,Idactividad):
 					gs=0
 					while gs<5:
 						try:
-							busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
-							busqueda_global.click()
+							try:
+								# Buscar el botón de búsqueda global por su clase y atributos
+								busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+								busqueda_global.click()
+							except:
+								pass
 							driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 							driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(numero_ot)
 							driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
@@ -309,8 +316,12 @@ def selector_Completacion(self,idBot,Idactividad):
 					if driver.title!="Detalles de actividad - Oracle Field Service":
 						driver.refresh()
 						time.sleep(7)
-						busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
-						busqueda_global.click()
+						try:
+							# Buscar el botón de búsqueda global por su clase y atributos
+							busqueda_global = driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
+							busqueda_global.click()
+						except:
+							pass
 						driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 						driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(numero_ot)
 						driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
