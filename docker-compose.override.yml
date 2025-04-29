@@ -1,24 +1,27 @@
 version: '3.8'
 
 services:
-  bot_gestorcali1:
+  bot_gestorcali4:
     build:
       context: .
-    container_name: bot_gestorcali1
+    container_name: bot_gestorcali4
     volumes:
       - ./app:/app
-      - /home/Bot_Server/DBGestionBot:/DBGestionBot
+      - /home/Bot_Server/DBGestionBot/:/DBGestionBot
     environment:
-      - BOT_NAME=Bot_GestorCali1
+      - BOT_NAME=Bot_GestorCali4
       - CHROME_PORT=4445
-      - CHROME_HOST=bot_gestorcali1_chrome
-  bot_gestorcali1_chrome:
+      - CHROME_HOST=bot_gestorcali4_chrome
+  bot_gestorcali4_chrome:
     image: selenium/standalone-chrome
-    container_name: bot_gestorcali1_chrome
+    container_name: bot_gestorcali4_chrome
     ports:
       - "4445:4444"
       - "7900:7900"
       - "9222:9222"
     environment:
       - SE_VNC_NO_PASSWORD=1
+      - WAIT_TIMEOUT=0
+      - NOVNC_ENABLE_CLIPBOARD=true
+      - VNC_CLIPBOARD_LIMIT=10485760
     restart: always

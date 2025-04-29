@@ -1,0 +1,9 @@
+pyinstaller --noconfirm --onefile --console --icon "C:/Projects_RPA/Bot_server/img/logo-removebg-preview.ico" "C:/Projects_RPA/Bot_server/bot_server.py" --debug all
+
+pyinstaller --noconfirm --onefile --console --icon "C:/Projects_RPA/Bot_server/img/logo-removebg-preview.ico"  "C:/Projects_RPA/Bot_server/bot_server.py"
+
+==========
+pyinstaller --noconfirm --onefile --console --icon "C:/Projects_RPA/Bot_server/img/logo-removebg-preview.ico"  "C:/Projects_RPA/Bot_server/bot_server.py"
+
+==========
+pyinstaller --noconfirm --onefile --console --icon "C:\Projects_RPA\Bot_server\docker_bot\app\img\logo-removebg-preview.ico"  "C:\Projects_RPA\Bot_server\docker_bot\app\bot_server.py"

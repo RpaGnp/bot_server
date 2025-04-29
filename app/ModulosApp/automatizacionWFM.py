@@ -216,6 +216,7 @@ class GestorWf():
                 
                 while attempt < max_attempts:
                     current_title = driver.title
+                    print(current_title)
                     
                     # Scenario 1: Direct login successful
                     if current_title == "Consola de despacho - Oracle Field Service":
@@ -233,7 +234,6 @@ class GestorWf():
                             
                             # Perform login again
                             perform_login()
-                            wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                         except Exception as e:
                             print(f"Error handling existing session: {str(e)}")
                     
@@ -277,13 +277,14 @@ class GestorWf():
                         except Exception as e:
                             print(f"Error al hacer clic en el botón con CSS: {e}")
 
-
-
+                    wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                     attempt += 1
                     time.sleep(1)
+
+                print("login exitoso")
                 
                 # If we get here, login failed after max attempts
-                sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login - Máximo de intentos alcanzado"])
+                sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login"])
                 ConectorDbMysql().FuncInsInfoOne(sql)
                 self.driver.quit()
                 return False
@@ -426,7 +427,6 @@ class GestorWf():
     
         # self.driver.save_screenshot('./screenshot.png')
 
-
     def ExpanderCiudad(self,Ciudad,ubicacion):
         #print(ArrayTecSaludo)
             #try:
@@ -469,27 +469,19 @@ class GestorWf():
                     selector2='//div[@class="edt-children"]//span[@class="rtl-text rtl-prov-name" and contains(text(),"BACKOFFICE")]/ancestor::div[1]/button[1]'
                     #selector3='//*[@id="manage-content"]/div/div[2]/div[2]/div/div[2]/div[3]/div[3]/div[2]/div[3]/div[2]/div[2]/div[1]/button[1]'
                     driver.implicitly_wait(30)
-                    element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, selector1)))
+                    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, selector1)))
                     time.sleep(3)
                     if "Ampliar" in driver.find_elements(by=By.XPATH, value=selector1)[0].get_attribute('aria-label'):
                         driver.find_element(by=By.XPATH, value=selector1).click()                    
-                    element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, selector2)))
+                    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, selector2)))
                     time.sleep(1)
                     if "Ampliar" in driver.find_elements(by=By.XPATH, value=selector2)[0].get_attribute('aria-label'):
                         driver.find_element(by=By.XPATH, value=selector2).click()
                     
-                    #ubicacion=int(ubicacion)+3
-
-                    time.sleep(1)            
-                    #if int(ubicacion)==1:
-                    driver.find_elements(by=By.XPATH, value='//div[@aria-label="Árbol de recursos"]//span[contains(text(),"BACKOFFICE GNP OCCIDENTE 3")]')[1].click()
-                    #else:
-                        #elif int(ubicacion)==2:
-                    #    driver.find_elements(By.XPATH,'//*[contains(text(),"BACKOFFICE GNP OCCIDENTE 3")]')[1].click()                        
-                    #else:                        
-                    #driver.find_elements(by=By.XPATH, value='//*[contains(text(),"BACKOFFICE GNP OCCIDENTE 1.")]')[0].click()
+                    wait = WebDriverWait(driver, 10)
+                    btn = wait.until(EC.element_to_be_clickable((By.XPATH, '//button[contains(.,"GNP_LEIVED BOTERO FRANCO")]')))
+                    btn.click()
                     time.sleep(1)
-                        
 
                 except Exception as e:
                     ConectorDbMysql().FuncInsInfoOne(("SPR_INS_ESTBOT",[self.idbot,"Error Arbol!"]))

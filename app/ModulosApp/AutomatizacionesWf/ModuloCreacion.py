@@ -59,11 +59,8 @@ def selector_Creacion(self,idBot,Idactividad,ActPro):
                     time.sleep(2)
                     driver.quit()
                     return
-                else:pass
-            else:pass
-            
 
-            element = WebDriverWait(driver,30).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toaGantt-tb toaGantt-tb-name"]')))
+            WebDriverWait(driver,30).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toaGantt-tb toaGantt-tb-name"]')))
             try:                    
                 driver.execute_script('document.querySelector("#panel").setAttribute("style","display:none")')
             except:pass
@@ -73,9 +70,9 @@ def selector_Creacion(self,idBot,Idactividad,ActPro):
                 while x<=5:
                     try:
                         driver.implicitly_wait(5)
-                        element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="app-button-title" and contains(text(),"Acciones")]')))                        
+                        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="app-button-title" and contains(text(),"Acciones")]')))                        
                         driver.find_element(by=By.XPATH, value='//*[@class="app-button-title" and contains(text(),"Acciones")]').click()
-                        element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@class="toolbar-menu-button-title" and contains(text(),"Agregar actividad")]')))
+                        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@class="toolbar-menu-button-title" and contains(text(),"Agregar actividad")]')))
                         botondos = driver.find_element(by=By.XPATH, value='//*[@class="toolbar-menu-button-title" and contains(text(),"Agregar actividad")]')
                         if botondos.is_displayed() == True:
                             time.sleep(0.5)
@@ -224,10 +221,6 @@ def selector_Creacion(self,idBot,Idactividad,ActPro):
                     Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
                     print(Nomb_error)
 
-                
-
-            
-            
             def selector_tipo_actividad(self):
                 for i in range(3):
                     try:
@@ -478,8 +471,6 @@ def selector_Creacion(self,idBot,Idactividad,ActPro):
                     else:
                         driver.find_element(by=By.XPATH, value='//*[@aria-label="9000424742 - Telcos"]').click()
         
-
-
             def detalle_gestion(self):
                 for i in range(3):
                     try:
