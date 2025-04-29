@@ -84,6 +84,8 @@ for i in "${!ArrayNames[@]}"; do
     echo "    environment:" >> docker-compose.override.yml
     echo "      - SE_VNC_NO_PASSWORD=1" >> docker-compose.override.yml
     echo "      - WAIT_TIMEOUT=0" >> docker-compose.override.yml
+    echo "      - NOVNC_ENABLE_CLIPBOARD=true" >> docker-compose.override.yml
+    echo "      - VNC_CLIPBOARD_LIMIT=10485760" >> docker-compose.override.yml
     echo "    restart: always" >> docker-compose.override.yml
 done
 

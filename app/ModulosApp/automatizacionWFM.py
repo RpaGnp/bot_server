@@ -176,119 +176,127 @@ class GestorWf():
             self.driver.get('https://amx-res-co.etadirect.com/')
             # self.driver.save_screenshot('./screenshot.png')
 
-    def Login(self,Aplicativo,Usuario,Clave):
-        driver=self.driver      
-        Usuario=Usuario.strip()
-        Clave=Clave.strip()        
+    def Login(self, Aplicativo, Usuario, Clave):
+        driver = self.driver
+        Usuario = Usuario.strip()
+        Clave = Clave.strip()
         self.usuario = Usuario
         driver.maximize_window()
-        if Aplicativo=="WFM":
-            self.driver.get("https://amx-res-co.etadirect.com/")                
-            
-            # Espera explícita para el campo de usuario
-            wait = WebDriverWait(self.driver, 60)
-            username_field = wait.until(EC.presence_of_element_located((By.ID, 'username')))
-            
-            # Limpiar y enviar el nombre de usuario
-            username_field.clear()
-            username_field.send_keys(self.usuario)
-            # self.driver.save_screenshot('./screenshot.png')
-            
-            # Espera explícita para el campo de contraseña
-            password_field = wait.until(EC.presence_of_element_located((By.ID, 'password')))
-            
-            # Limpiar y enviar la contraseña
-            password_field.clear()
-            password_field.send_keys(Clave)
-            time.sleep(1)
-            self.driver.execute_script('document.querySelector("#sign-in > div").click()')
-            time.sleep(3)
-            #while driver.find_element(By.XPATH,'//div[@id="wait"]').get_attribute("style")=="":
-            #    time.sleep(1)
-            '''except Exception as e:
-            Nomb_error = 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
-            print("! error conexion: ", e, Nomb_error)'''
-            # self.driver.save_screenshot('./screenshot.png')
-
-            WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-            time.sleep(1)
-
-            # Esperar indefinidamente hasta que el elemento user-confirm sea visible y hacer clic
+        
+        if Aplicativo == "WFM":
             try:
-                element = WebDriverWait(self.driver, 5).until(
-                    EC.element_to_be_clickable((By.ID, 'user-confirm'))
-                )
-                element.click()
-                time.sleep(2)
-                WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-                time.sleep(1)
-            except:
-                pass
-
-            if self.driver.title=="Oracle Field Service":                
-                bucle=1
-                while bucle<=2:
-                    try:
-                        myDinamicElement=self.driver.find_element(by=By.XPATH, value='//*[@id="username"]')
-                        self.driver.find_element(by=By.XPATH, value='//*[@id="username"]').clear()
-                        self.driver.find_element(by=By.XPATH, value='//*[@id="username"]').send_keys(Usuario)
-                        time.sleep(2)
-                        self.driver.find_element(by=By.XPATH, value='//*[@id="password"]').clear()
-                        self.driver.find_element(by=By.XPATH, value='//*[@id="password"]').send_keys(Clave)
-                        time.sleep(1)
-                        self.driver.find_element(by=By.XPATH, value='//*[@id="delsession"]').click()
-                        time.sleep(2)
-                        self.driver.execute_script('document.querySelector("#sign-in > div").click()')
-                        #intro=self.driver.find_element_by_name('user_submitted_login_form').click()
-                        time.sleep(3)
-                        #while driver.find_element(By.XPATH,'//div[@id="wait"]').get_attribute("style")=="":
-                        #    time.sleep(1)
-                        break
-                    except Exception as e:
-                        Nomb_error = 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
-                        print("! error conexion: ", e, Nomb_error)
-                        bucle+=1
-                print(bucle)
-
-                if bucle>=2:
-                    sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
-                    ConectorDbMysql().FuncInsInfoOne(sql)            
-                    self.driver.quit()        
-                else:
-                    sql=("SPR_INS_ESTBOT",[self.idbot,"En labor"])
-                    ConectorDbMysql().FuncInsInfoOne(sql)                    
-                    #WebDriverWait(self.driver, 160).until(EC.visibility_of_element_located((By.XPATH,'//button[@aria-label="Ocultar árbol de recursos"]')))
-                    print("Login 2 vez ok!")
-                    #validar cambios de contraseñas            
-                    WebDriverWait(driver, 200).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-                    time.sleep(1)            
-                    print(driver.title)
-                    if driver.title=="Cambiar contraseña - Oracle Field Service":
-                        sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
-                        ConectorDbMysql().FuncInsInfoOne(sql)            
+                # Navigate to the login page
+                self.driver.get("https://amx-res-co.etadirect.com/")
+                
+                # Wait for the login form to be present
+                wait = WebDriverWait(self.driver, 60)
+                
+                # Function to perform login
+                def perform_login():
+                    username_field = wait.until(EC.presence_of_element_located((By.ID, 'username')))
+                    username_field.clear()
+                    username_field.send_keys(self.usuario)
+                    
+                    password_field = wait.until(EC.presence_of_element_located((By.ID, 'password')))
+                    password_field.clear()
+                    password_field.send_keys(Clave)
+                    
+                    # Click login button
+                    self.driver.execute_script('document.querySelector("#sign-in > div").click()')
+                
+                # Perform initial login
+                perform_login()
+                
+                # Wait for loading indicator to disappear
+                wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                
+                # Check for different scenarios
+                max_attempts = 3
+                attempt = 0
+                
+                while attempt < max_attempts:
+                    current_title = driver.title
+                    
+                    # Scenario 1: Direct login successful
+                    if current_title == "Consola de despacho - Oracle Field Service":
+                        sql = ("SPR_INS_ESTBOT", [self.idbot, "En labor"])
+                        ConectorDbMysql().FuncInsInfoOne(sql)
+                        return True
+                    
+                    # Scenario 2: Existing session
+                    if current_title == "Oracle Field Service":
+                        try:
+                            # Find and click the checkbox for new session
+                            checkbox = wait.until(EC.presence_of_element_located((By.ID, 'delsession')))
+                            checkbox.click()
+                            time.sleep(1)
+                            
+                            # Perform login again
+                            perform_login()
+                            wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                        except Exception as e:
+                            print(f"Error handling existing session: {str(e)}")
+                    
+                    # Scenario 3: Password change required
+                    if current_title == "Cambiar contraseña - Oracle Field Service":
+                        sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login - Cambio de contraseña requerido"])
+                        ConectorDbMysql().FuncInsInfoOne(sql)
                         self.driver.quit()
-                    else:
-                        pass
-                # self.driver.save_screenshot('./screenshot.png')
-  
-            else:
-                sql=("SPR_INS_ESTBOT",[self.idbot,"En labor"])
-                ConectorDbMysql().FuncInsInfoOne(sql)                    
-                #validar cambios de contraseñas            
-                WebDriverWait(driver, 120).until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-                time.sleep(1)            
-                print(driver.title)
-                if driver.title=="Cambiar contraseña - Oracle Field Service":
-                    sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
-                    ConectorDbMysql().FuncInsInfoOne(sql)            
-                    self.driver.quit()
-                else:
-                    pass
+                        return False
+                    
+                    # Scenario 4: Application load error
+                    if current_title == "The application could not load.":
+                        try:
+                            self.driver.find_element(By.XPATH, '/html/body/div[4]/div/div[3]/button').click()
+                            print("boton 0")
+                        except:
+                            pass
+                    
+                        # Método 1: Usando XPath
+                        try:
+                            print("boton 1")
 
-                #print("entrada sin incovenientes")
-            # self.driver.save_screenshot('./screenshot.png')
+                            reload_button = WebDriverWait(driver, 10).until(
+                                EC.element_to_be_clickable((By.XPATH, "//button[@class='user-confirm-button submit' and contains(text(),'Reload')]"))
+                            )
+                            reload_button.click()
+                            print("Botón Reload clickeado exitosamente")
+                        except Exception as e:
+                            print(f"Error al hacer clic en el botón: {e}")
 
-        elif Aplicativo=="GLAPP":
+                        # Método 2 (alternativo): Usando selector CSS
+                        # Si el método 1 falla, intenta con este
+                        try:
+                            print("boton 2")
+
+                            reload_button = WebDriverWait(driver, 10).until(
+                                EC.element_to_be_clickable((By.CSS_SELECTOR, "button.user-confirm-button.submit"))
+                            )
+                            reload_button.click()
+                            print("Botón Reload clickeado exitosamente usando CSS selector")
+                        except Exception as e:
+                            print(f"Error al hacer clic en el botón con CSS: {e}")
+
+
+
+                    attempt += 1
+                    time.sleep(1)
+                
+                # If we get here, login failed after max attempts
+                sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login - Máximo de intentos alcanzado"])
+                ConectorDbMysql().FuncInsInfoOne(sql)
+                self.driver.quit()
+                return False
+                
+            except Exception as e:
+                error_msg = f"Error en login: {str(e)}"
+                print(error_msg)
+                sql = ("SPR_INS_ESTBOT", [self.idbot, error_msg])
+                ConectorDbMysql().FuncInsInfoOne(sql)
+                self.driver.quit()
+                return False
+
+        elif Aplicativo == "GLAPP":
             driver.get("https://mglapp.claro.com.co/catastro-warIns/view/MGL/template/login.xhtml")
 
             driver.implicitly_wait(60)
@@ -417,6 +425,7 @@ class GestorWf():
         print("="*10,"Login ok")
     
         # self.driver.save_screenshot('./screenshot.png')
+
 
     def ExpanderCiudad(self,Ciudad,ubicacion):
         #print(ArrayTecSaludo)
