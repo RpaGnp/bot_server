@@ -207,38 +207,34 @@ class GestorWf():
                 # Perform initial login
                 perform_login()
                 
-                # Wait for loading indicator to disappear
-                wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-                
                 # Check for different scenarios
-                max_attempts = 3
+                max_attempts = 10
                 attempt = 0
                 
                 while attempt < max_attempts:
                     current_title = driver.title
-                    print(current_title)
                     
                     # Scenario 1: Direct login successful
                     if current_title == "Consola de despacho - Oracle Field Service":
+                        print("entro en el if 1: ",current_title)
                         sql = ("SPR_INS_ESTBOT", [self.idbot, "En labor"])
                         ConectorDbMysql().FuncInsInfoOne(sql)
                         return True
                     
                     # Scenario 2: Existing session
                     if current_title == "Oracle Field Service":
+                        print("entro en el if 2: ",current_title)
                         try:
                             # Find and click the checkbox for new session
                             checkbox = wait.until(EC.presence_of_element_located((By.ID, 'delsession')))
                             checkbox.click()
-                            time.sleep(1)
-                            
-                            # Perform login again
                             perform_login()
                         except Exception as e:
                             print(f"Error handling existing session: {str(e)}")
                     
                     # Scenario 3: Password change required
                     if current_title == "Cambiar contraseña - Oracle Field Service":
+                        print("entro en el if 3: ",current_title)
                         sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login - Cambio de contraseña requerido"])
                         ConectorDbMysql().FuncInsInfoOne(sql)
                         self.driver.quit()
@@ -246,41 +242,25 @@ class GestorWf():
                     
                     # Scenario 4: Application load error
                     if current_title == "The application could not load.":
-                        try:
-                            self.driver.find_element(By.XPATH, '/html/body/div[4]/div/div[3]/button').click()
-                            print("boton 0")
-                        except:
-                            pass
+                        print("entro en el if 4: ",current_title)
                     
                         # Método 1: Usando XPath
                         try:
-                            print("boton 1")
-
+                            time.sleep(5)
                             reload_button = WebDriverWait(driver, 10).until(
                                 EC.element_to_be_clickable((By.XPATH, "//button[@class='user-confirm-button submit' and contains(text(),'Reload')]"))
                             )
                             reload_button.click()
                             print("Botón Reload clickeado exitosamente")
+                            time.sleep(1)
+                            continue
                         except Exception as e:
                             print(f"Error al hacer clic en el botón: {e}")
 
-                        # Método 2 (alternativo): Usando selector CSS
-                        # Si el método 1 falla, intenta con este
-                        try:
-                            print("boton 2")
-
-                            reload_button = WebDriverWait(driver, 10).until(
-                                EC.element_to_be_clickable((By.CSS_SELECTOR, "button.user-confirm-button.submit"))
-                            )
-                            reload_button.click()
-                            print("Botón Reload clickeado exitosamente usando CSS selector")
-                        except Exception as e:
-                            print(f"Error al hacer clic en el botón con CSS: {e}")
-
-                    wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                     attempt += 1
                     time.sleep(1)
 
+                wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                 print("login exitoso")
                 
                 # If we get here, login failed after max attempts

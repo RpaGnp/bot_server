@@ -80,9 +80,11 @@ class SelectorNotasAuto():
 			data = list(ConectorDbMysql().FuncGetUpdSpr(1,"spr_get_notpendes",Arraydatos=[Idactividad,ciudad]))
 			print(data[0])
 			if data[0] == 'False':
-				print('tomar caso')
-				data = list(ConectorDbMysql().FuncGetUpdSpr(1,"spr_get_notpendes_1",Arraydatos=[Idactividad,ciudad]))
-
+				try:
+					print('tomar caso')
+					data = list(ConectorDbMysql().FuncGetUpdSpr(1,"spr_get_notpendes_1",Arraydatos=[Idactividad,ciudad]))
+				except Exception as e:
+					continue
 				
 			print("*", data)
 
@@ -101,15 +103,9 @@ class SelectorNotasAuto():
 				formatted_strings = [f'{x}: {str(y).strip()}' for x, y in DicionarioDatos.items()]
 				resulting_string = ", ".join(formatted_strings)
 
-				# self.driver.save_screenshot('screenshot.png')
-
 				BotWfm.EsperaSearch()
 
-				# self.driver.save_screenshot('screenshot.png')
-
 				EstadoConsulta = BotWfm.FillBusqueda(data[1])
-				# self.driver.save_screenshot('screenshot.png')
-
 				
 				if EstadoConsulta[0]:
 					try:

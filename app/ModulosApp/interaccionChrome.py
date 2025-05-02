@@ -96,17 +96,11 @@ class BotGestionWF():
 		#wait.until(EC.title_is(Titulo))
 		
 	def EsperaSearch(self):
-		# try:
-		# 	element = WebDriverWait(self.driver,50).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toa-panel-content edtree"]')))			
-		# except:
-		# 	self.driver.refresh()
-		# 	self.driver.quit()
-		# 	return
-		
 		try:
 			# Buscar el botón de búsqueda global por su clase y atributos
 			busqueda_global = self.driver.find_element(by=By.CSS_SELECTOR, value='.jbf-icon-button.action-global-search-icon[role="button"]')
 			busqueda_global.click()
+			time.sleep(2)
 		except:
 			print("No se encontró el botón de búsqueda global")
 

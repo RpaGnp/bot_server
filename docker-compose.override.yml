@@ -1,27 +1,30 @@
 version: '3.8'
 
 services:
-  bot_gestorcali4:
+  bot_test:
     build:
       context: .
-    container_name: bot_gestorcali4
+    container_name: bot_test
     volumes:
       - ./app:/app
       - /home/Bot_Server/DBGestionBot/:/DBGestionBot
     environment:
-      - BOT_NAME=Bot_GestorCali4
+      - BOT_NAME=Bot_test
       - CHROME_PORT=4445
-      - CHROME_HOST=bot_gestorcali4_chrome
-  bot_gestorcali4_chrome:
+      - CHROME_HOST=bot_test_chrome
+    depends_on:
+      bot_test_chrome:
+        condition: service_healthy
+  bot_test_chrome:
     image: selenium/standalone-chrome
-    container_name: bot_gestorcali4_chrome
+    container_name: bot_test_chrome
     ports:
       - "4445:4444"
-      - "7900:7900"
+      - "7999:7900"
       - "9222:9222"
     environment:
       - SE_VNC_NO_PASSWORD=1
-      - WAIT_TIMEOUT=0
+      - WAIT_TIMEOUT=60
       - NOVNC_ENABLE_CLIPBOARD=true
       - VNC_CLIPBOARD_LIMIT=10485760
     restart: always

@@ -40,9 +40,7 @@ class GestorLabor:
 				Navegador.Login("GLAPP",ArrayCred[4].decode('utf-8'),ArrayCred[5].decode('utf-8'))
 			else:
 				Navegador.Login("MODULO",ArrayCred[4].decode('utf-8'),ArrayCred[5].decode('utf-8'))#
-				
-			#if str(ArrayCred[1]) in ['Completar',"Marcar Confirmacion","Cancelar WFM","Marcar Demora","Marcacion Multiple","Marcar Seguimiento","Marcacion Soporte","Marcacion TAM"]:
-			#	Navegador.ConfiBusqueda()			
+						
 			time.sleep(1)
 			print(ArrayCred[1])
 			if str(ArrayCred[1]) in ['Crear',"Crear 'No programada'",'Completar']:
@@ -50,11 +48,7 @@ class GestorLabor:
 			elif str(ArrayCred[1]) in ['Completar Backlog']:
 				Navegador.ExpanderCiudadBacklog(ArrayCred[2],ArrayCred[3])
    
-			#return
-			'''elif str(ArrayCred[1]) in ['Completar']:
-				Navegador.ExpanderCiudadComp(ArrayCred[2],ArrayCred[3])'''
-
-
+			print('aqui pasa el login')
 			Navegador.LauncherGestion(ArrayCred[2])
 
 			return
