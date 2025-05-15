@@ -213,13 +213,17 @@ class GestorWf():
                 
                 while attempt < max_attempts:
                     current_title = driver.title
+                    wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                    attempt += 1
+                    time.sleep(2)
                     
                     # Scenario 1: Direct login successful
                     if current_title == "Consola de despacho - Oracle Field Service":
                         print("entro en el if 1: ",current_title)
                         sql = ("SPR_INS_ESTBOT", [self.idbot, "En labor"])
                         ConectorDbMysql().FuncInsInfoOne(sql)
-                        return True
+                        login_success = True
+                        break
                     
                     # Scenario 2: Existing session
                     if current_title == "Oracle Field Service":
@@ -237,16 +241,12 @@ class GestorWf():
                         print("entro en el if 3: ",current_title)
                         sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login - Cambio de contraseña requerido"])
                         ConectorDbMysql().FuncInsInfoOne(sql)
-                        self.driver.quit()
-                        return False
                     
                     # Scenario 4: Application load error
                     if current_title == "The application could not load.":
-                        print("entro en el if 4: ",current_title)
                     
-                        # Método 1: Usando XPath
                         try:
-                            time.sleep(5)
+                            time.sleep(2)
                             reload_button = WebDriverWait(driver, 10).until(
                                 EC.element_to_be_clickable((By.XPATH, "//button[@class='user-confirm-button submit' and contains(text(),'Reload')]"))
                             )
@@ -257,17 +257,11 @@ class GestorWf():
                         except Exception as e:
                             print(f"Error al hacer clic en el botón: {e}")
 
-                    attempt += 1
-                    time.sleep(1)
-
-                wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-                print("login exitoso")
-                
-                # If we get here, login failed after max attempts
-                sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login"])
-                ConectorDbMysql().FuncInsInfoOne(sql)
-                self.driver.quit()
-                return False
+            
+                if attempt >= 10:
+                    # If we get here, login failed after max attempts
+                    sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login"])
+                    ConectorDbMysql().FuncInsInfoOne(sql)
                 
             except Exception as e:
                 error_msg = f"Error en login: {str(e)}"
@@ -387,12 +381,6 @@ class GestorWf():
                 time.sleep(10)
                 ConectorDbMysql().RepActividad(self.idbot)
                 validador+=1
-            elif data[0]=="En labor":
-                break
-            else:
-                break
-
-        # self.driver.save_screenshot('./screenshot.png')
 
         Dato=ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES",[self.idbot]))        
         if Dato[0]!=None:            
@@ -401,8 +389,7 @@ class GestorWf():
                 driver.find_element(by=By.XPATH, value='//*[@data-bind="text: initials"]').click()
                 time.sleep(1)                                
                 return
-        else:
-            pass
+
         print("="*10,"Login ok")
     
         # self.driver.save_screenshot('./screenshot.png')

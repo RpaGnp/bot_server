@@ -57,7 +57,6 @@ class Bot_server:
 		sql=("SPR_GET_INFOBOT",[self.EjecutablePrograma])
 		IdBot =ConectorDbMysql().GetQueryPars(sql)[0]		
 
-		print(IdBot)
 		if IdBot is None:			
 			# se crea el mismo en la base de datos
 			sql=("SPR_INS_NEWBOT",[self.EjecutablePrograma,direccion_equipo,usuario_pc,nombre_equipo])					
@@ -65,8 +64,7 @@ class Bot_server:
 			time.sleep(3)
 			sql=("SPR_GET_INFOBOT",[self.EjecutablePrograma])
 			IdBot=ConectorDbMysql().GetQueryPars(sql)[0]
-		else:
-			print(IdBot)
+
 
 		IdAct = None
 		while 1:

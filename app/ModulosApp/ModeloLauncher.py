@@ -48,7 +48,6 @@ class GestorLabor:
 			elif str(ArrayCred[1]) in ['Completar Backlog']:
 				Navegador.ExpanderCiudadBacklog(ArrayCred[2],ArrayCred[3])
    
-			print('aqui pasa el login')
 			Navegador.LauncherGestion(ArrayCred[2])
 
 			return
