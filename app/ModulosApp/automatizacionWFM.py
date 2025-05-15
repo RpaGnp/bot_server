@@ -382,6 +382,9 @@ class GestorWf():
                 ConectorDbMysql().RepActividad(self.idbot)
                 validador+=1
 
+            if data[0]=="En labor":
+                break
+
         Dato=ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES",[self.idbot]))        
         if Dato[0]!=None:            
             if Dato[0]=="Eliminar":                       
