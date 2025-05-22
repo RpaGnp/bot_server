@@ -289,8 +289,20 @@ class HandleAgendamiento(handlepincancelar):
 					driver.find_element(By.XPATH,'//input[@type="radio" and @value="O"]').click()
 				time.sleep(0.5)
 				driver.find_element(By.XPATH,'//input[@type="submit"]').click()
-				time.sleep(2)
 
+				try:
+					estado_element = WebDriverWait(driver, 10).until(
+						EC.presence_of_element_located((By.ID, "estadoag"))
+					)
+					estado_texto = estado_element.text.strip()
+					estados_validos = [
+						"AGENDADO",
+						"REPROGRAMADA"
+					]
+					if estado_texto in estados_validos:
+						continue
+				except Exception as e:
+					return False, f"Error al validar estado: {str(e)}"
 
 				# verificar orden 
 				if driver.find_element(By.XPATH,'//body').text=='ningun dato parametrizado':

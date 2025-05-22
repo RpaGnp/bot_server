@@ -55,6 +55,7 @@ class Bot_server:
 		print("Version: ",__version__)
 		
 		sql=("SPR_GET_INFOBOT",[self.EjecutablePrograma])
+		print(sql)
 		IdBot =ConectorDbMysql().GetQueryPars(sql)[0]		
 
 		if IdBot is None:			

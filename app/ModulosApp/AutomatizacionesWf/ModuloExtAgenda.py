@@ -3,6 +3,7 @@ import sys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import time
 import sys
 from ..ModelDataBase import ConectorDbMysql
@@ -41,31 +42,41 @@ def selector_extagenda(self,idbot,idAct):
 			driver.find_element(By.XPATH,'//input[@type="submit"]').click()
 			ConectorDbMysql().RepActividad(idbot)
 			try: 
-				element = WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.XPATH, '//table[@class="td_presentacion"]//th[@class="subtitulo_mod"]')))
+				WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.XPATH, '//table[@class="td_presentacion"]//th[@class="subtitulo_mod"]')))
 			except Exception as e:				
 				time.sleep(0.5)
 				driver.switch_to.window(driver.window_handles[0])
 				ConectorDbMysql().FuncUpdSpr("spr_upd_datage",[row[0],str({"Error":"No apta"}),str({"Error":"No apta"})])
 				continue
 
-			time.sleep(3)
-			
-			
+			try:
+				WebDriverWait(driver, 5).until(
+					EC.presence_of_element_located((By.ID, "dialog_msg_dialog"))
+				)
+				boton_aceptar = driver.find_element(
+					By.XPATH, 
+					"//div[@id='dialog_msg_dialog']/following-sibling::div//button[contains(.,'Aceptar')]"
+				)
+				boton_aceptar.click()
+			except TimeoutException:
+				print("El diálogo no apareció, continuando...")
+			except Exception as e:
+				print(f"Error al manejar el diálogo: {e}")
 
-			scv="return document.evaluate("'"//div[@role='"'dialog'"' and @aria-labelledby='"'ui-dialog-title-dialog_msg_dialog'"']"'", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
-			#scv="return document.evaluate("'"//div[@role='"'dialog'"' and @aria-labelledby='"'ui-dialog-title-dialog_msg_dialog'"']"'", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getAttribute('style');"
-			vista=driver.execute_script(scv)
-			if vista!=None:
-				sc="document.evaluate("'"//div[@class='"'ui-widget-overlay'"']"'", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();"
-				driver.execute_script(sc)
-			else:pass
+			# scv="return document.evaluate("'"//div[@role='"'dialog'"' and @aria-labelledby='"'ui-dialog-title-dialog_msg_dialog'"']"'", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
+			# #scv="return document.evaluate("'"//div[@role='"'dialog'"' and @aria-labelledby='"'ui-dialog-title-dialog_msg_dialog'"']"'", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getAttribute('style');"
+			# vista=driver.execute_script(scv)
+			# if vista!=None:
+			# 	sc="document.evaluate("'"//div[@class='"'ui-widget-overlay'"']"'", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();"
+			# 	driver.execute_script(sc)
+			# else:pass
 
 			if driver.find_element(By.XPATH,'//div[@id="estadoag"]').text=='NO AGENDADO':
 				time.sleep(0.5)
 				#driver.switch_to.window(driver.window_handles[0])
 				ConectorDbMysql().FuncUpdSpr("spr_upd_datage",[row[0],str({"Error":"No Agendada"}),str({"Error":"No Agendada"})])
 				continue
-			else:pass
+
 
 			driver.find_element(by=By.XPATH,value='//div[@id="visita_menu"]').click()
 			time.sleep(0.5)
@@ -79,7 +90,7 @@ def selector_extagenda(self,idbot,idAct):
 						DicGral.update({driver.find_elements(by=By.XPATH,value='//div[@id="visita"]//table/tbody/tr['+str(i)+']/th')[x].text:driver.find_elements(by=By.XPATH,value='//div[@id="visita"]//table/tbody/tr['+str(i)+']/td')[x].text})		
 					except:pass
 
-			#print(DicGral)
+			print(DicGral)
 
 			time.sleep(2)
 			for i in range(3):
@@ -126,3 +137,11 @@ def selector_extagenda(self,idbot,idAct):
 		Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
 		print("@",Nomb_error)
 		driver.quit()
+
+
+
+		{"servicio": "CrmCalidad", "ciudad": 1, "tipo": 1, "procedimiento": "spr_get_credbyusu", "arraydatos": ["1144138849"
+    ]
+}
+		
+		{"servicio": "CrmCalidad", "ciudad": 1, "tipo": 1, "procedimiento": "spr_get_credbyusu", "arraydatos": ["1022377697"]}
