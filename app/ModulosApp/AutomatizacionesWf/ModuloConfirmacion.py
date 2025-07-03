@@ -44,7 +44,7 @@ def selector_Confirmacion(self,idBot,Idactividad):
 			print(data)
 			ConectorDbMysql().RepActividad(idBot)
 			try:
-				element = WebDriverWait(driver,50).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toa-panel-content edtree"]')))
+				WebDriverWait(driver,50).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toa-panel-content edtree"]')))
 			except:pass
 
 			try:					
@@ -71,8 +71,6 @@ def selector_Confirmacion(self,idBot,Idactividad):
 					time.sleep(1)					
 					driver.quit()
 					return
-			else:
-				pass
 
 			try:
 				# Buscar el botón de búsqueda global por su clase y atributos
@@ -85,11 +83,9 @@ def selector_Confirmacion(self,idBot,Idactividad):
 			driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 			driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(data[1])
 			driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
-
-
+     
 			try:
-				element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))
-				
+				WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))
 			except Exception as e:					
 				Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e
 				print(Nomb_error)
@@ -100,14 +96,11 @@ def selector_Confirmacion(self,idBot,Idactividad):
 			if driver.find_element(by=By.XPATH, value='//*[@class="toa-search-empty"]').text != "":
 				compuerta=False
 				continue
-			else:
-				pass
-
 
 			_fecha_hoy=fecha_actual(self)
 
 			time.sleep(1)
-			element = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))
+			WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))
 			_lista_lls=driver.find_elements(by=By.XPATH, value='//*[@class="found-item-activity"]')			
 			if len(_lista_lls)==0:
 				FunGuardar(self,[data[0],"Confirmacion Fallida"])
@@ -164,22 +157,16 @@ def selector_Confirmacion(self,idBot,Idactividad):
 				FunGuardar(self,[data[0],"Confirmacion Fallida"])
 				compuerta=False
 				continue
-			else:
-				pass
-			
 
 			if Primera_ot:				
-				element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="button inline" and contains(text(),"Backoffice")]')))
-			else:
-				pass
+				WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="button inline" and contains(text(),"Backoffice")]')))
 			
 			driver.find_element(by=By.XPATH, value='//*[@class="button inline" and contains(text(),"Backoffice")]').click()			
 			WebDriverWait(driver, 30).until(EC.invisibility_of_element_located((By.XPATH,'//*[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
 			#===================================== ingreso al formulario=============================================================
-			element = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="button inline" and contains(text(),"Confirmación")]')))
+			WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="button inline" and contains(text(),"Confirmación")]')))
 			driver.find_element(by=By.XPATH, value='//*[@class="button inline" and contains(text(),"Confirmación")]').click()
 			WebDriverWait(driver, 30).until(EC.invisibility_of_element_located((By.XPATH,'//*[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
-
 
 			time.sleep(2)
 			html= driver.find_element(By.XPATH, '//*[@id="content" and @class="content"]').text			
@@ -202,8 +189,7 @@ def selector_Confirmacion(self,idBot,Idactividad):
 					if driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Agent_Confirmation"]').get_attribute("checked")==None:
 						driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Agent_Confirmation"]').click()
 						tokens.append(driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Agent_Confirmation"]').get_attribute("checked"))  # AGENTE CONFIRMACION
-					else:
-						pass
+
 				except:
 					tokens.append("Elemento NO disponible")
 
@@ -212,8 +198,6 @@ def selector_Confirmacion(self,idBot,Idactividad):
 			def confirmacion_agente_ck():
 				if driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Confirmation_IVR"]').get_attribute("checked")==None:
 					driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Confirmation_IVR"]').click()
-				else:
-					pass
 				tokens.append(driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Confirmation_IVR"]').get_attribute("checked")) # CONFIRMACION AGENTE
 			try:
 				confirmacion_agente_ck()
@@ -258,11 +242,9 @@ def selector_Confirmacion(self,idBot,Idactividad):
 				gs=0
 				while gs<2:
 					try:
-						element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@data-label="BACK_CONF_Aliado CGO"]')))
+						WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@data-label="BACK_CONF_Aliado CGO"]')))
 						if driver.find_element(by=By.XPATH, value='//*[@data-label="BACK_CONF_Aliado CGO"]').get_attribute("value")!="GNP":
 							driver.find_element(by=By.XPATH, value='//div[@data-value="GNP"]').click()        	
-						else:
-							pass						
 						break
 					except Exception as e:
 						print(e)
@@ -277,7 +259,7 @@ def selector_Confirmacion(self,idBot,Idactividad):
 				gs=0
 				while gs<2:
 					try:
-						element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@data-label="XA_Agent_Confirmation_Approver"]')))
+						WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@data-label="XA_Agent_Confirmation_Approver"]')))
 						driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Agent_Confirmation_Approver"]').clear()
 						driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Agent_Confirmation_Approver"]').send_keys("Gestion IVR")
 						tokens.append(driver.find_element(by=By.XPATH, value='//*[@data-label="XA_Agent_Confirmation_Approver"]').get_attribute("value"))  # nombre de con quien se realizo la gestion
@@ -316,7 +298,7 @@ def selector_Confirmacion(self,idBot,Idactividad):
 			x=0
 			while 'Confirmación.' in driver.title and x <3:
 				try:
-					element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="submit" and contains(text(),"OK")]')))
+					WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@type="submit" and contains(text(),"OK")]')))
 					driver.find_element(by=By.XPATH, value='//*[@type="submit" and contains(text(),"OK")]').click()
 					time.sleep(2)
 				except Exception as e:
@@ -328,7 +310,7 @@ def selector_Confirmacion(self,idBot,Idactividad):
 		
 			
 			try:
-				element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="app-button-title" and contains(text(),"Consola de Despacho")]')))
+				WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="app-button-title" and contains(text(),"Consola de Despacho")]')))
 				driver.find_element(by=By.XPATH, value='//*[@class="app-button-title" and contains(text(),"Consola de Despacho")]').click()
 			except Exception as e:
 				driver.back()

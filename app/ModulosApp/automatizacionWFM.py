@@ -212,10 +212,10 @@ class GestorWf():
                 attempt = 0
                 
                 while attempt < max_attempts:
-                    current_title = driver.title
                     wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                     attempt += 1
                     time.sleep(2)
+                    current_title = driver.title
                     
                     # Scenario 1: Direct login successful
                     if current_title == "Consola de despacho - Oracle Field Service":
@@ -243,7 +243,8 @@ class GestorWf():
                         ConectorDbMysql().FuncInsInfoOne(sql)
                     
                     # Scenario 4: Application load error
-                    if current_title == "The application could not load.":
+                    # if current_title == "The application could not load.":
+                    if "The application could not load" in current_title:
                     
                         try:
                             time.sleep(2)
