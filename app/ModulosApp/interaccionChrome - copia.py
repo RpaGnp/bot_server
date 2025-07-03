@@ -117,7 +117,9 @@ class BotGestionWF():
 
 	def FillBusqueda(self,orden):
 		driver=self.driver
-		self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click() div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+		try:
+			self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click()
+		except: pass
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(orden)
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
@@ -159,7 +161,9 @@ class BotGestionWF():
 
 	def FillBusquedaBacklog(self,orden):
 		driver=self.driver
-		self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click() div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+		try:
+			self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click()
+		except: pass
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(orden)
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
