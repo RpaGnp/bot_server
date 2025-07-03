@@ -109,7 +109,8 @@ class BotGestionWF():
 
 	def FillBusqueda(self,orden):
 		driver=self.driver
-		self.driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+		# self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click() div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+		self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click()
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(orden)
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
@@ -117,7 +118,7 @@ class BotGestionWF():
 		fechaOt,tipoot,EstadOtColor=False,False,False
 
 		try:
-			element = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))
+			WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="found-item-activity"]')))
 		except Exception as e:
 			Nomb_error='Error on line {}'.format(sys.exc_info()[-1].tb_lineno), type(e).__name__, e			
 			return False, fechaOt,tipoot,EstadOtColor
@@ -151,7 +152,7 @@ class BotGestionWF():
 
 	def FillBusquedaBacklog(self,orden):
 		driver=self.driver
-		self.driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+		self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click() div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(orden)
 		self.driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)
