@@ -81,7 +81,9 @@ def selector_Seguimiento(self,idBot,Idactividad):
 				
 				time.sleep(0.50)
 				campo_busqueda = driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]')
-				driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+				try:
+					self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click()
+				except: pass
 				campo_busqueda.clear()
 				campo_busqueda.send_keys(Orden)
 				campo_busqueda.send_keys(Keys.ENTER)

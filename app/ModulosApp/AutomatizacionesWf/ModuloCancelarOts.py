@@ -97,7 +97,9 @@ def SelectorCanOrden(self,idBot,idActividad):
 			except:
 				pass		
 			
-			driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+			try:
+				self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click()
+			except: pass
 			driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').clear()
 			driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(data[1])
 			driver.find_element(by=By.XPATH, value='//*[@class="search-bar-input"]').send_keys(Keys.ENTER)

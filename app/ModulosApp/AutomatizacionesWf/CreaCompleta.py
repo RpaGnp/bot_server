@@ -108,7 +108,9 @@ def selector_Completacion(self,idBot,Idactividad,tipo):
 
 				time.sleep(0.5)
 							
-				driver.execute_script('document.querySelector("#search-bar-container > div.oj-flex-item.oj-sm-12 > div > div.search-bar-input-element-wrap > div > div.search-bar-input-hint-text").click()')
+				try:
+					self.driver.find_element(By.XPATH, "//input[@class='search-bar-input icon global-search-bar-input-button']").click()
+				except: pass
 				ramel=False
 				x=0
 				while x<3:
