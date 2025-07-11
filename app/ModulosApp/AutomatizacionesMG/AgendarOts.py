@@ -23,8 +23,6 @@ class HandleAgendamiento(handlepincancelar):
 										"CANCELADA":{"VenConAgenda":'//div[contains(text(),"Agenda registrada correctamente")]'}
 										}
 
-		
-
 	def login(self,driver,Usuario,Clave):	
 		try:
 		    driver.get("https://agendamiento.claro.com.co")
@@ -56,8 +54,6 @@ class HandleAgendamiento(handlepincancelar):
 			element = self.driver.find_element(By.XPATH,xpath)
 			self.driver.execute_script("arguments[0].removeAttribute('hidden')", element)
 
-
-
 	def fillform(self):
 		self.prepareform()
 		#//div[@id="confirmacion"]//table//tr//th[contains(text(),'Confirmación de la Visita')]
@@ -71,14 +67,12 @@ class HandleAgendamiento(handlepincancelar):
 		
 		for i in range(2):
 			self.fillformReagendar()
-
 		
 	def fillformReagendar(self):
 		for x in ['//input[@name="confir_email1"]','//input[@name="confir_email2"]','//input[@name="check_tel2"]']:
 			element=self.driver.find_element(By.XPATH,x)	
 			if element.is_selected()==False:
 				element.click()
-		
 
 	def GetFecha(self,diccapa):
 		'''
@@ -128,7 +122,6 @@ class HandleAgendamiento(handlepincancelar):
 				return True
 		return False
 		
-		
 	def Recorredorcapacidad(self):
 		print("ver capacidad")
 		#================recorre la capacida mostrada por filas y columnas==============
@@ -164,8 +157,6 @@ class HandleAgendamiento(handlepincancelar):
 
 	def jumpagenda(self):		
 		self.driver.execute_script("$('#iframeMapa').hide();")
-
-		
 		
 	def fillwindowpinreagenda(self):		
 		WebDriverWait(self.driver, 45).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_motivo_reagenda"]')))
@@ -175,10 +166,10 @@ class HandleAgendamiento(handlepincancelar):
 		WebDriverWait(self.driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
 		return
 		try:
-		    WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_pinReagenda"]')))            
-		    return 1
+			WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[@aria-labelledby="ui-dialog-title-dialog_pinReagenda"]')))            
+			return 1
 		except:
-		    return 0
+			return 0
 
 	def hideWindowPin(self):		
 		WebDriverWait(self.driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
@@ -200,8 +191,6 @@ class HandleAgendamiento(handlepincancelar):
 		self.driver.find_element(By.XPATH,'//div[contains(@aria-labelledby, "ui-dialog-title-dialog_msg_popup_motivo")]//input[@type="submit"]').click()
 		#rata
 		self.Espinvvencarga(45)
-		
-		
 
 	def mensajesModulo(self):				
 		clases = self.driver.find_elements_by_css_selector("[class^='ui-dialog ']")					
@@ -299,10 +288,11 @@ class HandleAgendamiento(handlepincancelar):
 						"AGENDADO",
 						"REPROGRAMADA"
 					]
-					if estado_texto in estados_validos:
+					if estado_texto in estados_validos and Trabajo != "Adelantar Ots":
 						continue
 				except Exception as e:
-					return False, f"Error al validar estado: {str(e)}"
+					print(f"Error al validar estado: {str(e)}")
+					continue
 
 				# verificar orden 
 				if driver.find_element(By.XPATH,'//body').text=='ningun dato parametrizado':
@@ -316,10 +306,9 @@ class HandleAgendamiento(handlepincancelar):
 					ConectorDbMysql().FuncInsInfoOne(sql)
 					continue
 
-
 				#dentro de la orden
 				try:			
-					element = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//table[@class="td_presentacion"]//th[@class="subtitulo_mod"]')))
+					WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//table[@class="td_presentacion"]//th[@class="subtitulo_mod"]')))
 				except Exception as e:
 					ConectorDbMysql().FuncInsInfoOne(("spr_upd_estgesdx", [data[0], e]))
 					continue
@@ -361,13 +350,13 @@ class HandleAgendamiento(handlepincancelar):
 							driver.execute_script("ajaxCapacity()")					
 							#buttonAccion.click()
 							try:
-								element = WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
+								WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
 								EsAgendable = True
 							except:
 								EsAgendable = False
 						elif valuebtn in ["Re Agendar"]:
 							buttonAccion.click()
-							element = WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
+							WebDriverWait(driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))
 							msnModulo = self.mensajesModulo()
 							if msnModulo[0]:
 								if EstadoOt == "CANCELADA":									
@@ -408,7 +397,7 @@ class HandleAgendamiento(handlepincancelar):
 					## ocultar el mapa
 					self.driver.execute_script("$('#iframeMapa').hide();")
 					try:
-						element = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="semana_calendario_capacity"]/table/tbody')))											
+						WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="semana_calendario_capacity"]/table/tbody')))											
 					except:																	
 						try:
 							element = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="infover"]/input[@value="Ag. Tradicional"]')))												

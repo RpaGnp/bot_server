@@ -563,7 +563,7 @@ class GestorWf():
             # self.driver.save_screenshot('screenshot.png')
             handlepincancelar(self.driver).SelectorCancelarAgenda(self.idbot,self.idAct,self.Trabajo)
         
-        elif self.Trabajo in ["Agendar Ots","Agendar->pin->cancelar"]:
+        elif self.Trabajo in ["Adelantar Ots", "Agendar Ots","Agendar->pin->cancelar"]:
             HandleAgendamiento(self.driver).SelectorAgendaOts(self.idbot,self.idAct,self.Trabajo)
 
         elif self.Trabajo in ["Cancelar WFM"]:
