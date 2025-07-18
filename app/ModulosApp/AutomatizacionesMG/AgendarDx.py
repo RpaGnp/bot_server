@@ -143,29 +143,34 @@ def SelectorAgendaDx(self,idbot,idAct,Trabajo):
 
 				conFilas=len(driver.find_elements(By.XPATH,'//*[@id="semana_calendario_capacity"]/table/tbody/tr'))
 				conCeldas =len(driver.find_elements(By.XPATH,'//*[@id="semana_calendario_capacity"]/table/tbody/tr[%s]/td'%conFilas))
-				
-				for celda in range(2,conCeldas):											
-					for fila in range(1,conFilas):
-						xpath='//*[@id="semana_calendario_capacity"]/table/tbody/tr['+str(fila)+']/td['+str(celda)+']'	
-						elemento=driver.find_element(By.XPATH,xpath)					
-						diacupo=elemento.get_attribute('data-date')
-						cancupos=elemento.text				
-						cancupos=int(cancupos.split(" ")[0])													
-						if cancupos > 0 :# and datetime.now().time() < limite_hora:					
-							#if datetime.strptime(diacupo, '%Y-%m-%d') == FechaActual and HoraActual <= datetime.strptime('12:00:00', "%H:%M:%S").time():
-							EstadoAgedar=True
-							driver.find_element(By.XPATH,xpath).click()
-							return True
-							#else:
-							#	dicCapacidad[diacupo]=xpath
-							#	EstadoAgedar=True						
+				for page in range(1,4):											
+					for celda in range(2,conCeldas):											
+						for fila in range(1,conFilas):
+							xpath='//*[@id="semana_calendario_capacity"]/table/tbody/tr['+str(fila)+']/td['+str(celda)+']'	
+							elemento=driver.find_element(By.XPATH,xpath)					
+							diacupo=elemento.get_attribute('data-date')
+							cancupos=elemento.text				
+							cancupos=int(cancupos.split(" ")[0])													
+							if cancupos > 0 :# and datetime.now().time() < limite_hora:					
+								#if datetime.strptime(diacupo, '%Y-%m-%d') == FechaActual and HoraActual <= datetime.strptime('12:00:00', "%H:%M:%S").time():
+								EstadoAgedar=True
+								driver.find_element(By.XPATH,xpath).click()
+								return True
+								#else:
+								#	dicCapacidad[diacupo]=xpath
+								#	EstadoAgedar=True						
+
+					td_element = driver.find_element(By.ID, "next-calendar-semana")
+					td_element.click()
+					time.sleep(5)
+					EstadoCapacidad=driver.find_element(By.XPATH,'//*[@id="semana_calendario_capacity"]/table/tbody').text					
+					if "No existe capacidad disponible para los intervalos" in EstadoCapacidad:
+						sql = ("spr_upd_estgesdx", [data[0], f'Orden no agendable {EstadoCapacidad}'])
+						ConectorDbMysql().FuncInsInfoOne(sql)	
+						continue
+					else:pass     
+
 				return EstadoAgedar
-
-
-
-
-
-
 
 			DicButton={}
 			VarAGenda=False
@@ -183,14 +188,12 @@ def SelectorAgendaDx(self,idbot,idAct,Trabajo):
 							j.clear()
 							j.send_keys(ArrayDatos[i])
 					
-					
 					continuarAgendando=False
 					clases = driver.find_elements_by_css_selector("[class^='ui-dialog ']")					
 					for clase in clases:
 						if "display: block;" in clase.get_attribute("style"):
 							ErrorOrden=clase.text							
 							continuarAgendando=True
-							
 
 					if continuarAgendando:
 						sql = ("spr_upd_estgesdx", [data[0], f'Orden no agendable {ErrorOrden}'])
@@ -215,12 +218,12 @@ def SelectorAgendaDx(self,idbot,idAct,Trabajo):
 																					driver.find_elements(By.XPATH,'//tr//td[@data-date="'+str(diaAgenda)+'"]')[0].click()'''
 					#wait
 					
-					element = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//span[@id="ui-dialog-title-dialog_confirmacion_agenda"]')))
+					WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, '//span[@id="ui-dialog-title-dialog_confirmacion_agenda"]')))
 					time.sleep(1)
 					driver.find_element(By.XPATH,'//button//span[contains(text(),"Confirmar")]').click()
 
 					try:
-						element = WebDriverWait(driver, 120).until(EC.visibility_of_element_located((By.XPATH, '//div[contains(text(),"Agenda registrada correctamente")]')))
+						WebDriverWait(driver, 120).until(EC.visibility_of_element_located((By.XPATH, '//div[contains(text(),"Agenda registrada correctamente")]')))
 						driver.find_elements(By.XPATH,'//span[contains(text(),"Cerrar")]')[-1].click()
 						
 						sql = ("spr_upd_estgesdx", [data[0], 'Orden agendada con exito'])			

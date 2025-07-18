@@ -83,7 +83,7 @@ class HandleAgendamiento(handlepincancelar):
 		sorted_fechas = sorted(diccapa.items(), key=lambda item: item[0])
 		driver.find_element(By.XPATH,sorted_fechas[0][1]).click()
 
-	def RecorredorcapacidadFecha(self,franjaAgenda,dia):
+	def RecorredorcapacidadFecha(self,franjaAgenda,dia, trabajo=None):
 		conFilas=len(self.driver.find_elements(By.XPATH,'//*[@id="semana_calendario_capacity"]/table/tbody/tr'))
 		conColumnas =len(self.driver.find_elements(By.XPATH,'//*[@id="semana_calendario_capacity"]/table/tbody/tr[%s]/td'%conFilas))
 		arrayXpathDia = []
@@ -94,7 +94,7 @@ class HandleAgendamiento(handlepincancelar):
 		
 		fecha_nueva_str = fecha_original_obj.strftime("%Y-%m-%d")
 		
-		if datetime.now().time().hour <= 12:
+		if datetime.now().time().hour <= 12 or trabajo == "Adelantar Ots":
 			inicol =2			
 		else:
 			inicol = 3
@@ -435,7 +435,7 @@ class HandleAgendamiento(handlepincancelar):
 					if data[3].lower().strip() == "no aplica" and data[3].lower().strip() == "no aplica":						
 						agendado= self.Recorredorcapacidad()													
 					else:
-						agendado= self.RecorredorcapacidadFecha(data[3],data[4])					
+						agendado= self.RecorredorcapacidadFecha(data[3],data[4], trabajo=Trabajo)					
 
 					try:
 						driver.implicitly_wait(0)
