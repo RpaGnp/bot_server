@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -212,10 +212,11 @@ class GestorWf():
                 attempt = 0
                 
                 while attempt < max_attempts:
-                    wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                    # wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                     attempt += 1
                     time.sleep(2)
                     current_title = driver.title
+                    print(f"Intento {attempt}: Título actual: {current_title}")
                     
                     # Scenario 1: Direct login successful
                     if current_title == "Consola de despacho - Oracle Field Service":
@@ -228,13 +229,17 @@ class GestorWf():
                     # Scenario 2: Existing session
                     if current_title == "Oracle Field Service":
                         print("entro en el if 2: ",current_title)
+
                         try:
                             # Find and click the checkbox for new session
                             checkbox = wait.until(EC.presence_of_element_located((By.ID, 'delsession')))
                             checkbox.click()
                             perform_login()
+                            continue
                         except Exception as e:
                             print(f"Error handling existing session: {str(e)}")
+                            time.sleep(3)
+                            continue
                     
                     # Scenario 3: Password change required
                     if current_title == "Cambiar contraseña - Oracle Field Service":
@@ -244,21 +249,55 @@ class GestorWf():
                     
                     # Scenario 4: Application load error
                     # if current_title == "The application could not load.":
+
                     if "The application could not load" in current_title:
-                    
                         try:
                             time.sleep(2)
-                            reload_button = WebDriverWait(driver, 10).until(
-                                EC.element_to_be_clickable((By.XPATH, "//button[@class='user-confirm-button submit' and contains(text(),'Reload')]"))
-                            )
-                            reload_button.click()
-                            print("Botón Reload clickeado exitosamente")
+                            reload_button = None
+                            
+                            # Método 1: XPATH original
+                            try:
+                                reload_button = WebDriverWait(driver, 5).until(
+                                    EC.element_to_be_clickable((By.XPATH, "//button[@class='user-confirm-button submit' and contains(text(),'Reload')]"))
+                                )
+                            except:
+                                # Método 2: CSS Selector
+                                try:
+                                    reload_button = WebDriverWait(driver, 5).until(
+                                        EC.element_to_be_clickable((By.CSS_SELECTOR, "button.user-confirm-button.submit"))
+                                    )
+                                except:
+                                    # Método 3: Por texto únicamente
+                                    try:
+                                        reload_button = WebDriverWait(driver, 5).until(
+                                            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(),'Reload')]"))
+                                        )
+                                    except:
+                                        # Método 4: Por clase parcial
+                                        reload_button = WebDriverWait(driver, 5).until(
+                                            EC.element_to_be_clickable((By.CLASS_NAME, "user-confirm-button"))
+                                        )
+                            
+                            # Ahora intentar hacer clic con las 3 estrategias
+                            try:
+                                reload_button.click()
+                                print("Botón Reload clickeado exitosamente")
+                            except:
+                                try:
+                                    driver.execute_script("arguments[0].click();", reload_button)
+                                    print("Botón Reload clickeado con JavaScript")
+                                except:
+                                    ActionChains(driver).move_to_element(reload_button).click().perform()
+                                    print("Botón Reload clickeado con ActionChains")
+                            
                             time.sleep(1)
                             continue
+                            
                         except Exception as e:
                             print(f"Error al hacer clic en el botón: {e}")
 
-            
+                    print(f"Intento {attempt} fallido, reintentando...")
+
                 if attempt >= 10:
                     # If we get here, login failed after max attempts
                     sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login"])

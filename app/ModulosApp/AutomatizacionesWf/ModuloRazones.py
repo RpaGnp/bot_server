@@ -95,7 +95,7 @@ class SelectorNotasAuto():
 
 				ahora = timer()
 				DicionarioDatos=self.GestorDic(data[3])
-				DicionarioDatos=json.loads(DicionarioDatos)
+				# DicionarioDatos=json.loads(DicionarioDatos)
 				DicionarioDatos['Fecha']=ahora[0]
 				DicionarioDatos['Hora']=ahora[1]
 				ArrayDataOt={}
