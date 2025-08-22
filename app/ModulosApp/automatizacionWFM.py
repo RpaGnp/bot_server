@@ -212,7 +212,6 @@ class GestorWf():
                 attempt = 0
                 
                 while attempt < max_attempts:
-                    # wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
                     attempt += 1
                     time.sleep(2)
                     current_title = driver.title
@@ -296,11 +295,19 @@ class GestorWf():
                         except Exception as e:
                             print(f"Error al hacer clic en el botón: {e}")
 
+
+                    try:
+                        wait = WebDriverWait(self.driver, 300)
+                        wait.until(EC.invisibility_of_element_located((By.XPATH, '//div[@id="wait"]//div[@class="loading-animated-icon big jbf-init-loading-indicator"]')))
+                        wait = WebDriverWait(self.driver, 60)
+                    except Exception as t:
+                        self.driver.quit()
+                        return False
+
                     print(f"Intento {attempt} fallido, reintentando...")
 
                 if attempt >= 10:
-                    # If we get here, login failed after max attempts
-                    sql = ("SPR_INS_ESTBOT", [self.idbot, "Error login"])
+                    sql = ("SPR_INS_ESTBOT", [self.idbot, "Conexión lenta. Reintentando..."])
                     ConectorDbMysql().FuncInsInfoOne(sql)
                 
             except Exception as e:
@@ -421,6 +428,10 @@ class GestorWf():
                 time.sleep(10)
                 ConectorDbMysql().RepActividad(self.idbot)
                 validador+=1
+
+            if data[0]=="Conexión lenta. Reintentando...":
+                self.driver.quit()
+                return False
 
             if data[0]=="En labor":
                 break

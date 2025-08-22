@@ -58,10 +58,10 @@ def selector_Seguimiento(self,idBot,Idactividad):
 						return
 				else:
 					pass
-				try:
-					element = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toa-panel-content edtree"]')))			
-				except:
-					driver.back()
+				# try:
+				# 	element = WebDriverWait(driver,10).until(EC.visibility_of_element_located((By.XPATH, '//*[@class="toa-panel-content edtree"]')))			
+				# except:
+				# 	driver.back()
 
 				#driver.find_element(by=By.XPATH, value='//*[@id="action-global-search-icon"]').click()
 				time.sleep(0.5)
@@ -170,7 +170,7 @@ def selector_Seguimiento(self,idBot,Idactividad):
 					continue
 
 				if Primera_ot:
-					WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="column-container"]')))
+					WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, '//*[@class="column-container"]')))
 				
 				WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH,'//*[@class="button inline" and contains(text(),"Backoffice")]')))
 				driver.find_element(by=By.XPATH, value='//*[@class="button inline" and contains(text(),"Backoffice")]').click()
