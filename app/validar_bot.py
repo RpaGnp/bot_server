@@ -29,16 +29,14 @@ def nombre_bot():
             
     else:
         try:
-            EjecutablePrograma=os.getenv('BOT_NAME', 'DefaultBot')+'.exe'  # se toma la variable de entorno .env o del docker-compose
+            EjecutablePrograma=os.getenv('BOT_NAME', 'DefaultBot')+'.exe'  # se toma la variable de entorno .env o del docker-compose,
             RutaEjecutablePrograma = 'Docker' 
         except:
             pass
 
-    # EjecutablePrograma = os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
-    # print('este es el bot: ', EjecutablePrograma)
+    # EjecutablePrograma = os.getenv('BOT_NAME', 'DefaultBot')+'.exe',
+    # print('este es el bot: ', EjecutablePrograma),
 
-    return EjecutablePrograma, RutaEjecutablePrograma
+    return EjecutablePrograma, RutaEjecutablePrograma,
     
-
-
 

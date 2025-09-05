@@ -201,6 +201,14 @@ class HandleAgendamiento(handlepincancelar):
 				if "Pin Generado satisfactoriamente." in ErrorOrden:
 					self.hideWindowPin()
 					return 1,1	
+				# if ErrorOrden in ["Pin Generado satisfactoriamente.","Volver"]:
+				# 	self.hideWindowPin()
+				# 	return 1,1	
+
+				if "Volver" in ErrorOrden:
+					self.hideWindowPin()
+					return 1,1						
+
 				if "Motivo de Re Agendamiento" in ErrorOrden:
 					self.AgendamientoDirecto()
 					return 1,0
