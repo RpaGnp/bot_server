@@ -382,6 +382,7 @@ class handlepincancelar:
                         time.sleep(1)
                         self.driver.execute_script(self.codefucntion)                    
                         self.WindowConfCancelacion()
+                        time.sleep(3)
                         self.waitWindowCancelarOrden()
                         Resultado = "Ot cancelada pin generado ok"
                     else:
