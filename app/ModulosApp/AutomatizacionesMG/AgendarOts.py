@@ -12,6 +12,9 @@ from ..ModelDataBase import ConectorDbMysql
 from funciones_varias import *
 from reloj_casio import *
 
+# BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
+
 class HandleAgendamiento(handlepincancelar):
 	def __init__(self,driver):
 		self.driver = driver
@@ -25,7 +28,7 @@ class HandleAgendamiento(handlepincancelar):
 
 	def login(self,driver,Usuario,Clave):	
 		try:
-		    driver.get("https://agendamiento.claro.com.co")
+		    driver.get(BASE_URL_MODULO)
 		except Exception as e:
 		    driver.quit()
 		    return 2
@@ -274,7 +277,7 @@ class HandleAgendamiento(handlepincancelar):
 						time.sleep(1)					
 						driver.quit()
 						return
-				driver.get('https://agendamiento.claro.com.co/MGW/MGW/Agendamiento/index.php')
+				driver.get(f'{BASE_URL_MODULO}/MGW/MGW/Agendamiento/index.php')
 				#ingreso consultar orden
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').clear()
@@ -309,7 +312,7 @@ class HandleAgendamiento(handlepincancelar):
 					continue
 
 				# verificar orden agenda pr wfm
-				if driver.current_url!='https://agendamiento.claro.com.co/MGW/MGW/Agendamiento/agendamiento.php':
+				if driver.current_url!=f'{BASE_URL_MODULO}/MGW/MGW/Agendamiento/agendamiento.php':
 					sql = ("spr_upd_estgesdx", [data[0], 'Orden no agendada, Redirige a modulo agendamiento antiguo!'])			
 					ConectorDbMysql().FuncInsInfoOne(sql)
 					continue

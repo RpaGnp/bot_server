@@ -10,12 +10,13 @@ from ..ModelDataBase import ConectorDbMysql
 from funciones_varias import *
 from reloj_casio import *
 
-
+# BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
 
 def SelectorCancelarAgenda(self,idbot,idAct,Trabajo):
 	driver=self.driver
 	Bot=BotMg(driver)
-	urlPin ="https://agendamiento.claro.com.co"
+	urlPin = BASE_URL_MODULO
 	try:
 		sql="""
 				SELECT dx_nid,dx_corden,dx_caliado,dx_cciudad,dx_dfechaage,dx_cobservacion
@@ -46,7 +47,7 @@ def SelectorCancelarAgenda(self,idbot,idAct,Trabajo):
 				continue
 
 			# verificar orden agenda pr wfm
-			if driver.current_url!='https://agendamiento.claro.com.co/MGW/MGW/Agendamiento/agendamiento.php':
+			if driver.current_url!=f'{BASE_URL_MODULO}/MGW/MGW/Agendamiento/agendamiento.php':
 				sql = ("spr_upd_estgesdx", [data[0], 'Orden no agendada, Redirige a modulo agendamiento antiguo!'])			
 				ConectorDbMysql().FuncInsInfoOne(sql)
 				continue

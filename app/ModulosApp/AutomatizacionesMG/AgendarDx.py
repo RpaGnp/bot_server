@@ -11,9 +11,11 @@ from ..ModelDataBase import ConectorDbMysql
 from funciones_varias import *
 from reloj_casio import *
 
+# BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
 
 def login(driver,Usuario,Clave):	
-	driver.get("https://agendamiento.claro.com.co")
+	driver.get(BASE_URL_MODULO)
 	driver.implicitly_wait(180)
 	myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
@@ -67,7 +69,7 @@ def SelectorAgendaDx(self,idbot,idAct,Trabajo):
 				pass
 
 
-			driver.get('https://agendamiento.claro.com.co/MGW/MGW/Agendamiento/index.php')
+			driver.get(F'{BASE_URL_MODULO}/MGW/MGW/Agendamiento/index.php')
 			#ingreso consultar orden
 			driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()
 			driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').clear()

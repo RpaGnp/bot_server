@@ -340,17 +340,12 @@ class GestorWf():
                 return
 
         else:
-            # driver.get("https://moduloagenda.cable.net.co")
-            # driver.get("https://moduloagenda.cable.net.co/Login.php")
-            # driver.get("https://agendamiento.claro.com.co/Login.php")
-            
-            # driver.get("https://agendamiento.claro.com.co/Login.php")
-            driver.get("https://agendamiento.claro.com.co/index.php")
-            
-            
-            # driver.implicitly_wait(180)
+            # BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+            BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
+
+            driver.get(f"{BASE_URL_MODULO}/index.php")
             driver.implicitly_wait(10)
-            while driver.current_url != "https://agendamiento.claro.com.co/indexadmin.php":            
+            while driver.current_url != "{BASE_URL_MODULO}/indexadmin.php":            
                 myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
                 driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').clear()
@@ -377,7 +372,7 @@ class GestorWf():
                 driver.quit()
                 del driver                
 
-            if driver.current_url != "https://agendamiento.claro.com.co/indexadmin.php":
+            if driver.current_url != "{BASE_URL_MODULO}/indexadmin.php":
                 if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
                     driver.get("https://moduloagenda.cable.net.co/index.php")
                 x=0
