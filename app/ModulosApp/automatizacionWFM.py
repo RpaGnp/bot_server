@@ -345,7 +345,7 @@ class GestorWf():
 
             driver.get(f"{BASE_URL_MODULO}/index.php")
             driver.implicitly_wait(10)
-            while driver.current_url != "{BASE_URL_MODULO}/indexadmin.php":            
+            while driver.current_url != f"{BASE_URL_MODULO}/indexadmin.php":            
                 myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
                 driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').clear()
