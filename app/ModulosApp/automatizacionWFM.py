@@ -372,7 +372,7 @@ class GestorWf():
                 driver.quit()
                 del driver                
 
-            if driver.current_url != "{BASE_URL_MODULO}/indexadmin.php":
+            if driver.current_url != f"{BASE_URL_MODULO}/indexadmin.php":
                 if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
                     driver.get("https://moduloagenda.cable.net.co/index.php")
                 x=0
