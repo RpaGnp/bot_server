@@ -11,6 +11,8 @@ from funciones_varias import *
 from reloj_casio import *
 #
 
+# BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
 
 def selector_extagenda(self,idbot,idAct):
 	print("Extraer agenda")
@@ -26,7 +28,7 @@ def selector_extagenda(self,idbot,idAct):
 			print("!",row)
 			ConectorDbMysql().FuncUpdSpr("spr_upd_contgest",[idAct,index])#
 			
-			driver.get("http://agendamiento.claro.com.co/MGW/MGW/Agendamiento/index.php")				
+			driver.get(f"{BASE_URL_MODULO}/MGW/MGW/Agendamiento/index.php")				
 			time.sleep(1)
 			orden=row[2].split("_")[0]
 			driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()

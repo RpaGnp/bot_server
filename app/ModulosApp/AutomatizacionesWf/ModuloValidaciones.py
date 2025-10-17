@@ -25,6 +25,9 @@ from .InteraccionChrome import BotChrome, ExtractorEstadoOrden
 from .ModuloValidacionesAgenda import SelectorValidacionesAgenda
 from funciones_varias import *
 
+# BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
+
 
 def Actualizacion(self,driver,ArrayGestion):
 	#modulo validaciones agenda									...						
@@ -35,7 +38,7 @@ def Actualizacion(self,driver,ArrayGestion):
 		#driver.execute_script("window.focus();")
 		#driver.switch_to.window(driver.window_handles[-1])						
 		time.sleep(1)
-		driver.get('http://agendamiento.claro.com.co/MGW/MGW/Agendamiento/index.php')
+		driver.get(f'{BASE_URL_MODULO}/MGW/MGW/Agendamiento/index.php')
 		driver.find_element(by=By.XPATH, value='//*[@name="TBorden"]').send_keys(i[2].split("_")[0])
 		
 		if str(i[3]).upper() in ['MANTENIMIENTO FTTH','MANTENIMIENTOS ALTO VALOR',"ARREGLOS"]:
@@ -94,7 +97,7 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 				#driver.execute_script("window.focus();")
 				#driver.switch_to.window(driver.window_handles[-1])
 				
-				driver.get("http://agendamiento.claro.com.co/Interfaces/AprovisionamientoServicios/index.php")
+				driver.get(f"{BASE_URL_MODULO}/Interfaces/AprovisionamientoServicios/index.php")
 				BotInteraccion.DiligenciarTexbox('//*[@name="cuenta"]',row[1])
 				BotInteraccion.ClickElemento('//*[@name="consultar"]')
 				time.sleep(2)
@@ -217,7 +220,7 @@ def selector_ValidacionesMg(self,idbot,idAct,TipoTrabajo):
 				driver.execute_script("window.focus();")
 				driver.switch_to.window(driver.window_handles[-1])
 
-				driver.get("http://agendamiento.claro.com.co/MGW/MGW/Agendamiento/index.php")				
+				driver.get(f"{BASE_URL_MODULO}/MGW/MGW/Agendamiento/index.php")				
 				time.sleep(1)
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').click()
 				driver.find_element(By.XPATH,'//input[@placeholder="Número Orden"]').clear()

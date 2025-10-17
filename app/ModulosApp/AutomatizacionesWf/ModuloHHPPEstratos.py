@@ -32,9 +32,11 @@ from ..ModelDataBase import ConectorDbMysql
 
 #from funciones_varias import *
 #from reloj_casio import *
+# BASE_URL_MODULO= 'https://agendamiento.claro.com.co'
+BASE_URL_MODULO= 'https://moduloagenda.cable.net.co'
 
 def IngresoMain(driver):
-	driver.get('http://agendamiento.claro.com.co/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/catastro-warIns/view/MGL/login&nuevaVentana=TRUE')	
+	driver.get(f'{BASE_URL_MODULO}/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/catastro-warIns/view/MGL/login&nuevaVentana=TRUE')	
 	time.sleep(1)
 	driver.find_element(by=By.XPATH,value='//input[@type="submit"]').click()		
 	driver.switch_to.window(driver.window_handles[-1])
@@ -87,7 +89,7 @@ def SelectorEsthhpp(self,idBot,idAct,Trabajo):
 	Bot=BotinteraccionMG(driver)
 	
 	if Trabajo=="Gestion estratos":
-		driver.get("http://agendamiento.claro.com.co/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/Visitas_Tecnicas/Login&nuevaVentana=TRUE")
+		driver.get(f"{BASE_URL_MODULO}/Autentica/Redirecciona.php?Direccion=https://mglapp.claro.com.co/Visitas_Tecnicas/Login&nuevaVentana=TRUE")
 		#validar usuario
 		driver.find_element(by=By.XPATH, value='//input[@value="..Autenticar_Usuario.."]').click()
 		driver.switch_to.window(driver.window_handles[-1])
