@@ -4,6 +4,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from .TokenApiModulo import TokenApiModulo
 import time
 from ..ModelDataBase import ConectorDbMysql
 from .InteraccionesMG import BotMg
@@ -25,10 +26,10 @@ def SelectorActualizarOts(self,idbot,idAct,Trabajo):
 	
 
 	for data in ConectorDbMysql().FuncGetInfo(0,sql):		
-		#data=dato.split(";")
 		try:
 			print(data)
 			ConectorDbMysql().RepActividad(idbot)
+			TokenApiModulo(driver).extraer_cookie_permisos()
 			# funcion de salida, pausa del bot
 			Dato = ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES", [idbot]))
 			# print(Dato[0])

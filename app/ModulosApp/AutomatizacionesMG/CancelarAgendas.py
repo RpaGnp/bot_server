@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import sys
 #from datetime import time as tmr
-
+from .TokenApiModulo import TokenApiModulo
 from .InteraccionesMG import BotMg
 from ..ModelDataBase import ConectorDbMysql
 from funciones_varias import *
@@ -26,6 +26,8 @@ def SelectorCancelarAgenda(self,idbot,idAct,Trabajo):
 		array_datos=ConectorDbMysql().FuncGetInfo(0,sql)
 		for data in array_datos:
 			ConectorDbMysql().RepActividad(idbot)
+			TokenApiModulo(driver).extraer_cookie_permisos()
+			
 			# funcion de salida, pausa del bot
 			time.sleep(2)
 			Dato = ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES", [idbot]))			

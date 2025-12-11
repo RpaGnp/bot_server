@@ -3,6 +3,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from .TokenApiModulo import TokenApiModulo
 import time
 import os
 #from datetime import time as tmr
@@ -30,8 +31,8 @@ class HandleAgendamiento(handlepincancelar):
 		try:
 		    driver.get(BASE_URL_MODULO)
 		except Exception as e:
-		    driver.quit()
-		    return 2
+			driver.quit()
+			return 2
 		driver.implicitly_wait(180)
 		myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
@@ -262,6 +263,7 @@ class HandleAgendamiento(handlepincancelar):
 				self.CreadorVentanas(idAct,idbot)# modulo heredado
 
 			for data in array_datos:	
+				TokenApiModulo(driver).extraer_cookie_permisos()
 				if Trabajo ==  "Agendar->pin->cancelar":
 					self.GetVentcancelaPin()# modulo heredado
 				print(data)				
