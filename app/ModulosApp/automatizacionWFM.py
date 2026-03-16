@@ -1,4 +1,13 @@
 #LIBRERIAS PARA CHROMEDRIVER***********************
+# Fix para ejecutar este archivo directamente (sin package)
+import sys
+from pathlib import Path
+if __package__ is None or __package__ == "":
+    _app_dir = Path(__file__).resolve().parent.parent
+    if str(_app_dir) not in sys.path:
+        sys.path.insert(0, str(_app_dir))
+    __package__ = "ModulosApp"
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -23,7 +32,9 @@ import time
 import sys
 import os
 from datetime import datetime
+import requests
 
+from .NetworkListener import iniciar_network_listener
 from .GestorFiles import tempdriver
 from ModulosApp.ModelDataBase import ConectorDbMysql
 
@@ -129,7 +140,10 @@ class GestorWf():
                 opera_options = OperaOptions()
                 opera_options.binary_location = r'%s\AppData\Local\Programs\Opera\opera.exe' % os.path.expanduser('~')
                 opera_options.add_argument('--start-maximized')
+                opera_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
                 self.driver = webdriver.Opera(executable_path=r'C:\dchrome\operadriver.exe', options=opera_options)
+                # Hilo que escucha eventos de red para análisis
+                # self._network_thread, self._network_stop = iniciar_network_listener(self.driver)
 
             elif self.Navegador == "Firefox":
                 firefox_options = FirefoxOptions()
@@ -345,7 +359,7 @@ class GestorWf():
 
             driver.get(f"{BASE_URL_MODULO}/index.php")
             driver.implicitly_wait(10)
-            while driver.current_url != f"{BASE_URL_MODULO}/indexadmin.php":            
+            while driver.current_url == f"{BASE_URL_MODULO}/index.php":       
                 myDinamicElement = driver.find_element(by=By.XPATH, value='//*[@class="ico_Candado login_alertas"]')
 
                 driver.find_element(by=By.XPATH, value='//*[@onblur="validaRedUsuario(this.value)"]').clear()
@@ -360,17 +374,63 @@ class GestorWf():
                     driver.find_element(by=By.XPATH, value='//*[@name="Submit"]').click()
                 # time.sleep(2)            
 
+                # Esperar que la página termine de cargar
                 try:
-                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//nav[@class="ClaroTemplate-nav clearfix desktop-nav"]')))
+                    # WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//nav[@class="ClaroTemplate-nav clearfix desktop-nav"]')))
+                    WebDriverWait(driver, 30).until(
+                        lambda d: d.execute_script("return document.readyState") == "complete"
+                    )
                 except:
-                    # return False  
                     pass          
 
-            if driver.current_url=='https://moduloagenda.cable.net.co/Modificar_password.php':                
-                sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
-                ConectorDbMysql().FuncInsInfoOne(sql)
-                driver.quit()
-                del driver                
+            if driver.current_url=='https://moduloagenda.cable.net.co/canalPin.php': 
+                # Capturar el email del label (solo el texto del <strong>)
+                email_label = driver.find_element(By.CSS_SELECTOR, "input[type='radio'][value='EMAIL'] + strong")
+                email_valor = email_label.text.strip()
+                print(f"Email capturado: {email_valor}")
+
+                email_radio = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='radio'][value='EMAIL']"))
+                )
+                email_radio.click()
+
+                btn_enviar = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "button[name='accion'][value='enviar']"))
+                )
+                btn_enviar.click()
+
+                while driver.current_url != f"{BASE_URL_MODULO}/validarPin.php":
+                    time.sleep(1)
+
+                time.sleep(10)
+
+                response = requests.get(f"http://localhost:8000/get_cod_modulo?email={email_valor}")
+                print(f"response: {response}")
+                pin = response.json().get('pin')
+                print(f"PIN obtenido: {pin}")
+
+                # Ingresar el PIN en el input
+                pin_input = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='number'][name='pin']"))
+                )
+                pin_input.clear()
+                pin_input.send_keys(str(pin))
+
+                btn_validar = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "button[name='accion'][value='validar']"))
+                )
+                btn_validar.click()
+                time.sleep(5)
+                # Esperar que la página termine de cargar
+                WebDriverWait(driver, 30).until(
+                    lambda d: d.execute_script("return document.readyState") == "complete"
+                )
+
+            if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
+                # sql=("SPR_INS_ESTBOT",[self.idbot,"Error login"])
+                # ConectorDbMysql().FuncInsInfoOne(sql)
+                # driver.quit()
+                pass
 
             if driver.current_url != f"{BASE_URL_MODULO}/indexadmin.php":
                 if driver.current_url=='https://moduloagenda.cable.net.co/Login.php':
@@ -653,5 +713,8 @@ class GestorWf():
             self.driver.find_element(By.XPATH, value='//li[@class="user-menu-item" and @pos="2"]').click()
             time.sleep(5)  
         except:pass
+        if hasattr(self, '_network_stop') and self._network_stop:
+            self._network_stop.set()
+            time.sleep(0.6)
         self.driver.quit()
 #SelectorSaludo(9)

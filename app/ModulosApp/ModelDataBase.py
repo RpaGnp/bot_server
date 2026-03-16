@@ -38,8 +38,8 @@ class ConectorDbMysql(object):
 		# print('inicio base de datos')
 		EjecutablePrograma, RutaEjecutablePrograma  = nombre_bot()
 		# EjecutablePrograma=os.getenv('BOT_NAME', 'DefaultBot')+'.exe'
-		cal_db = ["Bot_GestorCali1.exe", "Bot_GestorCali2.exe", "Bot_GestorCali3.exe", "Bot_GestorCali4.exe", "Bot_GestorCali5.exe", "Bot_MarcadorCali.exe", "Bot_MarcadorCali1.exe", "Bot_MarcadorCali2.exe", "Bot_MarcadorCali3.exe", "Bot_MarcadorCali4.exe", "Bot_MarcadorCali5.exe", "DefaultBot.exe"]
-		bog_db = ["Bot_Gestor1.exe", "Bot_Gestor2.exe", "Bot_Gestor3.exe", "Bot_Gestor4.exe", "Bot_Gestor5.exe", "Bot_GestorBuc1.exe", "Bot_GestorBuc2.exe", "Bot_GestorBuc3.exe", "Bot_GestorBuc4.exe", "Bot_GestorBuc5.exe", "Bot_GestorBuc6.exe", "Bot_Marcador1.exe", "Bot_Marcador2.exe", "Bot_Marcador3.exe", "Bot_Marcador4.exe", "DefaultBot.exe"]
+		cal_db = ["Bot_GestorCali1.exe", "Bot_GestorCali2.exe", "Bot_GestorCali3.exe", "Bot_GestorCali4.exe", "Bot_GestorCali5.exe", "Bot_MarcadorCali.exe", "Bot_MarcadorCali1.exe", "Bot_MarcadorCali2.exe", "Bot_MarcadorCali3.exe", "Bot_MarcadorCali4.exe", "Bot_MarcadorCali5.exe", "DefaultBot.exe", "Reprogramar_Cal.exe"]
+		bog_db = ["Bot_Gestor1.exe", "Bot_Gestor2.exe", "Bot_Gestor3.exe", "Bot_Gestor4.exe", "Bot_Gestor5.exe", "Bot_GestorBuc1.exe", "Bot_GestorBuc2.exe", "Bot_GestorBuc3.exe", "Bot_GestorBuc4.exe", "Bot_GestorBuc5.exe", "Bot_GestorBuc6.exe", "Bot_Marcador1.exe", "Bot_Marcador2.exe", "Bot_Marcador3.exe", "Bot_Marcador4.exe", "DefaultBot.exe", "Reprogramar_Bog.exe", "Reprogramar_Buc.exe"] 
 
 		__Cali_DB__= False
 		if EjecutablePrograma in cal_db:

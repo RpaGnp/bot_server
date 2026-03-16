@@ -29,6 +29,9 @@ ArrayNames=(
     'Bot_Marcador3'
     'Bot_Marcador4'
     'Bot_Server'
+    'Reprogramar_Bog'
+    'Reprogramar_Buc'
+    'Reprogramar_Cal'
 )
 
 # Si existe un archivo docker-compose.override.yml, detener y eliminar los contenedores especificados en él

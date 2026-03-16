@@ -17,6 +17,8 @@ lib/
 
 # Our own local stuff
 local_settings.py  # Example only - feel free to remove or add other settings files
+logs/
+cod_test/
 *.pem
 *.key
 *.pfx
@@ -32,4 +34,6 @@ id_rsa.pub
 .ipynb_checkpoints
 venv/
 driver/
+test.py
 
+.env

@@ -66,7 +66,6 @@ class Bot_server:
 			sql=("SPR_GET_INFOBOT",[self.EjecutablePrograma])
 			IdBot=ConectorDbMysql().GetQueryPars(sql)[0]
 
-
 		IdAct = None
 		while 1:
 			try:

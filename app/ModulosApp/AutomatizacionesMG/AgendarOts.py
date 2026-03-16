@@ -548,6 +548,10 @@ class HandleAgendamiento(handlepincancelar):
 																	sql = ("spr_upd_estgesdx", [data[0], 'Orden agendada con exito, pin generadado con exito, agenda cancelada con exito'])			
 																	ConectorDbMysql().FuncInsInfoOne(sql)'''
 
+			if idbot in (3548,3549,3550,3497):
+				time.sleep(10)
+				print(f"----- se retoma el bot de reprogacion en modulo--- \n--- el id en base de datos es: {idbot} ----")
+				self.SelectorAgendaOts(idbot,idAct,Trabajo)
 
 			ConectorDbMysql().FuncInsInfoOne(("SPR_UPD_LIBBOT", [idbot, idAct, 'Labor Terminada']))		
 			driver.quit()
