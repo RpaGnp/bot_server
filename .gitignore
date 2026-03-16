@@ -35,5 +35,3 @@ id_rsa.pub
 venv/
 driver/
 test.py
-
-.env
