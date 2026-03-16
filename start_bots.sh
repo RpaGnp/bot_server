@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Detect docker compose version
+if command -v docker-compose &> /dev/null
+then
+    DOCKER_COMPOSE="docker-compose"
+else
+    DOCKER_COMPOSE="docker compose"
+fi
+
 # Array de nombres de los bots
 ArrayNames=(
     'Bot_GestorCali1'
@@ -48,7 +56,7 @@ if [ -f docker-compose.override.yml ]; then
         fi
     done
     # Eliminar volúmenes no persistentes
-    docker-compose down --volumes
+    $DOCKER_COMPOSE down --volumes
 fi
 
 # Crear un archivo docker-compose.override.yml con los nombres del array
@@ -93,4 +101,4 @@ for i in "${!ArrayNames[@]}"; do
 done
 
 # Levantar los servicios de docker-compose con la escala especificada
-docker-compose up -d
+$DOCKER_COMPOSE up -d
