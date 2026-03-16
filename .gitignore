@@ -35,3 +35,6 @@ id_rsa.pub
 venv/
 driver/
 test.py
+
+# GitHub workflows (local copies)
+.github/workflows/static copy.yml
