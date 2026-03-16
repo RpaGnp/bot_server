@@ -404,7 +404,7 @@ class GestorWf():
 
                 time.sleep(10)
 
-                response = requests.get(f"http://localhost:8000/get_cod_modulo?email={email_valor}")
+                response = requests.get(f"http://172.20.100.51:443/get_cod_modulo?email={email_valor}")
                 print(f"response: {response}")
                 pin = response.json().get('pin')
                 print(f"PIN obtenido: {pin}")

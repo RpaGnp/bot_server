@@ -221,7 +221,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cardsContainer = document.getElementById("cards");
-      const apiUrl = 'http://172.20.100.53:3541/get_dockers';
+      const apiUrl = 'http://172.20.100.34:3541/get_dockers';
 
       // Mostrar indicador de carga mientras se obtienen los datos
       cardsContainer.innerHTML = '<div class="text-center w-100 py-5"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Cargando bots...</p></div>';
@@ -269,7 +269,7 @@
                 <div class="card-body">
                   <h5 class="card-title">${name}</h5>
                   <div class="iframe-container">
-                    <iframe class="iframe-preview" src="http://172.20.100.53:${port}/vnc.html?autoconnect=true" scrolling="no"></iframe>
+                    <iframe class="iframe-preview" src="http://172.20.100.34:${port}/vnc.html?autoconnect=true" scrolling="no"></iframe>
                     <div class="overlay"></div>
                   </div>
                 </div>
@@ -305,7 +305,7 @@
         <i class="fas fa-desktop mr-2"></i>
         <strong>${name}</strong>
         <small class="ml-3">
-          <a href="http://172.20.100.53:${port}/vnc.html?autoconnect=true" target="_blank" rel="noopener noreferrer" class="text-light">
+          <a href="http://172.20.100.34:${port}/vnc.html?autoconnect=true" target="_blank" rel="noopener noreferrer" class="text-light">
             <i class="fas fa-external-link-alt mr-1"></i>Abrir en nueva ventana
           </a>
         </small>
@@ -313,7 +313,7 @@
 
       // Configurar y mostrar el iframe
       const iframe = document.getElementById("novncIframe");
-      iframe.src = `http://172.20.100.53:${port}/vnc.html?autoconnect=true`;
+      iframe.src = `http://172.20.100.34:${port}/vnc.html?autoconnect=true`;
 
       // Mostrar el modal
       $("#novncModal").modal("show");

@@ -18,6 +18,7 @@ lib/
 # Our own local stuff
 local_settings.py  # Example only - feel free to remove or add other settings files
 logs/
+html_page/
 cod_test/
 *.pem
 *.key
