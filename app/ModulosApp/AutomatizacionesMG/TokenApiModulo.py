@@ -18,12 +18,12 @@ class TokenApiModulo():
         
         return "; ".join(cookie_strings)
 
-    def enviar_cookie_a_api(self, cookie_string):
+    def enviar_cookie_a_api(self, cookie_string, regional):
         """
         Envía la cookie en formato string a la API
         """
         try:
-            response = requests.get(self.api_url, params={'cookie': cookie_string})
+            response = requests.get(self.api_url, params={'cookie': cookie_string, 'regional': regional})
             
             if response.status_code == 200:
                 return True
@@ -34,7 +34,7 @@ class TokenApiModulo():
             print("\n✗ Error al conectar con la API: {}".format(e))
             return False
 
-    def extraer_cookie_permisos(self):
+    def extraer_cookie_permisos(self, regional):
         """
         Extrae y retorna la cookie de permisos del navegador
         """
@@ -49,7 +49,7 @@ class TokenApiModulo():
             print("\n--- Cookie String Generada ---")
             print(cookie_string)
             print("-" * 50)
-            self.enviar_cookie_a_api(cookie_string)
+            self.enviar_cookie_a_api(cookie_string, regional)
         except Exception as e:
             print("Error al extraer cookies: {}".format(e))
             return None

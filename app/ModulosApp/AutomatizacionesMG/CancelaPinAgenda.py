@@ -291,6 +291,12 @@ class handlepincancelar:
         WebDriverWait(self.driver, 45).until(EC.visibility_of_element_located((By.XPATH,'//div[@aria-labelledby="ui-dialog-title-dialog_msg_popup_cancelar_orden"]')))
         time.sleep(0.5)
         self.driver.find_element(By.XPATH,'//span[contains(text(),"Confirmar")]').click()
+
+        time.sleep(3)
+        alert = self.driver.switch_to.alert
+        time.sleep(1)				
+        alert.accept()
+
         WebDriverWait(self.driver, 45).until(EC.invisibility_of_element_located((By.XPATH, '//div[@class="modal-loading-ajax"]')))        
 
     def MainCancelacion(self,data):
