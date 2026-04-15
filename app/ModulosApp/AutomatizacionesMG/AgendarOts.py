@@ -251,7 +251,7 @@ class HandleAgendamiento(handlepincancelar):
 		#limite_hora = tmr(12, 0, 0)
 		try:
 			sql="SELECT ACB_CCIUDAD from tbl_hactividadesbot where ACB_NID='"+str(idAct)+"'"
-			regional=ConectorDbMysql().FuncGetInfo(1,sql)
+			regional=ConectorDbMysql().FuncGetInfo(1,sql)[0]
 			time.sleep(1)		
 			sql="""
 					SELECT dx_nid,dx_corden,dx_caliado,dx_cciudad,dx_dfechaage,dx_cobservacion
@@ -551,9 +551,19 @@ class HandleAgendamiento(handlepincancelar):
 			# 														sql = ("spr_upd_estgesdx", [data[0], 'Orden agendada con exito, pin generadado con exito, agenda cancelada con exito'])			
 			# 														ConectorDbMysql().FuncInsInfoOne(sql)'''
 
-			ordenes = [int(fila[1]) for fila in array_datos]
+			ordenes = [
+				{
+					"id":        row[0],
+					"numero":    row[1],
+					"categoria": row[2],
+					"campo1":    row[3],
+					"campo2":    row[4],
+					"tipo":      row[5]
+				}
+				for row in array_datos
+			]
+
 			print(ordenes)
-			# regional = "BOGOTA"
 			TokenApiModulo(driver).extraer_cookie_permisos(regional)
 			resultado = self.reprogramar_ordenes(ordenes, regional)
 			print(resultado)
