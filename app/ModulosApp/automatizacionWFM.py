@@ -82,7 +82,7 @@ class GestorWf():
     """Automatizacion de wf para realizar Gestion actividades"""
     def __init__(self,idbot,idAct,NombreBot,arraygestion):       
         # self.Navegador = "Edge"#"Opera"#"firefox"#"Chrome"#,"Edge"
-        self.Navegador = os.getenv('NAVEGADOR')
+        self.Navegador = os.getenv('NAVEGADOR', 'Opera')
         print(self.Navegador)
         self.idbot=idbot
         self.idAct=idAct
