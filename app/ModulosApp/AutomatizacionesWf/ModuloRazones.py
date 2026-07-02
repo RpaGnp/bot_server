@@ -36,36 +36,50 @@ class SelectorNotasAuto():
 	def __init__(self, driver):		
 		self.driver = driver		
 		self.DicRazones = {
-			'AMPLIACION DE TAP HFC':'H',
-			'AMPLIACION DE TAP FTTH':'H',
-			'CLIENTE AUN NO DESEA EL TRABAJO':'7',
-			'CLIENTE NO TIENE DINERO':'O',
-			'CLIENTE SOLICITA REPROGRAMAR':'K',
-			'DIRECCION Y/O DATOS ERRADOS':'B',
-			'DUCTOS/INFRESTRUCTURA PREDIO NO APTA':'W',
-			'EQUIPOS CLIENTE NO APTOS/NO DISPONIBLES':'6',
-			'FALTA DE MATERIALES/EQUIPOS':'F',
-			'FUERA DE COBERTURA DTH':'/',
-			'FUERA DE ZONA':'Z',
-			'INSTALACIÓN REQUIERE ANDAMIO ARNES':'Y',
-			'LLUVIA - FACTORES CLIMÁTICOS':'L',
-			'MAL AGENDADO/MAL PROGRAMADO':'M',
-			'NO INGRESO/CLIENTE CONFIRMA SERVICIO OK':'S',
-			'NO INGRESO/CLIENTE CONFIRMA':'S',
-			'PERMISOS DE ADMINISTRACION':'P',
-			'PROBLEMA ORDEN PUBLICO/ZONA ROJA':'X',
-			'PROBLEMAS EN LA RED EXTERNA':'%',
-			'PROBLEMAS EN SISTEMAS APLICATIVOS CLARO':'Q',
-			'REPLANTEAMIENTO':'R',
-			'REQUIERE MOVIL ELITE':'=',
-			'SUSCRIPTOR NO DESEA/NO REQUIERE TRABAJOS':'E',
-			'SUSCRIPTOR NO ESTA EN CONDICIÓN DE ATENDER':'?',
-			'UNIDAD POSIBLE FRAUDE':'V',
-			'VENTA DEVUELTA AL ASESOR':'4',
-			'NO CONTACTO CON CLIENTE':'C',
-			'INCUMPLIMIENTO ALIADO':"I",
-			'CAMARA/SOLDADA O INUNDADA':'+',
-			'FUERA DE COBERTURA WTTH':'/'
+			'CAMARA SOLDADA O INUNDADA ': '1',
+			'VENTA DEVUELTA AL ASESOR': '4',
+			'EQUIPOS CLIENTE NO APTOS/NO DISPONIBLES': '6',
+			'CLIENTE AUN NO DESEA EL TRABAJO': '7',
+			'CAMARA/SOLDADA O INUNDADA': '+',
+			'FUERA DE COBERTURA DTH': '/',
+			'GESTIÓN TERCEROS': '/',
+			'FUERA DE COBERTURA WTTH': '/',
+			'REQUIERE MOVIL ELITE': '=',
+			'SUSCRIPTOR NO ESTA EN CONDICIÓN DE ATENDER': '?',
+			'ACTIVIDAD EXTENSA': '?',
+			'DIRECCION Y/O DATOS ERRADOS': 'B',
+			'NO CONTACTO CON CLIENTE': 'C',
+			'CLIENTE NO ATIENDE': 'C',
+			'SUSCRIPTOR NO DESEA/NO REQUIERE TRABAJOS': 'E',
+			'FALTA DE MATERIALES/EQUIPOS': 'F',
+			'FALTA DE MATERIALES': 'F',
+			'AMPLIACION DE TAP HFC': 'H',
+			'AMPLIACION DE TAP FTTH': 'H',
+			'INCUMPLIMIENTO ALIADO': 'I',
+			'CLIENTE SOLICITA REPROGRAMAR': 'K',
+			'CLIENTE RECIBE PERO NO PUEDE ATENDER': 'K',
+			'LLUVIA - FACTORES CLIMÁTICOS': 'L',
+			'MAL AGENDADO/MAL PROGRAMADO': 'M',
+			'MAL AGENDADO / MAL PROGRAMADO': 'M',
+			'PROBLEMAS RED EXTERNA / ODN / HFC ': 'N',
+			'CLIENTE NO TIENE DINERO': 'O',
+			'PERMISOS DE ADMINISTRACION': 'P',
+			'PROBLEMAS EN SISTEMAS APLICATIVOS CLARO': 'Q',
+			'PROBLEMAS SISTEMAS DE INFORMACIÓN': 'Q',
+			'REPLANTEAMIENTO': 'R',
+			'REPLANTEAMIENTO VT': 'R',
+			'NO INGRESO/CLIENTE CONFIRMA SERVICIO OK': 'S',
+			'NO INGRESO/CLIENTE CONFIRMA': 'S',
+			'UNIDAD POSIBLE FRAUDE': 'V',
+			'DUCTOS/INFRESTRUCTURA PREDIO NO APTA': 'W',
+			'DUCTOS INFRAESTRUCTURA PREDIO NO APTA': 'W',
+			'PROBLEMA ORDEN PUBLICO/ZONA ROJA': 'X',
+			'FACTORES CLIMÁTICOS / SEGURIDAD': 'X',
+			'INSTALACIÓN REQUIERE ANDAMIO ARNES': 'Y',
+			'INSTALACIÓN REQUIERE ANDAMIOS/ARNES': 'Y',
+			'FUERA DE ZONA': 'Z',
+			'FUERA ZONA/ SIN COBERTURA RED': 'Z',
+			'PROBLEMAS EN LA RED EXTERNA': '%'
 		}
 
 		self.ArrayRazonesEspeciales=['PROBLEMAS EN SISTEMAS APLICATIVOS CLARO',
@@ -75,8 +89,16 @@ class SelectorNotasAuto():
 		else:
 			self.PathImagenes = CreadorCarpetas("/DBGestionBot/BotcndRazones/")
 	
-	def GestorDic(self,dic):
-		return json.loads(dic)
+	def GestorDic(self, dic):
+		datos = json.loads(dic)
+
+		if isinstance(datos, dict):
+			return True, datos    
+
+		elif isinstance(datos, list):
+			return False, datos  
+
+		return False, None
 
 	def VijilanteRazones(self,idBot,Idactividad,ciudad):		
 		BotWfm=BotGestionWF(self.driver)
@@ -89,7 +111,6 @@ class SelectorNotasAuto():
 			# reporta actividad del bot
 			ConectorDbMysql().RepActividad(idBot)
 			# funcion de saliday  pausa del bot
-			time.sleep(2)
 			Dato = ConectorDbMysql().FunGetProcedure(("SPR_GET_ESTBOTGES", [idBot]))			
 			if Dato[0] != None:				
 				if Dato[0] == "Eliminar":
@@ -119,11 +140,17 @@ class SelectorNotasAuto():
 				# self.driver.save_screenshot('screenshot.png')
 
 				ahora = timer()
-				DicionarioDatos=self.GestorDic(data[3])
+				EsLista, DicionarioDatos = self.GestorDic(data[3])
+				ArrayDataOt={}
+				if not EsLista:
+					print(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
+					self.driver.save_screenshot(f"{self.PathImagenes}/{data[0]}-RAZerrorimg1.png")
+					ConectorDbMysql().FuncUpdSpr("spr_upd_gesotdes",[data[0],False,False,False,json.dumps(ArrayDataOt),"Ot no gestionada!"])
+					continue
+
 				# DicionarioDatos=json.loads(DicionarioDatos)
 				DicionarioDatos['Fecha']=ahora[0]
 				DicionarioDatos['Hora']=ahora[1]
-				ArrayDataOt={}
 
 				formatted_strings = [f'{x}: {str(y).strip()}' for x, y in DicionarioDatos.items()]
 				resulting_string = ", ".join(formatted_strings)
@@ -211,10 +238,16 @@ class SelectorNotasAuto():
 							EC.visibility_of_element_located((By.XPATH,'//input[@data-label="A_NotDoneCode"]//following-sibling::button'))
 						)
 						self.driver.find_element(By.XPATH,'//input[@data-label="A_NotDoneCode"]//following-sibling::button').click()
-						time.sleep(0.5)	
+						time.sleep(1)	
 						self.driver.find_element(By.XPATH,f'//div[@aria-label="Razon de no completar, Requerido"]/div[@data-key="{self.DicRazones[DicionarioDatos["Razon"]]}"]').click()
 						time.sleep(0.5)	
-						self.driver.find_element(By.XPATH,f'//div[@aria-label="Sub Razón de no Completado"]/div[@data-key="{DicionarioDatos["Sub_Razon"]}"]').click()
+						self.driver.find_element(By.XPATH,'//input[@data-label="XA_NotDoneSubCode"]//following-sibling::button').click()
+						time.sleep(1)	
+						print(DicionarioDatos["Sub_Razon"])
+						sub_razon = DicionarioDatos["Sub_Razon"]
+						if sub_razon.strip().lower() == "no":
+							sub_razon = self.DicRazones[DicionarioDatos["Razon"]] + "01"
+						self.driver.find_element(By.XPATH,f'//div[@aria-label="Sub Razón de no Completado, Requerido"]/div[@data-key="{sub_razon}"]').click()
 
 						if DicionarioDatos['Razon'] in self.ArrayRazonesEspeciales:
 							if DicionarioDatos['Razon']=='REQUIERE MOVIL ELITE':
