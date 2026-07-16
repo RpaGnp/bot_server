@@ -56,9 +56,10 @@ class SelectorNotasAuto():
 			'AMPLIACION DE TAP HFC': 'H',
 			'AMPLIACION DE TAP FTTH': 'H',
 			'INCUMPLIMIENTO ALIADO': 'I',
-			'CLIENTE SOLICITA REPROGRAMAR': 'K',
+			'CLIENTE SOLICITA REPROGRAMAR': 'R',
 			'CLIENTE RECIBE PERO NO PUEDE ATENDER': 'K',
 			'LLUVIA - FACTORES CLIMÁTICOS': 'L',
+			'FACTORES CLIMATICOS / SEGURIDAD': 'X',
 			'MAL AGENDADO/MAL PROGRAMADO': 'M',
 			'MAL AGENDADO / MAL PROGRAMADO': 'M',
 			'PROBLEMAS RED EXTERNA / ODN / HFC ': 'N',
@@ -239,15 +240,20 @@ class SelectorNotasAuto():
 						)
 						self.driver.find_element(By.XPATH,'//input[@data-label="A_NotDoneCode"]//following-sibling::button').click()
 						time.sleep(1)	
-						self.driver.find_element(By.XPATH,f'//div[@aria-label="Razon de no completar, Requerido"]/div[@data-key="{self.DicRazones[DicionarioDatos["Razon"]]}"]').click()
+						letraRazon = self.DicRazones[DicionarioDatos["Razon"]]
+						print(letraRazon)
+						self.driver.find_element(By.XPATH,f'//div[@aria-label="Razon de no completar Equipos, Requerido"]/div[@data-key="{letraRazon}"]').click()
 						time.sleep(0.5)	
 						self.driver.find_element(By.XPATH,'//input[@data-label="XA_NotDoneSubCode"]//following-sibling::button').click()
 						time.sleep(1)	
 						print(DicionarioDatos["Sub_Razon"])
-						sub_razon = DicionarioDatos["Sub_Razon"]
+						sub_razon = DicionarioDatos["Sub_Razon"].split(" - ")[0]
 						if sub_razon.strip().lower() == "no":
 							sub_razon = self.DicRazones[DicionarioDatos["Razon"]] + "01"
-						self.driver.find_element(By.XPATH,f'//div[@aria-label="Sub Razón de no Completado, Requerido"]/div[@data-key="{sub_razon}"]').click()
+						if sub_razon == "":
+							sub_razon = letraRazon + '1'
+						print(sub_razon)
+						self.driver.find_element(By.XPATH,f'//div[@aria-label="Sub Razón de no Completado Equipos, Requerido"]/div[@data-key="{sub_razon}"]').click()
 
 						if DicionarioDatos['Razon'] in self.ArrayRazonesEspeciales:
 							if DicionarioDatos['Razon']=='REQUIERE MOVIL ELITE':

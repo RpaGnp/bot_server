@@ -155,18 +155,22 @@ class GestorWf():
                 chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
                 chrome_options.add_argument('--start-maximized')
                 chrome_options.add_argument("--incognito")
-                chromedriver_path = r"C:\dchrome\chromedriver.exe"
-                # self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
-                # Verifica si el archivo existe antes de usarlo
+                # Forzar idioma español (Colombia)
+                chrome_options.add_argument("--lang=es-CO")
+                chrome_options.add_experimental_option('prefs', {
+                    'intl.accept_languages': 'es-CO,es'
+                })
+
+                chromedriver_path = r"C:\dchrome\chromedriver.exe"
+
                 if not os.path.exists(chromedriver_path):
                     print(f"ADVERTENCIA: No se encontró chromedriver en {chromedriver_path}")
-                    # Podrías tener una ruta alternativa o usar ChromeDriverManager como fallback
-                    self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+                    driver_path = ChromeDriverManager().install()
+                    self.driver = webdriver.Chrome(executable_path=driver_path, chrome_options=chrome_options)
                 else:
                     print(f"Usando chromedriver desde: {chromedriver_path}")
-                    self.driver = webdriver.Chrome(service=ChromeService(chromedriver_path), options=chrome_options)
-                
+                    self.driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=chrome_options)
                 time.sleep(1)
 
             else:
@@ -232,7 +236,7 @@ class GestorWf():
                     print(f"Intento {attempt}: Título actual: {current_title}")
                     
                     # Scenario 1: Direct login successful
-                    if current_title == "Consola de despacho - Oracle Field Service":
+                    if current_title in ("Dispatch Console - Oracle Field Service", "Consola de despacho - Oracle Field Service"): 
                         print("entro en el if 1: ",current_title)
                         sql = ("SPR_INS_ESTBOT", [self.idbot, "En labor"])
                         ConectorDbMysql().FuncInsInfoOne(sql)
